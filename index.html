@@ -396,196 +396,222 @@
     let characterData = {};
     let updateInterval;
 
-    // URL вашего Web API (замените на реальный при деплое на Amvera)
+    // URL вашего Web API
     const API_BASE_URL = 'http://localhost:8080';
 
+    // Функция для получения chat_id из разных источников
+    function getChatId() {
+        // 1. Пробуем получить из URL параметра (startapp)
+        const urlParams = new URLSearchParams(window.location.search);
+        const startappParam = urlParams.get('startapp');
+        if (startappParam) {
+            return startappParam;
+        }
+        
+        // 2. Пробуем получить из Telegram Web App
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            return tg.initDataUnsafe.user.id;
+        }
+        
+        // 3. Пробуем получить из start_param
+        if (tg.initDataUnsafe && tg.initDataUnsafe.start_param) {
+            return tg.initDataUnsafe.start_param;
+        }
+        
+        return null;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-      initializeTabs();
-      loadCharacterData();
-      startAutoUpdate();
+        initializeTabs();
+        loadCharacterData();
+        startAutoUpdate();
     });
 
     function initializeTabs() {
-      document.querySelectorAll('.tab-button').forEach(button => {
-        button.addEventListener('click', function() {
-          const targetTab = this.getAttribute('data-tab');
-          
-          document.querySelectorAll('.tab-button').forEach(btn => {
-            btn.classList.remove('active');
-          });
-          this.classList.add('active');
-          
-          document.querySelectorAll('.content-section').forEach(section => {
-            section.classList.remove('active');
-          });
-          document.getElementById(`${targetTab}-content`).classList.add('active');
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetTab = this.getAttribute('data-tab');
+                
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(`${targetTab}-content`).classList.add('active');
+            });
         });
-      });
     }
 
     async function loadCharacterData() {
-      try {
-        showLoading(true);
-        hideError();
+        try {
+            showLoading(true);
+            hideError();
 
-        const chatId = tg.initDataUnsafe.user?.id;
-        
-        if (!chatId) {
-          throw new Error('Не удалось определить пользователя');
-        }
+            const chatId = getChatId();
+            
+            if (!chatId) {
+                throw new Error('Не удалось определить пользователя. Вернитесь в бот и откройте характеристики снова.');
+            }
 
-        const API_URL = `${API_BASE_URL}/api/character/${chatId}`;
-        
-        const response = await fetch(API_URL);
-        
-        if (!response.ok) {
-          throw new Error(`Ошибка сервера: ${response.status}`);
-        }
-        
-        const data = await response.json();
+            console.log('🔍 Chat ID:', chatId);
+            
+            const API_URL = `${API_BASE_URL}/api/character/${chatId}`;
+            console.log('🔍 API URL:', API_URL);
+            
+            const response = await fetch(API_URL);
+            
+            if (!response.ok) {
+                throw new Error(`Ошибка сервера: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('🔍 API response:', data);
 
-        if (data.success) {
-          characterData = data.data;
-          updateUI();
-          showLoading(false);
-        } else {
-          throw new Error(data.error || 'Ошибка загрузки данных');
+            if (data.success) {
+                characterData = data.data;
+                updateUI();
+                showLoading(false);
+            } else {
+                throw new Error(data.error || 'Ошибка загрузки данных');
+            }
+        } catch (error) {
+            console.error('Error loading character data:', error);
+            showLoading(false);
+            showError(error.message);
         }
-      } catch (error) {
-        console.error('Error loading character data:', error);
-        showLoading(false);
-        showError(error.message);
-      }
     }
 
     function updateUI() {
-      document.getElementById('character-name').textContent = 
-        characterData.name || 'Безымянный герой';
+        document.getElementById('character-name').textContent = 
+            characterData.name || 'Безымянный герой';
 
-      // Здоровье
-      const hpPercent = characterData.max_hp > 0 ? (characterData.hp / characterData.max_hp) * 100 : 0;
-      document.getElementById('hp-value').textContent = `${characterData.hp}/${characterData.max_hp}`;
-      document.getElementById('health-fill').style.width = `${hpPercent}%`;
-      document.getElementById('health-text').textContent = `${characterData.hp}/${characterData.max_hp}`;
+        // Здоровье
+        const hpPercent = characterData.max_hp > 0 ? (characterData.hp / characterData.max_hp) * 100 : 0;
+        document.getElementById('hp-value').textContent = `${characterData.hp}/${characterData.max_hp}`;
+        document.getElementById('health-fill').style.width = `${hpPercent}%`;
+        document.getElementById('health-text').textContent = `${characterData.hp}/${characterData.max_hp}`;
 
-      // Энергия
-      const energyPercent = characterData.energy?.max > 0 ? 
-        (characterData.energy.current / characterData.energy.max) * 100 : 0;
-      document.getElementById('energy-value').textContent = 
-        `${characterData.energy?.current || 0}/${characterData.energy?.max || 0}`;
-      document.getElementById('energy-fill').style.width = `${energyPercent}%`;
-      document.getElementById('energy-text').textContent = 
-        `${characterData.energy?.current || 0}/${characterData.energy?.max || 0}`;
+        // Энергия
+        const energyPercent = characterData.energy?.max > 0 ? 
+            (characterData.energy.current / characterData.energy.max) * 100 : 0;
+        document.getElementById('energy-value').textContent = 
+            `${characterData.energy?.current || 0}/${characterData.energy?.max || 0}`;
+        document.getElementById('energy-fill').style.width = `${energyPercent}%`;
+        document.getElementById('energy-text').textContent = 
+            `${characterData.energy?.current || 0}/${characterData.energy?.max || 0}`;
 
-      // Броня
-      const armorPercent = characterData.max_armor > 0 ? 
-        (characterData.armor / characterData.max_armor) * 100 : 0;
-      document.getElementById('armor-value').textContent = characterData.armor || 0;
-      document.getElementById('armor-fill').style.width = `${armorPercent}%`;
-      document.getElementById('armor-text').textContent = characterData.armor || 0;
+        // Броня
+        const armorPercent = characterData.max_armor > 0 ? 
+            (characterData.armor / characterData.max_armor) * 100 : 0;
+        document.getElementById('armor-value').textContent = characterData.armor || 0;
+        document.getElementById('armor-fill').style.width = `${armorPercent}%`;
+        document.getElementById('armor-text').textContent = characterData.armor || 0;
 
-      // Уровень
-      document.getElementById('level-value').textContent = characterData.level || 1;
+        // Уровень
+        document.getElementById('level-value').textContent = characterData.level || 1;
 
-      // Оружие
-      document.getElementById('weapon-value').textContent = characterData.weapon || 'Нет';
+        // Оружие
+        document.getElementById('weapon-value').textContent = characterData.weapon || 'Нет';
 
-      // Статус
-      const statusElement = document.getElementById('status-value');
-      if (characterData.is_alive) {
-        statusElement.textContent = 'Жив';
-        statusElement.className = 'status-alive';
-      } else {
-        statusElement.textContent = 'Мёртв';
-        statusElement.className = 'status-dead';
-      }
+        // Статус
+        const statusElement = document.getElementById('status-value');
+        if (characterData.is_alive) {
+            statusElement.textContent = 'Жив';
+            statusElement.className = 'status-alive';
+        } else {
+            statusElement.textContent = 'Мёртв';
+            statusElement.className = 'status-dead';
+        }
 
-      updateInventory();
+        updateInventory();
     }
 
     function updateInventory() {
-      const inventoryGrid = document.getElementById('inventory-grid');
-      const emptyMessage = document.getElementById('inventory-empty');
+        const inventoryGrid = document.getElementById('inventory-grid');
+        const emptyMessage = document.getElementById('inventory-empty');
 
-      if (!characterData.inventory || characterData.inventory.length === 0) {
+        if (!characterData.inventory || characterData.inventory.length === 0) {
+            inventoryGrid.innerHTML = '';
+            emptyMessage.style.display = 'block';
+            return;
+        }
+
+        emptyMessage.style.display = 'none';
         inventoryGrid.innerHTML = '';
-        emptyMessage.style.display = 'block';
-        return;
-      }
 
-      emptyMessage.style.display = 'none';
-      inventoryGrid.innerHTML = '';
+        characterData.inventory.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.className = `item-card ${item.is_equipped ? 'item-equipped' : ''}`;
+            
+            const icon = getItemIcon(item.type);
 
-      characterData.inventory.forEach(item => {
-        const itemElement = document.createElement('div');
-        itemElement.className = `item-card ${item.is_equipped ? 'item-equipped' : ''}`;
-        
-        const icon = getItemIcon(item.type);
+            itemElement.innerHTML = `
+              <div class="item-icon">${icon}</div>
+              <div class="item-name">${item.name}</div>
+              ${item.quantity > 1 ? `<div class="item-quantity">x${item.quantity}</div>` : ''}
+            `;
 
-        itemElement.innerHTML = `
-          <div class="item-icon">${icon}</div>
-          <div class="item-name">${item.name}</div>
-          ${item.quantity > 1 ? `<div class="item-quantity">x${item.quantity}</div>` : ''}
-        `;
-
-        itemElement.addEventListener('click', () => showItemDetails(item));
-        inventoryGrid.appendChild(itemElement);
-      });
+            itemElement.addEventListener('click', () => showItemDetails(item));
+            inventoryGrid.appendChild(itemElement);
+        });
     }
 
     function getItemIcon(itemType) {
-      const icons = {
-        'weapon': '⚔️',
-        'armor': '🛡️',
-        'potion': '🧪',
-        'amulet': '📿',
-        'scroll': '📜',
-        'food': '🍖',
-        'key': '🔑',
-        'gem': '💎',
-        'ammo': '🏹'
-      };
-      return icons[itemType] || '🎁';
+        const icons = {
+            'weapon': '⚔️',
+            'armor': '🛡️',
+            'potion': '🧪',
+            'amulet': '📿',
+            'scroll': '📜',
+            'food': '🍖',
+            'key': '🔑',
+            'gem': '💎',
+            'ammo': '🏹'
+        };
+        return icons[itemType] || '🎁';
     }
 
     function showItemDetails(item) {
-      tg.showPopup({
-        title: item.name,
-        message: `${item.description || 'Описание отсутствует'}\n\nТип: ${item.type}\nКоличество: ${item.quantity}`,
-        buttons: [
-          { type: 'cancel', text: 'Закрыть' }
-        ]
-      });
+        tg.showPopup({
+            title: item.name,
+            message: `${item.description || 'Описание отсутствует'}\n\nТип: ${item.type}\nКоличество: ${item.quantity}`,
+            buttons: [
+                { type: 'cancel', text: 'Закрыть' }
+            ]
+        });
     }
 
     function showLoading(show) {
-      document.getElementById('loading-message').style.display = show ? 'block' : 'none';
+        document.getElementById('loading-message').style.display = show ? 'block' : 'none';
     }
 
     function showError(message) {
-      const errorElement = document.getElementById('error-message');
-      errorElement.innerHTML = `❌ ${message}`;
-      errorElement.style.display = 'block';
+        const errorElement = document.getElementById('error-message');
+        errorElement.innerHTML = `❌ ${message}`;
+        errorElement.style.display = 'block';
     }
 
     function hideError() {
-      document.getElementById('error-message').style.display = 'none';
+        document.getElementById('error-message').style.display = 'none';
     }
 
     function startAutoUpdate() {
-      updateInterval = setInterval(loadCharacterData, 10000);
+        updateInterval = setInterval(loadCharacterData, 10000);
     }
 
     window.addEventListener('beforeunload', function() {
-      if (updateInterval) {
-        clearInterval(updateInterval);
-      }
+        if (updateInterval) {
+            clearInterval(updateInterval);
+        }
     });
 
     document.addEventListener('visibilitychange', function() {
-      if (!document.hidden) {
-        loadCharacterData();
-      }
+        if (!document.hidden) {
+            loadCharacterData();
+        }
     });
   </script>
 </body>
