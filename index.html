@@ -116,7 +116,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Стили для характеристик */
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -184,7 +183,6 @@
       font-size: 0.8rem;
     }
 
-    /* Стили для инвентаря */
     .inventory-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -280,7 +278,6 @@
       margin: 10px 0;
     }
 
-    /* Адаптивность */
     @media (max-width: 480px) {
       .container {
         padding: 5px;
@@ -396,42 +393,28 @@
     tg.expand();
     tg.BackButton.hide();
 
-    // Основные переменные
     let characterData = {};
     let updateInterval;
 
-    // Умный выбор API URL
-    function getApiBaseUrl() {
-      // Если работаем локально на ПК
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return 'http://localhost:8080';
-      }
-      // Если работаем на GitHub Pages - используем локальный API (для тестирования)
-      else {
-        return 'http://localhost:8080'; // В будущем заменить на Amvera URL
-      }
-    }
+    // URL вашего Web API (замените на реальный при деплое на Amvera)
+    const API_BASE_URL = 'http://localhost:8080';
 
-    // Инициализация приложения
     document.addEventListener('DOMContentLoaded', function() {
       initializeTabs();
       loadCharacterData();
       startAutoUpdate();
     });
 
-    // Система вкладок
     function initializeTabs() {
       document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', function() {
           const targetTab = this.getAttribute('data-tab');
           
-          // Обновляем активные кнопки
           document.querySelectorAll('.tab-button').forEach(btn => {
             btn.classList.remove('active');
           });
           this.classList.add('active');
           
-          // Показываем соответствующую вкладку
           document.querySelectorAll('.content-section').forEach(section => {
             section.classList.remove('active');
           });
@@ -440,101 +423,52 @@
       });
     }
 
-    // Загрузка данных персонажа
     async function loadCharacterData() {
       try {
         showLoading(true);
         hideError();
 
-        let chatId = tg.initDataUnsafe.user?.id;
+        const chatId = tg.initDataUnsafe.user?.id;
         
-        if (!chatId && tg.initDataUnsafe.start_param) {
-          chatId = tg.initDataUnsafe.start_param;
-        }
-
-        // Для тестирования - используем ваш chat_id
         if (!chatId) {
-          chatId = '2147348192';
-          console.warn('Chat ID not found, using default for testing');
+          throw new Error('Не удалось определить пользователя');
         }
 
-        console.log('🔍 Loading character data for chat ID:', chatId);
-        
-        const API_BASE_URL = getApiBaseUrl();
         const API_URL = `${API_BASE_URL}/api/character/${chatId}`;
         
-        console.log('🔍 API URL:', API_URL);
-        
-        const response = await fetch(API_URL, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        });
+        const response = await fetch(API_URL);
         
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`Ошибка сервера: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('🔍 API response:', data);
 
         if (data.success) {
           characterData = data.data;
           updateUI();
           showLoading(false);
         } else {
-          throw new Error(data.error || 'Failed to load character data');
+          throw new Error(data.error || 'Ошибка загрузки данных');
         }
       } catch (error) {
-        console.error('❌ Error loading character data:', error);
+        console.error('Error loading character data:', error);
         showLoading(false);
-        showError(`Ошибка: ${error.message}`);
-        
-        // Показываем демо-данные для тестирования
-        showDemoData();
+        showError(error.message);
       }
     }
 
-    // Показать демо-данные для тестирования
-    function showDemoData() {
-      const demoData = {
-        name: "Гарик Воин",
-        hp: 30,
-        max_hp: 30,
-        armor: 5,
-        weapon: "Двуручный меч",
-        level: 1,
-        is_alive: true,
-        energy: { current: 45, max: 50 },
-        inventory: [
-          { name: "Зелье здоровья", type: "potion", quantity: 3, description: "Восстанавливает 15 HP" },
-          { name: "Стальной меч", type: "weapon", quantity: 1, description: "Надежный стальной меч" },
-          { name: "Щит", type: "armor", quantity: 1, description: "Прочный металлический щит" },
-          { name: "Ключ от таверны", type: "key", quantity: 1, description: "Старый железный ключ" }
-        ]
-      };
-      
-      characterData = demoData;
-      updateUI();
-      
-      // Показываем сообщение о демо-режиме
-      tg.showAlert("⚠️ Режим демонстрации. Данные не загружены с сервера.");
-    }
-
-    // Обновление интерфейса
     function updateUI() {
-      // Обновляем имя персонажа
       document.getElementById('character-name').textContent = 
         characterData.name || 'Безымянный герой';
 
-      // Обновляем здоровье
+      // Здоровье
       const hpPercent = characterData.max_hp > 0 ? (characterData.hp / characterData.max_hp) * 100 : 0;
       document.getElementById('hp-value').textContent = `${characterData.hp}/${characterData.max_hp}`;
       document.getElementById('health-fill').style.width = `${hpPercent}%`;
       document.getElementById('health-text').textContent = `${characterData.hp}/${characterData.max_hp}`;
 
-      // Обновляем энергию
+      // Энергия
       const energyPercent = characterData.energy?.max > 0 ? 
         (characterData.energy.current / characterData.energy.max) * 100 : 0;
       document.getElementById('energy-value').textContent = 
@@ -543,20 +477,20 @@
       document.getElementById('energy-text').textContent = 
         `${characterData.energy?.current || 0}/${characterData.energy?.max || 0}`;
 
-      // Обновляем броню
+      // Броня
       const armorPercent = characterData.max_armor > 0 ? 
         (characterData.armor / characterData.max_armor) * 100 : 0;
       document.getElementById('armor-value').textContent = characterData.armor || 0;
       document.getElementById('armor-fill').style.width = `${armorPercent}%`;
       document.getElementById('armor-text').textContent = characterData.armor || 0;
 
-      // Обновляем уровень
+      // Уровень
       document.getElementById('level-value').textContent = characterData.level || 1;
 
-      // Обновляем оружие
+      // Оружие
       document.getElementById('weapon-value').textContent = characterData.weapon || 'Нет';
 
-      // Обновляем статус
+      // Статус
       const statusElement = document.getElementById('status-value');
       if (characterData.is_alive) {
         statusElement.textContent = 'Жив';
@@ -566,11 +500,9 @@
         statusElement.className = 'status-dead';
       }
 
-      // Обновляем инвентарь
       updateInventory();
     }
 
-    // Обновление инвентаря
     function updateInventory() {
       const inventoryGrid = document.getElementById('inventory-grid');
       const emptyMessage = document.getElementById('inventory-empty');
@@ -589,7 +521,6 @@
         itemElement.className = `item-card ${item.is_equipped ? 'item-equipped' : ''}`;
         
         const icon = getItemIcon(item.type);
-        const equippedBadge = item.is_equipped ? ' ⚔️' : '';
 
         itemElement.innerHTML = `
           <div class="item-icon">${icon}</div>
@@ -602,7 +533,6 @@
       });
     }
 
-    // Получение иконки для предмета
     function getItemIcon(itemType) {
       const icons = {
         'weapon': '⚔️',
@@ -618,31 +548,18 @@
       return icons[itemType] || '🎁';
     }
 
-    // Показ деталей предмета
     function showItemDetails(item) {
       tg.showPopup({
         title: item.name,
         message: `${item.description || 'Описание отсутствует'}\n\nТип: ${item.type}\nКоличество: ${item.quantity}`,
         buttons: [
-          { type: 'default', text: 'Использовать', id: 'use' },
-          { type: 'destructive', text: 'Выбросить', id: 'drop' },
           { type: 'cancel', text: 'Закрыть' }
         ]
-      }, (buttonId) => {
-        if (buttonId === 'use') {
-          tg.showAlert(`Предмет "${item.name}" использован!`);
-          // Здесь можно добавить логику использования предмета
-        } else if (buttonId === 'drop') {
-          tg.showAlert(`Предмет "${item.name}" выброшен!`);
-          // Здесь можно добавить логику удаления предмета
-        }
       });
     }
 
-    // Управление состоянием загрузки
     function showLoading(show) {
-      const loadingElement = document.getElementById('loading-message');
-      loadingElement.style.display = show ? 'block' : 'none';
+      document.getElementById('loading-message').style.display = show ? 'block' : 'none';
     }
 
     function showError(message) {
@@ -652,23 +569,19 @@
     }
 
     function hideError() {
-      const errorElement = document.getElementById('error-message');
-      errorElement.style.display = 'none';
+      document.getElementById('error-message').style.display = 'none';
     }
 
-    // Автоматическое обновление данных
     function startAutoUpdate() {
-      updateInterval = setInterval(loadCharacterData, 10000); // Обновление каждые 10 секунд
+      updateInterval = setInterval(loadCharacterData, 10000);
     }
 
-    // Очистка при закрытии
     window.addEventListener('beforeunload', function() {
       if (updateInterval) {
         clearInterval(updateInterval);
       }
     });
 
-    // Обработка видимости страницы (обновляем при возвращении на вкладку)
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
         loadCharacterData();
@@ -677,4 +590,5 @@
   </script>
 </body>
 </html>
+
 
