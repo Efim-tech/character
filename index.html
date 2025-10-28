@@ -449,27 +449,33 @@
         try {
             showLoading(true);
             hideError();
-
+    
             const chatId = getChatId();
             
             if (!chatId) {
                 throw new Error('Не удалось определить пользователя. Вернитесь в бот и откройте характеристики снова.');
             }
-
+    
             console.log('🔍 Chat ID:', chatId);
             
             const API_URL = `${API_BASE_URL}/api/character/${chatId}`;
             console.log('🔍 API URL:', API_URL);
             
+            // Тестовый запрос для проверки доступности
+            console.log('🔍 Testing API availability...');
+            const testResponse = await fetch(`${API_BASE_URL}/health`);
+            console.log('🔍 Health check:', testResponse.status, await testResponse.text());
+            
             const response = await fetch(API_URL);
+            console.log('🔍 Character API response status:', response.status);
             
             if (!response.ok) {
                 throw new Error(`Ошибка сервера: ${response.status}`);
             }
             
             const data = await response.json();
-            console.log('🔍 API response:', data);
-
+            console.log('🔍 API response data:', data);
+    
             if (data.success) {
                 characterData = data.data;
                 updateUI();
