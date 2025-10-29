@@ -462,9 +462,9 @@
             console.log('🔍 API URL:', API_URL);
             
             // Тестовый запрос для проверки доступности
-            console.log('🔍 Testing API availability...');
-            const testResponse = await fetch(`${API_BASE_URL}/health`);
-            console.log('🔍 Health check:', testResponse.status, await testResponse.text());
+            //console.log('🔍 Testing API availability...');
+            //const testResponse = await fetch(`${API_BASE_URL}/health`);
+            //console.log('🔍 Health check:', testResponse.status, await testResponse.text());
             
             const response = await fetch(API_URL);
             console.log('🔍 Character API response status:', response.status);
@@ -622,6 +622,7 @@
   </script>
 </body>
 </html>
+
 
 
 
