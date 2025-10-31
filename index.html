@@ -6,6 +6,7 @@
   <title>Game Master - Персонаж 🎮</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    /* Стили остаются без изменений */
     :root {
       --primary-color: #8b4513;
       --secondary-color: #daa520;
@@ -389,15 +390,15 @@
   </div>
 
   <script>
+    // 🔥 ПЕРЕМЕЩАЕМ КОНСТАНТУ В САМОЕ НАЧАЛО СКРИПТА
+    const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
+
     const tg = window.Telegram.WebApp;
     tg.expand();
     tg.BackButton.hide();
 
     let characterData = {};
     let updateInterval;
-
-    // URL вашего Web API
-    const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
 
     // Функция для получения chat_id из разных источников
     function getChatId() {
@@ -461,27 +462,45 @@
             const API_URL = `${API_BASE_URL}/api/character/${chatId}`;
             console.log('🔍 API URL:', API_URL);
             
-            // Тестовый запрос для проверки доступности
-            console.log('🔍 Testing API availability...');
-            const testResponse = await fetch(`${API_BASE_URL}/health`);
-            console.log('🔍 Health check:', testResponse.status, await testResponse.text());
+            // Добавляем таймаут для запроса
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд таймаут
             
-            const response = await fetch(API_URL);
-            console.log('🔍 Character API response status:', response.status);
-            
-            if (!response.ok) {
-                throw new Error(`Ошибка сервера: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            console.log('🔍 API response data:', data);
-    
-            if (data.success) {
-                characterData = data.data;
-                updateUI();
-                showLoading(false);
-            } else {
-                throw new Error(data.error || 'Ошибка загрузки данных');
+            try {
+                // Тестовый запрос для проверки доступности
+                console.log('🔍 Testing API availability...');
+                const testResponse = await fetch(`${API_BASE_URL}/health`, {
+                    signal: controller.signal
+                });
+                console.log('🔍 Health check:', testResponse.status, await testResponse.text());
+                
+                const response = await fetch(API_URL, {
+                    signal: controller.signal
+                });
+                console.log('🔍 Character API response status:', response.status);
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`Ошибка сервера: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('🔍 API response data:', data);
+        
+                if (data.success) {
+                    characterData = data.data;
+                    updateUI();
+                    showLoading(false);
+                } else {
+                    throw new Error(data.error || 'Ошибка загрузки данных');
+                }
+            } catch (fetchError) {
+                clearTimeout(timeoutId);
+                if (fetchError.name === 'AbortError') {
+                    throw new Error('Таймаут запроса. Сервер не отвечает.');
+                }
+                throw fetchError;
             }
         } catch (error) {
             console.error('Error loading character data:', error);
@@ -605,7 +624,8 @@
     }
 
     function startAutoUpdate() {
-        updateInterval = setInterval(loadCharacterData, 10000);
+        // Обновляем каждые 30 секунд вместо 10 для уменьшения нагрузки
+        updateInterval = setInterval(loadCharacterData, 30000);
     }
 
     window.addEventListener('beforeunload', function() {
@@ -622,6 +642,7 @@
   </script>
 </body>
 </html>
+
 
 
 
