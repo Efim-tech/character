@@ -525,8 +525,14 @@
         document.getElementById('energy-value').textContent = 
             `${characterData.energy?.current || 0}/${characterData.energy?.max || 0}`;
         document.getElementById('energy-fill').style.width = `${energyPercent}%`;
-        document.getElementById('energy-text').textContent = 
-            `${characterData.energy?.current || 0}/${characterData.energy?.max || 0}`;
+        
+        // 🔥 ОТОБРАЖЕНИЕ ВРЕМЕНИ ДО ВОССТАНОВЛЕНИЯ
+        const energyText = document.getElementById('energy-text');
+        if (characterData.energy?.current === 0) {
+            energyText.innerHTML = `0/${characterData.energy?.max || 0}<br><small>⏳ восстановление</small>`;
+        } else {
+            energyText.textContent = `${characterData.energy?.current || 0}/${characterData.energy?.max || 0}`;
+        }
 
         // Броня
         const armorPercent = characterData.max_armor > 0 ? 
@@ -642,6 +648,7 @@
   </script>
 </body>
 </html>
+
 
 
 
