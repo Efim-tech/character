@@ -709,13 +709,87 @@
     }
 
     function showItemDetails(item) {
+        // Создаем кнопки в зависимости от типа предмета
+        let buttons = [];
+        
+        // Для всех лечащих/восстанавливающих предметов добавляем кнопку "Использовать"
+        if (item.type === 'potion' || item.type === 'medical' || item.type === 'repair') {
+            buttons.push({
+                type: 'default', 
+                text: '🧪 Использовать',
+                id: 'use_item'
+            });
+        }
+        
+        buttons.push({ type: 'cancel', text: 'Закрыть' });
+    
         tg.showPopup({
             title: item.name,
             message: `${item.description || 'Описание отсутствует'}\n\nТип: ${item.type}\nКоличество: ${item.quantity}`,
-            buttons: [
-                { type: 'cancel', text: 'Закрыть' }
-            ]
+            buttons: buttons
+        }, (buttonId) => {
+            if (buttonId === 'use_item') {
+                useItem(item.name);
+            }
         });
+    }
+    
+    async function useItem(itemName) {
+        try {
+            const chatId = getChatId();
+            
+            if (!chatId) {
+                tg.showPopup({
+                    title: 'Ошибка',
+                    message: 'Не удалось определить пользователя',
+                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
+                });
+                return;
+            }
+    
+            const API_URL = `${API_BASE_URL}/api/character/${chatId}/use_item`;
+            
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    item_name: itemName
+                })
+            });
+    
+            const data = await response.json();
+            
+            if (data.success) {
+                // Показываем успешное сообщение
+                tg.showPopup({
+                    title: '✅ Успех',
+                    message: data.message,
+                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
+                });
+                
+                // Обновляем данные персонажа
+                setTimeout(() => {
+                    loadCharacterData();
+                }, 1000);
+                
+            } else {
+                tg.showPopup({
+                    title: '❌ Ошибка',
+                    message: data.error || 'Не удалось использовать предмет',
+                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
+                });
+            }
+            
+        } catch (error) {
+            console.error('Error using item:', error);
+            tg.showPopup({
+                title: '❌ Ошибка',
+                message: 'Ошибка при использовании предмета',
+                buttons: [{ type: 'cancel', text: 'Закрыть' }]
+            });
+        }
     }
 
     function showLoading(show) {
@@ -751,6 +825,7 @@
   </script>
 </body>
 </html>
+
 
 
 
