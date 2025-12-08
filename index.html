@@ -622,6 +622,12 @@
     
     // 🔥 ФУНКЦИЯ: Показать смерть в веб-приложении
     function showDeathInWebApp(characterName) {
+      // 🔥 ОСТАНАВЛИВАЕМ АВТООБНОВЛЕНИЕ
+        if (updateInterval) {
+            clearInterval(updateInterval);
+            updateInterval = null;
+            console.log('⏹️ Автообновление остановлено из-за смерти персонажа');
+        }
         // Создаем сообщение о смерти
         const deathMessage = document.createElement('div');
         deathMessage.className = 'error-message';
@@ -724,16 +730,26 @@
         if (characterData.hp <= 0 || !characterData.is_alive || characterData.is_dead) {
             statusElement.textContent = 'Мёртв';
             statusElement.className = 'status-dead';
-            // Проверяем смерть на сервере
-            setTimeout(() => checkDeathOnHPChange(), 500);
         } else {
             statusElement.textContent = 'Жив';
             statusElement.className = 'status-alive';
         }
     
         updateInventory();
-    }  
-
+    
+        // 🔥 ОДНА проверка смерти в конце функции
+        if (characterData.hp <= 0 && !characterData.is_dead) {
+            // 🔥 ЗАДЕРЖКА чтобы избежать множественных проверок
+            if (!window.deathCheckScheduled) {
+                window.deathCheckScheduled = true;
+                setTimeout(() => {
+                    checkDeathOnHPChange();
+                    window.deathCheckScheduled = false;
+                }, 1000);
+            }
+        }
+    }
+    
     // ФУНКЦИЯ ДЛЯ ОБРАТНОГО ОТСЧЕТА
     let countdownInterval;
     function startEnergyCountdown(initialTime) {
@@ -936,6 +952,7 @@
   </script>
 </body>
 </html>
+
 
 
 
