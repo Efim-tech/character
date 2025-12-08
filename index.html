@@ -536,6 +536,11 @@
                     characterData = data.data;
                     updateUI();
                     showLoading(false);
+                  // 🔥 АВТОМАТИЧЕСКАЯ ПРОВЕРКА СМЕРТИ ПРИ ЗАГРУЗКЕ
+                    if (characterData.hp <= 0) {
+                        console.log('💀 Загружен мертвый персонаж, проверяем...');
+                        setTimeout(() => checkDeathOnHPChange(), 1000);
+                    }
                 } else {
                     throw new Error(data.error || 'Ошибка загрузки данных');
                 }
@@ -553,16 +558,112 @@
         }
     }
 
+    async function checkDeathOnHPChange() {
+        try {
+            const chatId = getChatId();
+            
+            if (!chatId) {
+                console.error('❌ Не удалось определить chat_id');
+                return;
+            }
+    
+            // Получаем текущее HP из UI
+            const hpElement = document.getElementById('hp-value');
+            if (!hpElement) return;
+            
+            const hpText = hpElement.textContent; // Формат: "25/50"
+            const currentHP = parseInt(hpText.split('/')[0]);
+            
+            // Если HP = 0 или меньше, проверяем смерть
+            if (currentHP <= 0) {
+                console.log('💀 Обнаружен 0 HP, проверяем смерть...');
+                
+                const API_URL = `${API_BASE_URL}/api/character/${chatId}/check_death`;
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        hp: currentHP,
+                        armor: characterData.armor || 0
+                    })
+                });
+    
+                const data = await response.json();
+                
+                if (data.success && data.death_detected) {
+                    console.log('💀 Смерть подтверждена сервером');
+                    
+                    // Показываем уведомление в веб-приложении
+                    showDeathInWebApp(data.character_name);
+                    
+                    // Telegram уведомление уже отправлено сервером
+                }
+            }
+            
+        } catch (error) {
+            console.error('❌ Ошибка проверки смерти:', error);
+        }
+    }
+    
+    // 🔥 ФУНКЦИЯ: Показать смерть в веб-приложении
+    function showDeathInWebApp(characterName) {
+        // Создаем сообщение о смерти
+        const deathMessage = document.createElement('div');
+        deathMessage.className = 'error-message';
+        deathMessage.style.cssText = `
+            background: rgba(220, 53, 69, 0.9) !important;
+            border: 2px solid #ff0000 !important;
+            color: white !important;
+            text-align: center !important;
+            padding: 20px !important;
+            margin: 10px 0 !important;
+            border-radius: 10px !important;
+            font-size: 1.1rem !important;
+            animation: pulse 2s infinite !important;
+        `;
+        
+        deathMessage.innerHTML = `
+            <h3 style="margin: 0 0 10px 0;">💀 ${characterName.toUpperCase()} ПАЛ В БОЮ!</h3>
+            <p style="margin: 0 0 15px 0;">Вы получите уведомление в Telegram для создания нового персонажа</p>
+            <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">
+                Закройте это приложение и проверьте Telegram
+            </p>
+        `;
+        
+        // Вставляем в начало контейнера
+        const container = document.querySelector('.container');
+        if (container.firstChild) {
+            container.insertBefore(deathMessage, container.firstChild);
+        } else {
+            container.appendChild(deathMessage);
+        }
+        
+        // Блокируем интерфейс
+        document.querySelectorAll('button, .item-card, .tab-button').forEach(el => {
+            el.style.pointerEvents = 'none';
+            el.style.opacity = '0.5';
+        });
+        
+        // Автоматическое закрытие через 10 секунд
+        setTimeout(() => {
+            tg.showAlert('Персонаж мертв. Проверьте Telegram для создания нового персонажа.');
+            setTimeout(() => tg.close(), 3000);
+        }, 10000);
+    }
+
     function updateUI() {
         document.getElementById('character-name').textContent = 
             characterData.name || 'Безымянный герой';
-
+    
         // Здоровье
         const hpPercent = characterData.max_hp > 0 ? (characterData.hp / characterData.max_hp) * 100 : 0;
         document.getElementById('hp-value').textContent = `${characterData.hp}/${characterData.max_hp}`;
         document.getElementById('health-fill').style.width = `${hpPercent}%`;
         document.getElementById('health-text').textContent = `${characterData.hp}/${characterData.max_hp}`;
-
+    
         // Энергия
         const energyCurrent = characterData.energy?.current || 0;
         const energyMax = characterData.energy?.max || 0;
@@ -576,13 +677,11 @@
         const energyTimer = document.getElementById('energy-timer');
         const timerValue = document.getElementById('timer-value');
         
-        // Показываем таймер только если энергия не полная
-        if (energyCurrent < energyMax && energyCurrent === 0) {
-            // Если энергия закончилась, показываем таймер
+        // Показываем таймер если энергия не полная ИЛИ равна 0
+        if (energyCurrent < energyMax || energyCurrent === 0) {
             const timeRemaining = characterData.energy?.time_remaining || 60;
             timerValue.textContent = timeRemaining;
             
-            // Добавляем класс warning если осталось мало времени
             if (timeRemaining <= 10) {
                 energyTimer.className = 'energy-timer warning';
             } else {
@@ -590,38 +689,38 @@
             }
             
             energyTimer.style.display = 'block';
-            
-            // Запускаем обратный отсчет
             startEnergyCountdown(timeRemaining);
         } else {
             energyTimer.style.display = 'none';
         }
-
+    
         // Броня
         const armorPercent = characterData.max_armor > 0 ? 
             (characterData.armor / characterData.max_armor) * 100 : 0;
         document.getElementById('armor-value').textContent = characterData.armor || 0;
         document.getElementById('armor-fill').style.width = `${armorPercent}%`;
         document.getElementById('armor-text').textContent = characterData.armor || 0;
-
+    
         // Уровень
         document.getElementById('level-value').textContent = characterData.level || 1;
-
+    
         // Оружие
         document.getElementById('weapon-value').textContent = characterData.weapon || 'Нет';
-
-        // Статус
+    
+        // 🔥 ИСПРАВЛЕННЫЙ СТАТУС: проверяем смерть по HP и is_alive
         const statusElement = document.getElementById('status-value');
-        if (characterData.is_alive) {
-            statusElement.textContent = 'Жив';
-            statusElement.className = 'status-alive';
-        } else {
+        if (characterData.hp <= 0 || !characterData.is_alive || characterData.is_dead) {
             statusElement.textContent = 'Мёртв';
             statusElement.className = 'status-dead';
+            // Проверяем смерть на сервере
+            setTimeout(() => checkDeathOnHPChange(), 500);
+        } else {
+            statusElement.textContent = 'Жив';
+            statusElement.className = 'status-alive';
         }
-
+    
         updateInventory();
-    }
+    }  
 
     // ФУНКЦИЯ ДЛЯ ОБРАТНОГО ОТСЧЕТА
     let countdownInterval;
@@ -825,6 +924,7 @@
   </script>
 </body>
 </html>
+
 
 
 
