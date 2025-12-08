@@ -676,11 +676,42 @@
         document.getElementById('character-name').textContent = 
             characterData.name || 'Безымянный герой';
     
+        // 🔥 СОХРАНЯЕМ ПРЕДЫДУЩИЕ ЗНАЧЕНИЯ ДЛЯ СРАВНЕНИЯ
+        const previousHP = window.previousCharacterData?.hp || characterData.hp;
+        const previousArmor = window.previousCharacterData?.armor || characterData.armor;
+        
+        // 🔥 ВЫЧИСЛЯЕМ УРОН (если HP уменьшилось)
+        if (previousHP > characterData.hp) {
+            const damageTaken = previousHP - characterData.hp;
+            showDamageNotification(damageTaken);
+            console.log(`💥 Урон получен: ${damageTaken} HP`);
+        }
+        
+        // 🔥 ВЫЧИСЛЯЕМ ПОТЕРЮ БРОНИ (если броня уменьшилась)
+        if (previousArmor > characterData.armor) {
+            const armorDamage = previousArmor - characterData.armor;
+            showArmorDamageNotification(armorDamage);
+            console.log(`🛡️ Потеряно брони: ${armorDamage}`);
+        }
+        
+        // 🔥 СОХРАНЯЕМ ТЕКУЩИЕ ДАННЫЕ ДЛЯ СЛЕДУЮЩЕГО СРАВНЕНИЯ
+        window.previousCharacterData = {
+            hp: characterData.hp,
+            armor: characterData.armor,
+            max_hp: characterData.max_hp,
+            max_armor: characterData.max_armor
+        };
+    
         // Здоровье
         const hpPercent = characterData.max_hp > 0 ? (characterData.hp / characterData.max_hp) * 100 : 0;
         document.getElementById('hp-value').textContent = `${characterData.hp}/${characterData.max_hp}`;
         document.getElementById('health-fill').style.width = `${hpPercent}%`;
         document.getElementById('health-text').textContent = `${characterData.hp}/${characterData.max_hp}`;
+    
+        // 🔥 АНИМАЦИЯ УРОНА НА ШКАЛЕ HP
+        if (previousHP > characterData.hp) {
+            animateHealthDamage(previousHP, characterData.hp, characterData.max_hp);
+        }
     
         // Энергия
         const energyCurrent = characterData.energy?.current || 0;
@@ -719,6 +750,11 @@
         document.getElementById('armor-fill').style.width = `${armorPercent}%`;
         document.getElementById('armor-text').textContent = characterData.armor || 0;
     
+        // 🔥 АНИМАЦИЯ УРОНА НА БРОНЕ
+        if (previousArmor > characterData.armor) {
+            animateArmorDamage(previousArmor, characterData.armor, characterData.max_armor);
+        }
+    
         // Уровень
         document.getElementById('level-value').textContent = characterData.level || 1;
     
@@ -748,6 +784,266 @@
                 }, 1000);
             }
         }
+    }
+    
+    // 🔥 ФУНКЦИЯ: Показать уведомление об уроне
+    function showDamageNotification(damage) {
+        const damageMsg = document.createElement('div');
+        damageMsg.className = 'damage-notification';
+        damageMsg.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.95), rgba(178, 34, 34, 0.95));
+            color: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            z-index: 10000;
+            animation: damageFloat 1.5s ease-out forwards;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        `;
+        damageMsg.textContent = `-${damage} ❤️`;
+        
+        document.body.appendChild(damageMsg);
+        
+        // Добавляем звуковой эффект (опционально)
+        playDamageSound();
+        
+        setTimeout(() => {
+            damageMsg.remove();
+        }, 1500);
+    }
+    
+    // 🔥 ФУНКЦИЯ: Показать уведомление о потере брони
+    function showArmorDamageNotification(damage) {
+        const armorMsg = document.createElement('div');
+        armorMsg.className = 'armor-damage-notification';
+        armorMsg.style.cssText = `
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(70, 130, 180, 0.95), rgba(30, 144, 255, 0.95));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 2rem;
+            font-weight: bold;
+            z-index: 9999;
+            animation: armorDamageFloat 1.5s ease-out forwards;
+            pointer-events: none;
+            box-shadow: 0 8px 25px rgba(70, 130, 180, 0.4);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        `;
+        armorMsg.textContent = `-${damage} 🛡️`;
+        
+        document.body.appendChild(armorMsg);
+        
+        setTimeout(() => {
+            armorMsg.remove();
+        }, 1500);
+    }
+    
+    // 🔥 ФУНКЦИЯ: Анимация урона на шкале HP
+    function animateHealthDamage(oldHP, newHP, maxHP) {
+        const healthBar = document.getElementById('health-fill');
+        const oldPercent = (oldHP / maxHP) * 100;
+        const newPercent = (newHP / maxHP) * 100;
+        
+        // Сначала показываем красную вспышку на потерянной части
+        const damageOverlay = document.createElement('div');
+        damageOverlay.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: ${newPercent}%;
+            width: ${oldPercent - newPercent}%;
+            height: 100%;
+            background: rgba(255, 0, 0, 0.6);
+            border-radius: 10px;
+            animation: damageFlash 0.5s ease-out forwards;
+            pointer-events: none;
+        `;
+        
+        healthBar.parentElement.appendChild(damageOverlay);
+        
+        setTimeout(() => {
+            if (damageOverlay.parentElement) {
+                damageOverlay.remove();
+            }
+        }, 500);
+    }
+    
+    // 🔥 ФУНКЦИЯ: Анимация урона на броне
+    function animateArmorDamage(oldArmor, newArmor, maxArmor) {
+        const armorBar = document.getElementById('armor-fill');
+        const oldPercent = (oldArmor / maxArmor) * 100;
+        const newPercent = (newArmor / maxArmor) * 100;
+        
+        // Сначала показываем синюю вспышку на потерянной части
+        const armorOverlay = document.createElement('div');
+        armorOverlay.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: ${newPercent}%;
+            width: ${oldPercent - newPercent}%;
+            height: 100%;
+            background: rgba(0, 150, 255, 0.6);
+            border-radius: 10px;
+            animation: armorFlash 0.5s ease-out forwards;
+            pointer-events: none;
+        `;
+        
+        armorBar.parentElement.appendChild(armorOverlay);
+        
+        setTimeout(() => {
+            if (armorOverlay.parentElement) {
+                armorOverlay.remove();
+            }
+        }, 500);
+    }
+    
+    // 🔥 ФУНКЦИЯ: Воспроизвести звук урона (опционально)
+    function playDamageSound() {
+        // Можно добавить звуковые эффекты через Web Audio API
+        // Или просто вибрацию на мобильных устройствах
+        if (navigator.vibrate) {
+            navigator.vibrate([100, 50, 100]); // Короткая вибрация
+        }
+    }
+    
+    // 🔥 ДОБАВЛЯЕМ СТИЛИ ДЛЯ АНИМАЦИЙ (один раз при загрузке)
+    if (!window.damageStylesAdded) {
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes damageFloat {
+                0% { 
+                    opacity: 0; 
+                    transform: translate(-50%, -30%) scale(0.8); 
+                }
+                20% { 
+                    opacity: 1; 
+                    transform: translate(-50%, -50%) scale(1.1); 
+                }
+                60% { 
+                    opacity: 1; 
+                    transform: translate(-50%, -60%) scale(1); 
+                }
+                100% { 
+                    opacity: 0; 
+                    transform: translate(-50%, -80%) scale(0.9); 
+                }
+            }
+            
+            @keyframes armorDamageFloat {
+                0% { 
+                    opacity: 0; 
+                    transform: translate(-50%, -20%) scale(0.8); 
+                }
+                20% { 
+                    opacity: 1; 
+                    transform: translate(-50%, -40%) scale(1.1); 
+                }
+                60% { 
+                    opacity: 1; 
+                    transform: translate(-50%, -50%) scale(1); 
+                }
+                100% { 
+                    opacity: 0; 
+                    transform: translate(-50%, -70%) scale(0.9); 
+                }
+            }
+            
+            @keyframes damageFlash {
+                0% { opacity: 0.8; }
+                50% { opacity: 1; }
+                100% { opacity: 0; }
+            }
+            
+            @keyframes armorFlash {
+                0% { opacity: 0.8; }
+                50% { opacity: 1; }
+                100% { opacity: 0; }
+            }
+            
+            /* Стили для уведомлений */
+            .damage-notification {
+                font-family: 'Georgia', serif;
+            }
+            
+            .armor-damage-notification {
+                font-family: 'Georgia', serif;
+            }
+            
+            /* Эффект тряски при получении урона */
+            @keyframes shake {
+                0% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                50% { transform: translateX(5px); }
+                75% { transform: translateX(-5px); }
+                100% { transform: translateX(0); }
+            }
+            
+            .shake-on-damage {
+                animation: shake 0.3s ease-in-out;
+            }
+        `;
+        document.head.appendChild(style);
+        window.damageStylesAdded = true;
+    }
+    
+    // 🔥 ФУНКЦИЯ: Добавить эффект тряски всему контейнеру
+    function addShakeEffect() {
+        const container = document.querySelector('.container');
+        container.classList.add('shake-on-damage');
+        
+        setTimeout(() => {
+            container.classList.remove('shake-on-damage');
+        }, 300);
+    }
+    
+    // 🔥 ОБНОВЛЯЕМ showDamageNotification чтобы добавлять тряску
+    function showDamageNotification(damage) {
+        // Добавляем эффект тряски
+        addShakeEffect();
+        
+        // Создаем сообщение об уроне
+        const damageMsg = document.createElement('div');
+        damageMsg.className = 'damage-notification';
+        damageMsg.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.95), rgba(178, 34, 34, 0.95));
+            color: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            z-index: 10000;
+            animation: damageFloat 1.5s ease-out forwards;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        `;
+        damageMsg.textContent = `-${damage} ❤️`;
+        
+        document.body.appendChild(damageMsg);
+        
+        // Добавляем звуковой эффект
+        playDamageSound();
+        
+        setTimeout(() => {
+            damageMsg.remove();
+        }, 1500);
     }
     
     // ФУНКЦИЯ ДЛЯ ОБРАТНОГО ОТСЧЕТА
@@ -952,6 +1248,7 @@
   </script>
 </body>
 </html>
+
 
 
 
