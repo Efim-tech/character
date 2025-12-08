@@ -557,9 +557,21 @@
             showError(error.message);
         }
     }
+    
+    let lastDeathCheckTime = 0;
+    const DEATH_CHECK_COOLDOWN = 5000; // 5 секунд между проверками
 
     async function checkDeathOnHPChange() {
         try {
+           // 🔥 ЗАЩИТА ОТ ПОВТОРНЫХ ЗАПРОСОВ
+            const now = Date.now();
+            if (now - lastDeathCheckTime < DEATH_CHECK_COOLDOWN) {
+                console.log('⏳ Death check cooldown - skipping');
+                return;
+            }
+            
+            lastDeathCheckTime = now;
+          
             const chatId = getChatId();
             
             if (!chatId) {
@@ -924,6 +936,7 @@
   </script>
 </body>
 </html>
+
 
 
 
