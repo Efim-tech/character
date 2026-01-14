@@ -395,6 +395,11 @@
           <div class="stat-label">⭐ Уровень</div>
         </div>
       </div>
+      
+        <div class="stat-card">
+          <div class="stat-value" id="coins-value">5000</div>
+          <div class="stat-label">💰 Серебряные монеты</div>
+        </div>
 
       <div class="weapon-display">
         <div class="stat-label">⚔️ Оружие</div>
@@ -509,6 +514,21 @@
             // Добавляем таймаут для запроса
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд таймаут
+
+            // Загружаем данные персонажа
+            const characterResponse = await fetch(API_URL);
+            const characterData = await characterResponse.json();
+            
+            if (characterData.success) {
+                // Загружаем монеты отдельно
+                const coinsResponse = await fetch(`${API_BASE_URL}/api/character/${chatId}/coins`);
+                const coinsData = await coinsResponse.json();
+                
+                if (coinsData.success) {
+                    characterData.data.coins = coinsData.coins;
+                } else {
+                    characterData.data.coins = 5000; // Значение по умолчанию
+                }
             
             try {
                 // Тестовый запрос для проверки доступности
@@ -757,6 +777,9 @@
     
         // Уровень
         document.getElementById('level-value').textContent = characterData.level || 1;
+      
+        // Серебряные монеты
+        document.getElementById('coins-value').textContent = characterData.coins || '5000';
     
         // Оружие
         document.getElementById('weapon-value').textContent = characterData.weapon || 'Нет';
@@ -1215,6 +1238,64 @@
         }
     }
 
+    async function spendCoins(amount) {
+        try {
+            const chatId = getChatId();
+            
+            if (!chatId) {
+                tg.showPopup({
+                    title: 'Ошибка',
+                    message: 'Не удалось определить пользователя',
+                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
+                });
+                return false;
+            }
+        
+            const API_URL = `${API_BASE_URL}/api/character/${chatId}/spend_coins`;
+            
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: amount
+                })
+            });
+        
+            const data = await response.json();
+            
+            if (data.success) {
+                // Обновляем отображение монет
+                document.getElementById('coins-value').textContent = data.new_amount;
+                
+                tg.showPopup({
+                    title: '✅ Успех',
+                    message: data.message,
+                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
+                });
+                
+                return true;
+            } else {
+                tg.showPopup({
+                    title: '❌ Ошибка',
+                    message: data.error,
+                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
+                });
+                return false;
+            }
+            
+        } catch (error) {
+            console.error('Error spending coins:', error);
+            tg.showPopup({
+                title: '❌ Ошибка',
+                message: 'Ошибка при трате монет',
+                buttons: [{ type: 'cancel', text: 'Закрыть' }]
+            });
+            return false;
+        }
+    }
+
     function showLoading(show) {
         document.getElementById('loading-message').style.display = show ? 'block' : 'none';
     }
@@ -1248,6 +1329,7 @@
   </script>
 </body>
 </html>
+
 
 
 
