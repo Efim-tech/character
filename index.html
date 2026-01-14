@@ -513,35 +513,13 @@
             
             // Добавляем таймаут для запроса
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд таймаут
-
-            // Загружаем данные персонажа
-            const characterResponse = await fetch(API_URL);
-            const characterData = await characterResponse.json();
-            
-            if (characterData.success) {
-                // Загружаем монеты отдельно
-                const coinsResponse = await fetch(`${API_BASE_URL}/api/character/${chatId}/coins`);
-                const coinsData = await coinsResponse.json();
-                
-                if (coinsData.success) {
-                    characterData.data.coins = coinsData.coins;
-                } else {
-                    characterData.data.coins = 5000; // Значение по умолчанию
-                }
-            
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+    
             try {
-                // Тестовый запрос для проверки доступности
-                console.log('🔍 Testing API availability...');
-                const testResponse = await fetch(`${API_BASE_URL}/health`, {
-                    signal: controller.signal
-                });
-                console.log('🔍 Health check:', testResponse.status, await testResponse.text());
-                
+                // Загружаем данные персонажа
                 const response = await fetch(API_URL, {
                     signal: controller.signal
                 });
-                console.log('🔍 Character API response status:', response.status);
                 
                 clearTimeout(timeoutId);
                 
@@ -551,12 +529,25 @@
                 
                 const data = await response.json();
                 console.log('🔍 API response data:', data);
-        
+    
                 if (data.success) {
-                    characterData = data.data;
+                    // 🔥 ВАЖНО: Обновляем глобальную переменную characterData
+                    characterData = data.data; // ⬅️ Теперь это обновление глобальной переменной
+                    
+                    // Загружаем монеты отдельно
+                    const coinsResponse = await fetch(`${API_BASE_URL}/api/character/${chatId}/coins`);
+                    const coinsData = await coinsResponse.json();
+                    
+                    if (coinsData.success) {
+                        characterData.coins = coinsData.coins;
+                    } else {
+                        characterData.coins = 5000; // Значение по умолчанию
+                    }
+                    
                     updateUI();
                     showLoading(false);
-                  // 🔥 АВТОМАТИЧЕСКАЯ ПРОВЕРКА СМЕРТИ ПРИ ЗАГРУЗКЕ
+                    
+                    // 🔥 АВТОМАТИЧЕСКАЯ ПРОВЕРКА СМЕРТИ ПРИ ЗАГРУЗКЕ
                     if (characterData.hp <= 0) {
                         console.log('💀 Загружен мертвый персонаж, проверяем...');
                         setTimeout(() => checkDeathOnHPChange(), 1000);
@@ -564,6 +555,7 @@
                 } else {
                     throw new Error(data.error || 'Ошибка загрузки данных');
                 }
+                
             } catch (fetchError) {
                 clearTimeout(timeoutId);
                 if (fetchError.name === 'AbortError') {
@@ -577,9 +569,6 @@
             showError(error.message);
         }
     }
-    
-    let lastDeathCheckTime = 0;
-    const DEATH_CHECK_COOLDOWN = 5000; // 5 секунд между проверками
 
     async function checkDeathOnHPChange() {
         try {
@@ -1329,6 +1318,7 @@
   </script>
 </body>
 </html>
+
 
 
 
