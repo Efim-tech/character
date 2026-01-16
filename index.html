@@ -397,7 +397,7 @@
       </div>
       
         <div class="stat-card">
-          <div class="stat-value" id="coins-value">5000</div>
+          <div class="stat-value" id="coins-value">1000</div>
           <div class="stat-label">💰 Серебряные монеты</div>
         </div>
 
@@ -541,7 +541,7 @@
                     if (coinsData.success) {
                         characterData.coins = coinsData.coins;
                     } else {
-                        characterData.coins = 5000; // Значение по умолчанию
+                        characterData.coins = 1000; // Значение по умолчанию
                     }
                     
                     updateUI();
@@ -768,7 +768,7 @@
         document.getElementById('level-value').textContent = characterData.level || 1;
       
         // Серебряные монеты
-        document.getElementById('coins-value').textContent = characterData.coins || '5000';
+        document.getElementById('coins-value').textContent = characterData.coins || '1000';
     
         // Оружие
         document.getElementById('weapon-value').textContent = characterData.weapon || 'Нет';
@@ -1318,6 +1318,7 @@
   </script>
 </body>
 </html>
+
 
 
 
