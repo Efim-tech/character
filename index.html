@@ -186,6 +186,31 @@
       text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
       animation: pulse 2s infinite;
     }
+
+    .xp-bar {
+        height: 12px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 6px;
+        margin: 5px 0;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid #daa520;
+    }
+    
+    .xp-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #ffd700, #ff9900);
+        border-radius: 6px;
+        transition: width 0.5s ease;
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+    
+    #level-title {
+        font-size: 0.7rem;
+        opacity: 0.8;
+        display: block;
+        margin-top: 2px;
+    }
     
     @keyframes pulse {
       0% { opacity: 0.7; }
@@ -390,8 +415,12 @@
         </div>
 
         <div class="stat-card">
-          <div class="stat-value" id="level-value">1</div>
-          <div class="stat-label">⭐ Уровень</div>
+            <div class="stat-value" id="level-value">1</div>
+            <div class="stat-label">⭐ Уровень <span id="level-title">(Наемник)</span></div>
+            <div class="xp-bar" style="margin-top: 5px;">
+                <div class="xp-fill" id="xp-fill" style="width: 0%"></div>
+                <div class="bar-text" id="xp-text">0/100 XP</div>
+            </div>
         </div>
         
         <div class="stat-card">
@@ -840,6 +869,30 @@
             coinsElement.style.color = '#ffd700'; // Желтый при среднем балансе
         } else {
             coinsElement.style.color = '#daa520'; // Золотой при большом балансе
+        }
+
+        // Уровень и XP
+        document.getElementById('level-value').textContent = characterData.level || 1;
+        document.getElementById('level-title').textContent = `(${characterData.level_title || 'Наемник'})`;
+        
+        // XP бар
+        const xp = characterData.xp || 0;
+        const xpToNext = characterData.xp_to_next || 100;
+        const xpPercent = xpToNext > 0 ? (xp / xpToNext) * 100 : 0;
+        
+        // Создаем XP бар если его нет
+        if (!document.getElementById('xp-bar')) {
+            const levelCard = document.querySelector('.stat-card');
+            const xpHTML = `
+                <div class="xp-bar" id="xp-bar">
+                    <div class="xp-fill" id="xp-fill" style="width: ${xpPercent}%"></div>
+                    <div class="bar-text" id="xp-text">${xp}/${xpToNext} XP</div>
+                </div>
+            `;
+            levelCard.innerHTML += xpHTML;
+        } else {
+            document.getElementById('xp-fill').style.width = `${xpPercent}%`;
+            document.getElementById('xp-text').textContent = `${xp}/${xpToNext} XP`;
         }
     
         // Оружие
@@ -1466,6 +1519,7 @@
   </script>
 </body>
 </html>
+
 
 
 
