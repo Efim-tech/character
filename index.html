@@ -625,6 +625,18 @@
             characterData = charData.data;
             characterData.coins = coinsData.success ? coinsData.coins : 0;
             
+            // 🔥 ДОБАВЛЯЕМ ДАННЫЕ ОБ УРОВНЕ (если их нет)
+            if (!characterData.xp && characterData.xp !== 0) {
+                characterData.xp = 0;
+            }
+            if (!characterData.xp_to_next) {
+                characterData.xp_to_next = 100;
+            }
+            if (!characterData.level_title) {
+                // Можно добавить простую логику или получать с сервера
+                characterData.level_title = getTitleForLevel(characterData.level || 1);
+            }
+            
             console.log('🔍 Fallback data loaded:', characterData);
             
             updateUI();
@@ -639,6 +651,20 @@
             console.error('❌ Fallback loading failed:', error);
             throw error;
         }
+    }
+    
+    // 🔥 ДОБАВЛЯЕМ ВСПОМОГАТЕЛЬНУЮ ФУНКЦИЮ
+    function getTitleForLevel(level) {
+        if (level >= 46) return 'Божество';
+        if (level >= 41) return 'Бессмертный';
+        if (level >= 36) return 'Легенда';
+        if (level >= 31) return 'Властитель';
+        if (level >= 26) return 'Мифический герой';
+        if (level >= 21) return 'Герой';
+        if (level >= 16) return 'Мастер';
+        if (level >= 11) return 'Опытный воин';
+        if (level >= 6) return 'Искатель';
+        return 'Наемник';
     }
 
     // 🔥 ФУНКЦИЯ ПРОВЕРКИ СМЕРТИ
@@ -854,8 +880,20 @@
             animateArmorDamage(previousArmor, characterData.armor, characterData.max_armor);
         }
     
-        // Уровень
-        document.getElementById('level-value').textContent = characterData.level || 1;
+        // Уровень и XP - ВСЁ В ОДНОМ БЛОКЕ
+        const level = characterData.level || 1;
+        const xp = characterData.xp || 0;
+        const xpToNext = characterData.xp_to_next || 100;
+        const xpPercent = xpToNext > 0 ? (xp / xpToNext) * 100 : 0;
+        const levelTitle = characterData.level_title || 'Наемник';
+        
+        // Обновляем значения
+        document.getElementById('level-value').textContent = level;
+        document.getElementById('level-title').textContent = `(${levelTitle})`;
+        
+        // XP бар - используем существующий элемент (он уже в HTML)
+        document.getElementById('xp-fill').style.width = `${xpPercent}%`;
+        document.getElementById('xp-text').textContent = `${xp}/${xpToNext} XP`;
       
         // 🔥 СЕРЕБРЯНЫЕ МОНЕТЫ
         const coins = characterData.coins || 0;
@@ -869,30 +907,6 @@
             coinsElement.style.color = '#ffd700'; // Желтый при среднем балансе
         } else {
             coinsElement.style.color = '#daa520'; // Золотой при большом балансе
-        }
-
-        // Уровень и XP
-        document.getElementById('level-value').textContent = characterData.level || 1;
-        document.getElementById('level-title').textContent = `(${characterData.level_title || 'Наемник'})`;
-        
-        // XP бар
-        const xp = characterData.xp || 0;
-        const xpToNext = characterData.xp_to_next || 100;
-        const xpPercent = xpToNext > 0 ? (xp / xpToNext) * 100 : 0;
-        
-        // Создаем XP бар если его нет
-        if (!document.getElementById('xp-bar')) {
-            const levelCard = document.querySelector('.stat-card');
-            const xpHTML = `
-                <div class="xp-bar" id="xp-bar">
-                    <div class="xp-fill" id="xp-fill" style="width: ${xpPercent}%"></div>
-                    <div class="bar-text" id="xp-text">${xp}/${xpToNext} XP</div>
-                </div>
-            `;
-            levelCard.innerHTML += xpHTML;
-        } else {
-            document.getElementById('xp-fill').style.width = `${xpPercent}%`;
-            document.getElementById('xp-text').textContent = `${xp}/${xpToNext} XP`;
         }
     
         // Оружие
@@ -913,6 +927,7 @@
         // 🔥 ОТЛАДОЧНЫЙ ВЫВОД
         console.log('💰 Current coins in characterData:', characterData.coins);
         console.log('📊 Full character data:', characterData);
+        console.log(`🎮 Level info: ${level} (${levelTitle}), XP: ${xp}/${xpToNext} (${xpPercent.toFixed(1)}%)`);
     
         // 🔥 ОДНА проверка смерти в конце функции
         if (characterData.hp <= 0 && !characterData.is_dead) {
@@ -1519,6 +1534,7 @@
   </script>
 </body>
 </html>
+
 
 
 
