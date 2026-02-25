@@ -16,6 +16,11 @@
       --dark-bg: rgba(0, 0, 0, 0.7);
       --light-text: #f5f5dc;
       --shop-bg: rgba(50, 30, 20, 0.8);
+      --item-rarity-common: #a0a0a0;
+      --item-rarity-uncommon: #2ecc71;
+      --item-rarity-rare: #3498db;
+      --item-rarity-epic: #9b59b6;
+      --item-rarity-legendary: #f1c40f;
     }
 
     body {
@@ -243,50 +248,176 @@
       font-size: 0.8rem;
     }
 
-    /* Стили для инвентаря */
+    /* ========== ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ ИНВЕНТАРЯ ========== */
+    .inventory-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--secondary-color);
+    }
+
+    .inventory-stats {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      color: var(--secondary-color);
+    }
+
     .inventory-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 15px;
     }
 
-    .item-card {
-      background: rgba(139, 69, 19, 0.3);
-      border-radius: 8px;
-      padding: 8px;
+    /* Стили для карточек предметов (в стиле магазина) */
+    .inventory-item-card {
+      background: linear-gradient(135deg, rgba(70, 40, 20, 0.9), rgba(40, 20, 10, 0.9));
+      border: 2px solid var(--secondary-color);
+      border-radius: 15px;
+      padding: 12px 8px;
       text-align: center;
-      border: 1px solid var(--secondary-color);
-      cursor: pointer;
       transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
     }
 
-    .item-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    .inventory-item-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(218, 165, 32, 0.2), transparent);
+      transition: left 0.5s ease;
     }
 
-    .item-icon {
-      font-size: 1.5rem;
+    .inventory-item-card:hover::before {
+      left: 100%;
+    }
+
+    .inventory-item-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+      border-color: #ffd700;
+    }
+
+    /* Редкость предмета (цветная полоска сверху) */
+    .item-rarity-common {
+      border-top: 3px solid var(--item-rarity-common);
+    }
+    .item-rarity-uncommon {
+      border-top: 3px solid var(--item-rarity-uncommon);
+    }
+    .item-rarity-rare {
+      border-top: 3px solid var(--item-rarity-rare);
+    }
+    .item-rarity-epic {
+      border-top: 3px solid var(--item-rarity-epic);
+    }
+    .item-rarity-legendary {
+      border-top: 3px solid var(--item-rarity-legendary);
+    }
+
+    .inventory-item-icon {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+    }
+
+    .inventory-item-name {
+      font-size: 0.9rem;
+      font-weight: bold;
       margin-bottom: 5px;
+      color: var(--secondary-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .item-name {
+    .inventory-item-description {
       font-size: 0.7rem;
-      margin-bottom: 3px;
-      line-height: 1.2;
+      opacity: 0.8;
+      margin-bottom: 8px;
+      min-height: 30px;
+      line-height: 1.3;
     }
 
-    .item-quantity {
-      font-size: 0.6rem;
+    .inventory-item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px solid rgba(218, 165, 32, 0.3);
+    }
+
+    .inventory-item-quantity {
       background: var(--primary-color);
-      border-radius: 10px;
-      padding: 1px 5px;
-      display: inline-block;
+      color: var(--light-text);
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      border: 1px solid var(--secondary-color);
     }
 
-    .item-equipped {
-      border-color: var(--success-color);
-      box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+    .inventory-item-type {
+      font-size: 0.65rem;
+      opacity: 0.7;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 3px 6px;
+      border-radius: 8px;
+    }
+
+    .inventory-item-equipped {
+      border: 2px solid var(--success-color);
+      box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+      position: relative;
+    }
+
+    .inventory-item-equipped::after {
+      content: '⚔️ ЭКИП';
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: var(--success-color);
+      color: white;
+      font-size: 0.55rem;
+      padding: 2px 5px;
+      border-radius: 8px;
+      font-weight: bold;
+      opacity: 0.9;
+    }
+
+    .empty-inventory {
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      border: 1px dashed var(--secondary-color);
+    }
+
+    .empty-inventory-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    .empty-inventory-text {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      color: var(--secondary-color);
+    }
+
+    .empty-inventory-subtext {
+      font-size: 0.8rem;
+      opacity: 0.6;
     }
 
     /* Стили для магазина */
@@ -312,8 +443,8 @@
 
     .shop-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
       margin-bottom: 20px;
     }
 
@@ -321,7 +452,7 @@
       background: linear-gradient(135deg, rgba(70, 40, 20, 0.9), rgba(40, 20, 10, 0.9));
       border: 2px solid var(--secondary-color);
       border-radius: 15px;
-      padding: 15px 10px;
+      padding: 12px 8px;
       text-align: center;
       transition: all 0.3s ease;
       position: relative;
@@ -344,8 +475,8 @@
     }
 
     .shop-item-icon {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 2.2rem;
+      margin-bottom: 8px;
       text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
     }
 
@@ -359,32 +490,35 @@
     .shop-item-description {
       font-size: 0.7rem;
       opacity: 0.8;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       min-height: 30px;
+      line-height: 1.3;
     }
 
     .shop-item-price {
       background: rgba(0, 0, 0, 0.5);
-      padding: 5px 10px;
+      padding: 4px 10px;
       border-radius: 20px;
       display: inline-block;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-weight: bold;
       color: #ffd700;
       border: 1px solid #ffd700;
+      font-size: 0.8rem;
     }
 
     .buy-button {
       background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
       border: 1px solid #ffd700;
       color: #ffd700;
-      padding: 8px 15px;
+      padding: 6px 12px;
       border-radius: 20px;
       cursor: not-allowed;
       font-weight: bold;
       width: 100%;
       opacity: 0.7;
       transition: all 0.3s ease;
+      font-size: 0.8rem;
     }
 
     .buy-button.active {
@@ -409,6 +543,7 @@
       font-size: 0.7rem;
       font-weight: bold;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 10;
     }
 
     .status-alive {
@@ -476,24 +611,20 @@
         grid-template-columns: 1fr;
       }
       
-      .inventory-grid {
-        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-      }
-      
-      .shop-grid {
+      .inventory-grid, .shop-grid {
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 10px;
+        gap: 8px;
       }
       
       .stat-value {
         font-size: 1.3rem;
       }
       
-      .shop-item-icon {
+      .inventory-item-icon, .shop-item-icon {
         font-size: 2rem;
       }
       
-      .shop-item-name {
+      .inventory-item-name, .shop-item-name {
         font-size: 0.8rem;
       }
     }
@@ -579,12 +710,19 @@
       </button>
     </div>
 
-    <!-- Вкладка инвентаря -->
+    <!-- ОБНОВЛЕННАЯ Вкладка инвентаря -->
     <div id="inventory-content" class="content-section">
-      <div id="inventory-empty" style="text-align: center; padding: 20px; display: none;">
-        <p>🎒 Инвентарь пуст</p>
-        <p style="font-size: 0.8rem; opacity: 0.7;">Найденные предметы появятся здесь</p>
+      <div class="inventory-header">
+        <div class="stat-label">🎒 Снаряжение</div>
+        <div class="inventory-stats" id="inventory-stats">0 предметов</div>
       </div>
+      
+      <div id="inventory-empty" class="empty-inventory" style="display: none;">
+        <div class="empty-inventory-icon">📦</div>
+        <div class="empty-inventory-text">Инвентарь пуст</div>
+        <div class="empty-inventory-subtext">Найденные предметы появятся здесь</div>
+      </div>
+      
       <div class="inventory-grid" id="inventory-grid">
         <!-- Предметы будут добавляться динамически -->
       </div>
@@ -727,6 +865,50 @@
                 document.getElementById(`${targetTab}-content`).classList.add('active');
             });
         });
+    }
+
+    // 🔥 ФУНКЦИЯ ОПРЕДЕЛЕНИЯ РЕДКОСТИ ПРЕДМЕТА
+    function getItemRarity(item) {
+        if (item.is_equipped) return 'legendary';
+        if (item.type === 'weapon' || item.type === 'armor') return 'rare';
+        if (item.type === 'potion' || item.type === 'medical') return 'uncommon';
+        return 'common';
+    }
+
+    // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ ИКОНКИ ТИПА ПРЕДМЕТА
+    function getItemTypeIcon(itemType) {
+        const icons = {
+            'weapon': '⚔️',
+            'armor': '🛡️',
+            'potion': '🧪',
+            'medical': '🩹',
+            'repair': '🔧',
+            'amulet': '📿',
+            'scroll': '📜',
+            'food': '🍖',
+            'key': '🔑',
+            'gem': '💎',
+            'ammo': '🏹'
+        };
+        return icons[itemType] || '📦';
+    }
+
+    // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ НАЗВАНИЯ ТИПА ПРЕДМЕТА
+    function getItemTypeName(itemType) {
+        const names = {
+            'weapon': 'Оружие',
+            'armor': 'Броня',
+            'potion': 'Зелье',
+            'medical': 'Медицина',
+            'repair': 'Ремонт',
+            'amulet': 'Амулет',
+            'scroll': 'Свиток',
+            'food': 'Еда',
+            'key': 'Ключ',
+            'gem': 'Самоцвет',
+            'ammo': 'Боеприпас'
+        };
+        return names[itemType] || 'Предмет';
     }
 
     // 🔥 ФУНКЦИЯ ОБНОВЛЕНИЯ БАЛАНСА ЗВЕЗД (для теста)
@@ -968,7 +1150,7 @@
         }
         
         // Блокируем интерфейс
-        document.querySelectorAll('button, .item-card, .tab-button').forEach(el => {
+        document.querySelectorAll('button, .inventory-item-card, .tab-button').forEach(el => {
             el.style.pointerEvents = 'none';
             el.style.opacity = '0.5';
         });
@@ -1356,51 +1538,60 @@
         }, 1000);
     }
 
-    // 🔥 ФУНКЦИЯ ОБНОВЛЕНИЯ ИНВЕНТАРЯ
+    // 🔥 ОБНОВЛЕННАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ ИНВЕНТАРЯ
     function updateInventory() {
         const inventoryGrid = document.getElementById('inventory-grid');
         const emptyMessage = document.getElementById('inventory-empty');
+        const inventoryStats = document.getElementById('inventory-stats');
 
         if (!characterData.inventory || characterData.inventory.length === 0) {
             inventoryGrid.innerHTML = '';
             emptyMessage.style.display = 'block';
+            inventoryStats.textContent = '0 предметов';
             return;
         }
 
         emptyMessage.style.display = 'none';
         inventoryGrid.innerHTML = '';
 
-        characterData.inventory.forEach(item => {
+        // Сортируем предметы: сначала экипированные, потом по типу
+        const sortedInventory = [...characterData.inventory].sort((a, b) => {
+            if (a.is_equipped && !b.is_equipped) return -1;
+            if (!a.is_equipped && b.is_equipped) return 1;
+            return (a.name || '').localeCompare(b.name || '');
+        });
+
+        sortedInventory.forEach(item => {
             const itemElement = document.createElement('div');
-            itemElement.className = `item-card ${item.is_equipped ? 'item-equipped' : ''}`;
+            const rarity = getItemRarity(item);
+            itemElement.className = `inventory-item-card item-rarity-${rarity} ${item.is_equipped ? 'inventory-item-equipped' : ''}`;
             
             const icon = getItemIcon(item.type);
+            const typeName = getItemTypeName(item.type);
+            const typeIcon = getItemTypeIcon(item.type);
 
             itemElement.innerHTML = `
-              <div class="item-icon">${icon}</div>
-              <div class="item-name">${item.name}</div>
-              ${item.quantity > 1 ? `<div class="item-quantity">x${item.quantity}</div>` : ''}
+              <div class="inventory-item-icon">${icon}</div>
+              <div class="inventory-item-name" title="${item.name}">${item.name}</div>
+              <div class="inventory-item-description">${item.description || 'Обычный предмет'}</div>
+              <div class="inventory-item-footer">
+                <span class="inventory-item-quantity">x${item.quantity || 1}</span>
+                <span class="inventory-item-type">${typeIcon} ${typeName}</span>
+              </div>
             `;
 
             itemElement.addEventListener('click', () => showItemDetails(item));
             inventoryGrid.appendChild(itemElement);
         });
+
+        // Обновляем статистику
+        const totalItems = sortedInventory.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        inventoryStats.textContent = `${sortedInventory.length} предметов (${totalItems} шт.)`;
     }
 
-    // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ ИКОНКИ ПРЕДМЕТА
+    // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ ИКОНКИ ПРЕДМЕТА (оставляем для обратной совместимости)
     function getItemIcon(itemType) {
-        const icons = {
-            'weapon': '⚔️',
-            'armor': '🛡️',
-            'potion': '🧪',
-            'amulet': '📿',
-            'scroll': '📜',
-            'food': '🍖',
-            'key': '🔑',
-            'gem': '💎',
-            'ammo': '🏹'
-        };
-        return icons[itemType] || '🎁';
+        return getItemTypeIcon(itemType);
     }
 
     // 🔥 ФУНКЦИЯ ПОКАЗА ДЕТАЛЕЙ ПРЕДМЕТА
@@ -1419,7 +1610,7 @@
     
         tg.showPopup({
             title: item.name,
-            message: `${item.description || 'Описание отсутствует'}\n\nТип: ${item.type}\nКоличество: ${item.quantity}`,
+            message: `${item.description || 'Описание отсутствует'}\n\nТип: ${getItemTypeName(item.type)}\nКоличество: ${item.quantity}`,
             buttons: buttons
         }, (buttonId) => {
             if (buttonId === 'use_item') {
@@ -1731,6 +1922,7 @@
   </script>
 </body>
 </html>
+
 
 
 
