@@ -15,6 +15,7 @@
       --info-color: #17a2b8;
       --dark-bg: rgba(0, 0, 0, 0.7);
       --light-text: #f5f5dc;
+      --shop-bg: rgba(50, 30, 20, 0.8);
     }
 
     body {
@@ -117,6 +118,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Стили для статистики */
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -231,14 +233,6 @@
       100% { opacity: 0.6; }
     }
     
-    /* Адаптивность для мобильных */
-    @media (max-width: 480px) {
-      .energy-timer {
-        font-size: 0.7rem;
-        padding: 4px 6px;
-      }
-    }
-
     .bar-text {
       position: absolute;
       top: 50%;
@@ -249,6 +243,7 @@
       font-size: 0.8rem;
     }
 
+    /* Стили для инвентаря */
     .inventory-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -292,6 +287,128 @@
     .item-equipped {
       border-color: var(--success-color);
       box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+    }
+
+    /* Стили для магазина */
+    .shop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--secondary-color);
+    }
+
+    .stars-balance {
+      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
+      padding: 8px 15px;
+      border-radius: 20px;
+      border: 1px solid #ffd700;
+      color: #ffd700;
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .shop-item {
+      background: linear-gradient(135deg, rgba(70, 40, 20, 0.9), rgba(40, 20, 10, 0.9));
+      border: 2px solid var(--secondary-color);
+      border-radius: 15px;
+      padding: 15px 10px;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shop-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(218, 165, 32, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .shop-item:hover::before {
+      left: 100%;
+    }
+
+    .shop-item-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+    }
+
+    .shop-item-name {
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: var(--secondary-color);
+    }
+
+    .shop-item-description {
+      font-size: 0.7rem;
+      opacity: 0.8;
+      margin-bottom: 10px;
+      min-height: 30px;
+    }
+
+    .shop-item-price {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #ffd700;
+      border: 1px solid #ffd700;
+    }
+
+    .buy-button {
+      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
+      border: 1px solid #ffd700;
+      color: #ffd700;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: not-allowed;
+      font-weight: bold;
+      width: 100%;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+
+    .buy-button.active {
+      background: linear-gradient(45deg, var(--primary-color), #6b4226);
+      cursor: pointer;
+      opacity: 1;
+    }
+
+    .buy-button.active:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(218, 165, 32, 0.5);
+    }
+
+    .coming-soon-badge {
+      position: absolute;
+      top: 10px;
+      right: -30px;
+      background: var(--danger-color);
+      color: white;
+      padding: 5px 30px;
+      transform: rotate(45deg);
+      font-size: 0.7rem;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 
     .status-alive {
@@ -344,6 +461,7 @@
       margin: 10px 0;
     }
 
+    /* Адаптивность для мобильных */
     @media (max-width: 480px) {
       .container {
         padding: 5px;
@@ -362,8 +480,21 @@
         grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
       }
       
+      .shop-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 10px;
+      }
+      
       .stat-value {
         font-size: 1.3rem;
+      }
+      
+      .shop-item-icon {
+        font-size: 2rem;
+      }
+      
+      .shop-item-name {
+        font-size: 0.8rem;
       }
     }
   </style>
@@ -379,6 +510,7 @@
     <div class="tabs">
       <button class="tab-button active" data-tab="stats">📊 Характеристики</button>
       <button class="tab-button" data-tab="inventory">🎒 Инвентарь</button>
+      <button class="tab-button" data-tab="shop">🛒 Лавка</button>
     </div>
 
     <!-- Вкладка характеристик -->
@@ -458,6 +590,61 @@
       </div>
     </div>
 
+    <!-- Вкладка магазина -->
+    <div id="shop-content" class="content-section">
+      <div class="shop-header">
+        <div class="stat-label">⭐ Мои звезды</div>
+        <div class="stars-balance" id="stars-balance">0</div>
+      </div>
+      
+      <div class="shop-grid" id="shop-grid">
+        <!-- Зелье здоровья -->
+        <div class="shop-item" data-item-id="health_potion" data-price="1">
+          <div class="coming-soon-badge">СКОРО</div>
+          <div class="shop-item-icon">🧪</div>
+          <div class="shop-item-name">Зелье здоровья</div>
+          <div class="shop-item-description">Восстанавливает 10 HP</div>
+          <div class="shop-item-price">⭐ 1</div>
+          <button class="buy-button" disabled>Купить</button>
+        </div>
+        
+        <!-- Бинт -->
+        <div class="shop-item" data-item-id="bandage" data-price="1">
+          <div class="coming-soon-badge">СКОРО</div>
+          <div class="shop-item-icon">🩹</div>
+          <div class="shop-item-name">Бинт</div>
+          <div class="shop-item-description">Восстанавливает 5 HP</div>
+          <div class="shop-item-price">⭐ 1</div>
+          <button class="buy-button" disabled>Купить</button>
+        </div>
+        
+        <!-- Ремонтный набор -->
+        <div class="shop-item" data-item-id="repair_kit" data-price="2">
+          <div class="coming-soon-badge">СКОРО</div>
+          <div class="shop-item-icon">🔧</div>
+          <div class="shop-item-name">Ремонтный набор</div>
+          <div class="shop-item-description">Восстанавливает 5 брони</div>
+          <div class="shop-item-price">⭐ 2</div>
+          <button class="buy-button" disabled>Купить</button>
+        </div>
+        
+        <!-- Зелье энергии -->
+        <div class="shop-item" data-item-id="energy_potion" data-price="2">
+          <div class="coming-soon-badge">СКОРО</div>
+          <div class="shop-item-icon">⚡</div>
+          <div class="shop-item-name">Зелье энергии</div>
+          <div class="shop-item-description">Восстанавливает 50 энергии</div>
+          <div class="shop-item-price">⭐ 2</div>
+          <button class="buy-button" disabled>Купить</button>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+        <p style="font-size: 0.8rem; opacity: 0.7;">⭐ Звезды Telegram - скоро появятся в магазине!</p>
+        <p style="font-size: 0.7rem; opacity: 0.5;">Следите за обновлениями</p>
+      </div>
+    </div>
+
     <!-- Сообщение о загрузке -->
     <div id="loading-message" class="loading-spinner">
       ⏳ Загрузка данных персонажа...
@@ -483,6 +670,9 @@
     let coinsCheckInterval;
     let lastDeathCheckTime = 0;
     const DEATH_CHECK_COOLDOWN = 5000; // 5 секунд между проверками смерти
+    
+    // Моковые данные для звезд (позже будет заменено на реальные)
+    let userStars = 0;
 
     // 🔥 ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ CHAT ID
     function getChatId() {
@@ -512,6 +702,7 @@
         loadCharacterData();
         startAutoUpdate();
         startCoinsMonitoring();
+        updateStarsBalance(); // Для отладки
         
         // Добавляем обработчик для кнопки обновления баланса
         document.getElementById('refresh-coins-btn').addEventListener('click', function() {
@@ -536,6 +727,12 @@
                 document.getElementById(`${targetTab}-content`).classList.add('active');
             });
         });
+    }
+
+    // 🔥 ФУНКЦИЯ ОБНОВЛЕНИЯ БАЛАНСА ЗВЕЗД (для теста)
+    function updateStarsBalance() {
+        // Позже здесь будет запрос к боту для получения реального баланса звезд
+        document.getElementById('stars-balance').textContent = userStars;
     }
 
     // 🔥 ФУНКЦИЯ ЗАГРУЗКИ ДАННЫХ ПЕРСОНАЖА
@@ -1534,6 +1731,7 @@
   </script>
 </body>
 </html>
+
 
 
 
