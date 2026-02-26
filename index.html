@@ -728,52 +728,141 @@
       </div>
     </div>
 
-    <!-- Вкладка магазина -->
+    <!-- Вкладка магазина (обновленная) -->
     <div id="shop-content" class="content-section">
       <div class="shop-header">
         <div class="stat-label">⭐ Мои звезды</div>
         <div class="stars-balance" id="stars-balance">0</div>
       </div>
       
-      <div class="shop-grid" id="shop-grid">
-        <!-- Зелье здоровья -->
-        <div class="shop-item" data-item-id="health_potion" data-price="1">
-          <div class="coming-soon-badge">СКОРО</div>
-          <div class="shop-item-icon">🧪</div>
-          <div class="shop-item-name">Зелье здоровья</div>
-          <div class="shop-item-description">Восстанавливает 10 HP</div>
-          <div class="shop-item-price">⭐ 1</div>
-          <button class="buy-button" disabled>Купить</button>
+      <!-- СЕКЦИЯ: Монеты (премиум товар) -->
+      <div style="margin-bottom: 15px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="font-size: 1.2rem;">💰</span>
+          <span style="font-weight: bold; color: var(--secondary-color);">Серебряные монеты</span>
+          <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Преимущество в игре</span>
         </div>
         
-        <!-- Бинт -->
-        <div class="shop-item" data-item-id="bandage" data-price="1">
-          <div class="coming-soon-badge">СКОРО</div>
-          <div class="shop-item-icon">🩹</div>
-          <div class="shop-item-name">Бинт</div>
-          <div class="shop-item-description">Восстанавливает 5 HP</div>
-          <div class="shop-item-price">⭐ 1</div>
-          <button class="buy-button" disabled>Купить</button>
+        <div class="shop-grid">
+          <!-- 500 монет -->
+          <div class="shop-item" data-item-id="coins_500" data-price="10">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">💰</div>
+            <div class="shop-item-name">500 монет</div>
+            <div class="shop-item-description">Обойди 5-10 сложных ситуаций</div>
+            <div class="shop-item-price">⭐ 10</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- 1000 монет -->
+          <div class="shop-item" data-item-id="coins_1000" data-price="18">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">💰💰</div>
+            <div class="shop-item-name">1000 монет</div>
+            <div class="shop-item-description">Месячный запас удачи</div>
+            <div class="shop-item-price">⭐ 18</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- 2500 монет -->
+          <div class="shop-item" data-item-id="coins_2500" data-price="40">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">💰💰💰</div>
+            <div class="shop-item-name">2500 монет</div>
+            <div class="shop-item-description">Для серьезных игроков</div>
+            <div class="shop-item-price">⭐ 40</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- 5000 монет -->
+          <div class="shop-item" data-item-id="coins_5000" data-price="75">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">💎</div>
+            <div class="shop-item-name">5000 монет</div>
+            <div class="shop-item-description">VIP-запас</div>
+            <div class="shop-item-price">⭐ 75</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- 10000 монет -->
+          <div class="shop-item" data-item-id="coins_10000" data-price="140">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">👑</div>
+            <div class="shop-item-name">10000 монет</div>
+            <div class="shop-item-description">Легендарный запас</div>
+            <div class="shop-item-price">⭐ 140</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- СЕКЦИЯ: Зелья и расходники -->
+      <div style="margin-bottom: 15px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="font-size: 1.2rem;">🧪</span>
+          <span style="font-weight: bold; color: var(--secondary-color);">Зелья и снаряжение</span>
         </div>
         
-        <!-- Ремонтный набор -->
-        <div class="shop-item" data-item-id="repair_kit" data-price="2">
-          <div class="coming-soon-badge">СКОРО</div>
-          <div class="shop-item-icon">🔧</div>
-          <div class="shop-item-name">Ремонтный набор</div>
-          <div class="shop-item-description">Восстанавливает 5 брони</div>
-          <div class="shop-item-price">⭐ 2</div>
-          <button class="buy-button" disabled>Купить</button>
-        </div>
-        
-        <!-- Зелье энергии -->
-        <div class="shop-item" data-item-id="energy_potion" data-price="2">
-          <div class="coming-soon-badge">СКОРО</div>
-          <div class="shop-item-icon">⚡</div>
-          <div class="shop-item-name">Зелье энергии</div>
-          <div class="shop-item-description">Восстанавливает 50 энергии</div>
-          <div class="shop-item-price">⭐ 2</div>
-          <button class="buy-button" disabled>Купить</button>
+        <div class="shop-grid">
+          <!-- Зелье энергии -->
+          <div class="shop-item" data-item-id="energy_potion" data-price="8">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">⚡</div>
+            <div class="shop-item-name">Зелье энергии</div>
+            <div class="shop-item-description">+50 энергии (50 запросов)</div>
+            <div class="shop-item-price">⭐ 8</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- Бинт -->
+          <div class="shop-item" data-item-id="bandage" data-price="4">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">🩹</div>
+            <div class="shop-item-name">Бинт</div>
+            <div class="shop-item-description">Восстанавливает 5 HP</div>
+            <div class="shop-item-price">⭐ 4</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- Зелье здоровья -->
+          <div class="shop-item" data-item-id="health_potion" data-price="6">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">🧪</div>
+            <div class="shop-item-name">Зелье здоровья</div>
+            <div class="shop-item-description">Восстанавливает 10 HP</div>
+            <div class="shop-item-price">⭐ 6</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- Ремонтный набор -->
+          <div class="shop-item" data-item-id="repair_kit" data-price="6">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">🔧</div>
+            <div class="shop-item-name">Ремонтный набор</div>
+            <div class="shop-item-description">+5 брони</div>
+            <div class="shop-item-price">⭐ 6</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- Большое зелье здоровья -->
+          <div class="shop-item" data-item-id="big_health_potion" data-price="12">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">🧪✨</div>
+            <div class="shop-item-name">Большое зелье</div>
+            <div class="shop-item-description">+25 HP</div>
+            <div class="shop-item-price">⭐ 12</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- Эликсир -->
+          <div class="shop-item" data-item-id="elixir" data-price="18">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">🧪🔥</div>
+            <div class="shop-item-name">Эликсир</div>
+            <div class="shop-item-description">+50 HP +20 брони</div>
+            <div class="shop-item-price">⭐ 18</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
         </div>
       </div>
       
@@ -1922,6 +2011,7 @@
   </script>
 </body>
 </html>
+
 
 
 
