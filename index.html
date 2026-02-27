@@ -735,6 +735,47 @@
         <div class="stars-balance" id="stars-balance">0</div>
       </div>
       
+      <!-- СЕКЦИЯ: Зелья энергии (три вида) -->
+      <div style="margin-bottom: 15px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="font-size: 1.2rem;">⚡</span>
+          <span style="font-weight: bold; color: var(--secondary-color);">Зелья энергии</span>
+          <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Больше запросов</span>
+        </div>
+        
+        <div class="shop-grid">
+          <!-- Маленькое зелье энергии (+10) -->
+          <div class="shop-item" data-item-id="energy_potion_small" data-price="2">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">🧪</div>
+            <div class="shop-item-name">Маленькое зелье</div>
+            <div class="shop-item-description">+10 энергии (10 запросов)</div>
+            <div class="shop-item-price">⭐ 2</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- Среднее зелье энергии (+25) -->
+          <div class="shop-item" data-item-id="energy_potion_medium" data-price="4">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">⚗️</div>
+            <div class="shop-item-name">Среднее зелье</div>
+            <div class="shop-item-description">+25 энергии (25 запросов)</div>
+            <div class="shop-item-price">⭐ 4</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <!-- Большое зелье энергии (+50) -->
+          <div class="shop-item" data-item-id="energy_potion_large" data-price="7">
+            <div class="coming-soon-badge">СКОРО</div>
+            <div class="shop-item-icon">🧴</div>
+            <div class="shop-item-name">Большое зелье</div>
+            <div class="shop-item-description">+50 энергии (50 запросов)</div>
+            <div class="shop-item-price">⭐ 7</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+        </div>
+      </div>
+      
       <!-- СЕКЦИЯ: Монеты (премиум товар) -->
       <div style="margin-bottom: 15px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
@@ -749,7 +790,7 @@
             <div class="coming-soon-badge">СКОРО</div>
             <div class="shop-item-icon">💰</div>
             <div class="shop-item-name">500 монет</div>
-            <div class="shop-item-description">Обойди 1-2 сложных ситуаций</div>
+            <div class="shop-item-description">Обойди 5-10 сложных ситуаций</div>
             <div class="shop-item-price">⭐ 10</div>
             <button class="buy-button" disabled>Купить</button>
           </div>
@@ -759,7 +800,7 @@
             <div class="coming-soon-badge">СКОРО</div>
             <div class="shop-item-icon">💰💰</div>
             <div class="shop-item-name">1000 монет</div>
-            <div class="shop-item-description">Запас удачи</div>
+            <div class="shop-item-description">Месячный запас удачи</div>
             <div class="shop-item-price">⭐ 18</div>
             <button class="buy-button" disabled>Купить</button>
           </div>
@@ -796,24 +837,14 @@
         </div>
       </div>
       
-      <!-- СЕКЦИЯ: Зелья и расходники -->
+      <!-- СЕКЦИЯ: Расходники (лечение и ремонт) -->
       <div style="margin-bottom: 15px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-          <span style="font-size: 1.2rem;">🧪</span>
-          <span style="font-weight: bold; color: var(--secondary-color);">Зелья и снаряжение</span>
+          <span style="font-size: 1.2rem;">🩹</span>
+          <span style="font-weight: bold; color: var(--secondary-color);">Лечение и ремонт</span>
         </div>
         
         <div class="shop-grid">
-          <!-- Зелье энергии -->
-          <div class="shop-item" data-item-id="energy_potion" data-price="8">
-            <div class="coming-soon-badge">СКОРО</div>
-            <div class="shop-item-icon">⚡</div>
-            <div class="shop-item-name">Зелье энергии</div>
-            <div class="shop-item-description">+50 энергии (50 запросов)</div>
-            <div class="shop-item-price">⭐ 8</div>
-            <button class="buy-button" disabled>Купить</button>
-          </div>
-          
           <!-- Бинт -->
           <div class="shop-item" data-item-id="bandage" data-price="4">
             <div class="coming-soon-badge">СКОРО</div>
@@ -843,13 +874,15 @@
             <div class="shop-item-price">⭐ 6</div>
             <button class="buy-button" disabled>Купить</button>
           </div>
+        </div>
+      </div>
       
       <div style="text-align: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px;">
         <p style="font-size: 0.8rem; opacity: 0.7;">⭐ Звезды Telegram - скоро появятся в магазине!</p>
         <p style="font-size: 0.7rem; opacity: 0.5;">Следите за обновлениями</p>
       </div>
     </div>
-
+    
     <!-- Сообщение о загрузке -->
     <div id="loading-message" class="loading-spinner">
       ⏳ Загрузка данных персонажа...
@@ -1989,6 +2022,7 @@
   </script>
 </body>
 </html>
+
 
 
 
