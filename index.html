@@ -745,7 +745,7 @@
         
         <div class="shop-grid">
           <!-- Маленькое зелье энергии (+10) -->
-          <div class="shop-item" data-item-id="energy_potion_small" data-price="2">
+          <div class="shop-item" data-item-id="Маленькое зелье энергии" data-price="2">
             <div class="coming-soon-badge">СКОРО</div>
             <div class="shop-item-icon">🧪</div>
             <div class="shop-item-name">Маленькое зелье</div>
@@ -755,7 +755,7 @@
           </div>
           
           <!-- Среднее зелье энергии (+25) -->
-          <div class="shop-item" data-item-id="energy_potion_medium" data-price="4">
+          <div class="shop-item" data-item-id="Среднее зелье энергии" data-price="4">
             <div class="coming-soon-badge">СКОРО</div>
             <div class="shop-item-icon">⚗️</div>
             <div class="shop-item-name">Среднее зелье</div>
@@ -765,7 +765,7 @@
           </div>
           
           <!-- Большое зелье энергии (+50) -->
-          <div class="shop-item" data-item-id="energy_potion_large" data-price="7">
+          <div class="shop-item" data-item-id="Большое зелье энергии" data-price="7">
             <div class="coming-soon-badge">СКОРО</div>
             <div class="shop-item-icon">🧴</div>
             <div class="shop-item-name">Большое зелье</div>
@@ -975,8 +975,8 @@
         return 'common';
     }
 
-    // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ ИКОНКИ ТИПА ПРЕДМЕТА
-    function getItemTypeIcon(itemType) {
+    // Функция получения иконки предмета
+    function getItemIcon(itemType, itemName) {
         const icons = {
             'weapon': '⚔️',
             'armor': '🛡️',
@@ -990,7 +990,12 @@
             'gem': '💎',
             'ammo': '🏹'
         };
-        return icons[itemType] || '📦';
+        
+        // Особая иконка для больших зелий
+        if (itemName && itemName.includes('Большое')) return '🧴';
+        if (itemName && itemName.includes('Среднее')) return '⚗️';
+        
+        return icons[itemType] || '🎁';
     }
 
     // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ НАЗВАНИЯ ТИПА ПРЕДМЕТА
@@ -2022,6 +2027,7 @@
   </script>
 </body>
 </html>
+
 
 
 
