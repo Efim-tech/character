@@ -413,26 +413,18 @@
 
     /* Стили для магазина */
     .shop-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      text-align: center;
       margin-bottom: 15px;
       padding: 10px;
-      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
+      background: linear-gradient(45deg, var(--primary-color), #6b4226);
       border-radius: 20px;
       border: 1px solid var(--secondary-color);
     }
 
-    .stars-balance {
-      background: linear-gradient(45deg, var(--primary-color), #6b4226);
-      padding: 8px 15px;
-      border-radius: 20px;
-      border: 1px solid #ffd700;
-      color: #ffd700;
-      font-weight: bold;
+    .shop-header h3 {
+      margin: 0;
+      color: var(--secondary-color);
       font-size: 1.2rem;
-      text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-      transition: all 0.3s ease;
     }
 
     .shop-grid {
@@ -503,26 +495,19 @@
     }
 
     .buy-button {
-      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
+      background: linear-gradient(45deg, var(--primary-color), #6b4226);
       border: 1px solid #ffd700;
       color: #ffd700;
       padding: 8px 12px;
       border-radius: 20px;
-      cursor: not-allowed;
+      cursor: pointer;
       font-weight: bold;
       width: 100%;
-      opacity: 0.7;
       transition: all 0.3s ease;
       font-size: 0.9rem;
     }
 
-    .buy-button.active {
-      background: linear-gradient(45deg, var(--primary-color), #6b4226);
-      cursor: pointer;
-      opacity: 1;
-    }
-
-    .buy-button.active:hover {
+    .buy-button:hover {
       transform: scale(1.05);
       box-shadow: 0 4px 15px rgba(218, 165, 32, 0.5);
     }
@@ -717,8 +702,7 @@
     <!-- Вкладка магазина -->
     <div id="shop-content" class="content-section">
       <div class="shop-header">
-        <div class="stat-label">⭐ Мои звезды</div>
-        <div class="stars-balance" id="stars-balance">0</div>
+        <h3>🛒 Лавка древностей</h3>
       </div>
       
       <!-- СЕКЦИЯ: Зелья энергии -->
@@ -735,7 +719,7 @@
             <div class="shop-item-name">Маленькое зелье энергии</div>
             <div class="shop-item-description">+10 энергии (10 запросов)</div>
             <div class="shop-item-price">⭐ 2</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 2⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="energy25" data-price="4">
@@ -743,7 +727,7 @@
             <div class="shop-item-name">Среднее зелье энергии</div>
             <div class="shop-item-description">+25 энергии (25 запросов)</div>
             <div class="shop-item-price">⭐ 4</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 4⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="energy50" data-price="7">
@@ -751,7 +735,7 @@
             <div class="shop-item-name">Большое зелье энергии</div>
             <div class="shop-item-description">+50 энергии (50 запросов)</div>
             <div class="shop-item-price">⭐ 7</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 7⭐</button>
           </div>
         </div>
       </div>
@@ -770,7 +754,7 @@
             <div class="shop-item-name">500 монет</div>
             <div class="shop-item-description">Обойди 5-10 сложных ситуаций</div>
             <div class="shop-item-price">⭐ 10</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 10⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="coins1000" data-price="18">
@@ -778,7 +762,7 @@
             <div class="shop-item-name">1000 монет</div>
             <div class="shop-item-description">Месячный запас удачи</div>
             <div class="shop-item-price">⭐ 18</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 18⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="coins2500" data-price="40">
@@ -786,7 +770,7 @@
             <div class="shop-item-name">2500 монет</div>
             <div class="shop-item-description">Для серьезных игроков</div>
             <div class="shop-item-price">⭐ 40</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 40⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="coins5000" data-price="75">
@@ -794,7 +778,7 @@
             <div class="shop-item-name">5000 монет</div>
             <div class="shop-item-description">VIP-запас</div>
             <div class="shop-item-price">⭐ 75</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 75⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="coins10000" data-price="140">
@@ -802,7 +786,7 @@
             <div class="shop-item-name">10000 монет</div>
             <div class="shop-item-description">Легендарный запас</div>
             <div class="shop-item-price">⭐ 140</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 140⭐</button>
           </div>
         </div>
       </div>
@@ -821,7 +805,7 @@
             <div class="shop-item-name">Бинт</div>
             <div class="shop-item-description">Восстанавливает 5 HP</div>
             <div class="shop-item-price">⭐ 4</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 4⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="health_potion" data-price="6">
@@ -829,7 +813,7 @@
             <div class="shop-item-name">Зелье здоровья</div>
             <div class="shop-item-description">Восстанавливает 10 HP</div>
             <div class="shop-item-price">⭐ 6</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 6⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="repair_kit" data-price="6">
@@ -837,7 +821,7 @@
             <div class="shop-item-name">Ремонтный набор</div>
             <div class="shop-item-description">Восстанавливает 5 брони</div>
             <div class="shop-item-price">⭐ 6</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 6⭐</button>
           </div>
         </div>
       </div>
@@ -856,7 +840,7 @@
             <div class="shop-item-name">Набор путешественника</div>
             <div class="shop-item-description">Бинт + Зелье здоровья + 100 монет</div>
             <div class="shop-item-price">⭐ 15</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 15⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="adventurer_set" data-price="25">
@@ -864,7 +848,7 @@
             <div class="shop-item-name">Набор авантюриста</div>
             <div class="shop-item-description">Ремнабор + Ср.зелье энергии + 250 монет</div>
             <div class="shop-item-price">⭐ 25</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 25⭐</button>
           </div>
           
           <div class="shop-item" data-item-id="hero_set" data-price="45">
@@ -872,13 +856,13 @@
             <div class="shop-item-name">Набор героя</div>
             <div class="shop-item-description">Б.зелье энергии + 1000 монет + Зелье здоровья</div>
             <div class="shop-item-price">⭐ 45</div>
-            <button class="buy-button" disabled>Купить</button>
+            <button class="buy-button">Купить за 45⭐</button>
           </div>
         </div>
       </div>
       
       <div style="text-align: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px;">
-        <p style="font-size: 0.8rem; opacity: 0.7;">⭐ Звезды Telegram - покупайте и получайте предметы мгновенно!</p>
+        <p style="font-size: 0.8rem; opacity: 0.7;">⭐ Покупки в Telegram Stars</p>
         <p style="font-size: 0.7rem; opacity: 0.5;">После оплаты предмет появится в инвентаре</p>
       </div>
     </div>
@@ -898,114 +882,6 @@
     // ==================== КОНСТАНТЫ ====================
     const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
     const PAYMENT_API_URL = 'https://gmbtest-efich.amvera.io';
-
-    async function testPaymentConnection() {
-        console.log('🔍 Testing payment connection...');
-        console.log('Payment URL:', PAYMENT_API_URL);
-        
-        try {
-            const response = await fetch(`${PAYMENT_API_URL}/api/test`, {
-                method: 'GET',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                console.log('✅ Payment API test successful:', data);
-                return true;
-            } else {
-                console.error('❌ Payment API test failed:', response.status, response.statusText);
-                return false;
-            }
-        } catch (error) {
-            console.error('❌ Payment API test error:', error);
-            return false;
-        }
-    }
-    
-    // Вызовите тест после загрузки
-    testPaymentConnection().then(isWorking => {
-        if (isWorking) {
-            console.log('✅ Payment API is reachable');
-        } else {
-            console.warn('⚠️ Payment API is not reachable, shop will use fallback mode');
-            // Показываем заглушку
-            document.getElementById('stars-balance').textContent = '⚠️';
-        }
-    });
-
-    let cachedStarsBalance = null;
-    let lastStarsFetch = 0;
-    const STARS_CACHE_TIME = 30000; // 30 секунд
-    
-    async function fetchStarsBalance(force = false) {
-      try {
-        const chatId = getChatId();
-        if (!chatId) return false;
-        
-        // Проверяем кэш
-        const now = Date.now();
-        if (!force && cachedStarsBalance !== null && (now - lastStarsFetch) < STARS_CACHE_TIME) {
-          console.log('⭐ Using cached stars balance:', cachedStarsBalance);
-          updateStarsDisplay(cachedStarsBalance);
-          return true;
-        }
-        
-        console.log('⭐ Fetching fresh stars balance...');
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        
-        const response = await fetch(`${PAYMENT_API_URL}/api/user/${chatId}/stars`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          mode: 'cors',
-          cache: 'no-cache'
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          cachedStarsBalance = data.balance;
-          lastStarsFetch = now;
-          updateStarsDisplay(data.balance);
-          return true;
-        } else {
-          throw new Error(data.error || 'Unknown error');
-        }
-      } catch (error) {
-        console.error('❌ Error fetching stars balance:', error);
-        
-        // Показываем заглушку
-        updateStarsDisplay('?', true);
-        return false;
-      }
-    }
-    
-    function updateStarsDisplay(balance, isError = false) {
-      const starsElement = document.getElementById('stars-balance');
-      if (!starsElement) return;
-      
-      if (isError) {
-        starsElement.textContent = '?';
-        starsElement.style.color = '#ff6b6b';
-        return;
-      }
-      
-      starsElement.textContent = balance;
-      
-      if (balance < 10) starsElement.style.color = '#ff6b6b';
-      else if (balance < 50) starsElement.style.color = '#ffd700';
-      else starsElement.style.color = '#daa520';
-    }
     
     // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
     const tg = window.Telegram.WebApp;
@@ -1016,7 +892,6 @@
     let characterData = {};
     let updateInterval;
     let coinsCheckInterval;
-    let starsInterval;
     let lastDeathCheckTime = 0;
     const DEATH_CHECK_COOLDOWN = 5000;
 
@@ -1052,81 +927,7 @@
       document.getElementById('error-message').style.display = 'none';
     }
 
-    // ==================== ФУНКЦИИ ДЛЯ РАБОТЫ СО ЗВЕЗДАМИ ====================
-
-    async function fetchStarsBalance(retryCount = 0) {
-      try {
-        const chatId = getChatId();
-        if (!chatId) {
-          console.log('❌ Cannot fetch stars balance: no chat ID');
-          return;
-        }
-        
-        console.log(`⭐ Fetching stars balance for user: ${chatId} (attempt ${retryCount + 1})`);
-        
-        // Добавляем таймаут и контроллер для отмены
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 секунд таймаут
-        
-        const response = await fetch(`${PAYMENT_API_URL}/api/user/${chatId}/stars`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          mode: 'cors',
-          cache: 'no-cache'
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const data = await response.json();
-        console.log('⭐ Stars balance response:', data);
-        
-        if (data.success) {
-          const starsElement = document.getElementById('stars-balance');
-          if (starsElement) {
-            starsElement.textContent = data.balance;
-            
-            if (data.balance < 10) starsElement.style.color = '#ff6b6b';
-            else if (data.balance < 50) starsElement.style.color = '#ffd700';
-            else starsElement.style.color = '#daa520';
-          }
-          
-          if (!characterData.stars) characterData.stars = {};
-          characterData.stars.balance = data.balance;
-          return true;
-        } else {
-          throw new Error(data.error || 'Unknown error');
-        }
-      } catch (error) {
-        console.error('❌ Error fetching stars balance:', error);
-        
-        // Показываем заглушку
-        const starsElement = document.getElementById('stars-balance');
-        if (starsElement) {
-          starsElement.textContent = '?';
-          starsElement.style.color = '#ff6b6b';
-        }
-        
-        // Пробуем повторить до 3 раз с увеличивающейся задержкой
-        if (retryCount < 3) {
-          const delay = Math.pow(2, retryCount) * 1000; // 1с, 2с, 4с
-          console.log(`⏳ Retrying in ${delay}ms...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          return fetchStarsBalance(retryCount + 1);
-        }
-        
-        return false;
-      }
-    }
-
-    function canAfford(price) {
-      const starsElement = document.getElementById('stars-balance');
-      if (!starsElement) return false;
-      const currentBalance = parseInt(starsElement.textContent) || 0;
-      return currentBalance >= price;
-    }
+    // ==================== ФУНКЦИИ ПОКУПКИ ====================
 
     async function purchaseItem(itemId, price) {
       try {
@@ -1138,16 +939,6 @@
             message: 'Не удалось определить пользователя',
             buttons: [{ type: 'cancel', text: 'Закрыть' }]
           });
-          return;
-        }
-        
-        if (!canAfford(price)) {
-          tg.showPopup({
-            title: '❌ Недостаточно звезд',
-            message: 'Пополните баланс звезд в Telegram',
-            buttons: [{ type: 'cancel', text: 'OK' }]
-          });
-          fetchStarsBalance();
           return;
         }
         
@@ -1165,7 +956,9 @@
         
         const data = await response.json();
         
-        if (!data.success) throw new Error(data.error || 'Ошибка создания платежа');
+        if (!data.success) {
+          throw new Error(data.error || 'Ошибка создания платежа');
+        }
         
         const paymentInfo = {
           payload: data.payload,
@@ -1177,12 +970,6 @@
         localStorage.setItem('pending_payment', JSON.stringify(paymentInfo));
         
         tg.openLink(data.invoice_link);
-        
-        tg.showPopup({
-          title: '✅ Готово',
-          message: 'Окно оплаты открыто. После оплаты предмет появится в инвентаре.',
-          buttons: [{ type: 'cancel', text: 'OK' }]
-        });
         
       } catch (error) {
         console.error('Payment error:', error);
@@ -1209,7 +996,6 @@
             
             localStorage.removeItem('pending_payment');
             loadCharacterData();
-            fetchStarsBalance();
             
           } else if (data.status === 'expired') {
             tg.showPopup({
@@ -1247,75 +1033,32 @@
     function initShop() {
       const shopItems = document.querySelectorAll('.shop-item');
       
-      // Используем кэшированный баланс или показываем загрузку
-      if (cachedStarsBalance !== null) {
-        updateShopButtons(shopItems, cachedStarsBalance);
-      } else {
-        // Показываем кнопки в состоянии загрузки
-        shopItems.forEach(item => {
-          const buyButton = item.querySelector('.buy-button');
-          if (buyButton) {
-            buyButton.textContent = '⏳ Загрузка...';
-            buyButton.disabled = true;
-          }
-        });
-      }
-      
-      // Обновляем баланс
-      fetchStarsBalance().then(balance => {
-        if (balance !== false) {
-          updateShopButtons(shopItems, cachedStarsBalance);
-        }
-      });
-    }
-    
-    function updateShopButtons(shopItems, balance) {
       shopItems.forEach(item => {
-        const price = parseInt(item.dataset.price);
         const buyButton = item.querySelector('.buy-button');
         
         if (!buyButton) return;
         
-        const canBuy = balance >= price;
-        
-        if (canBuy) {
-          buyButton.classList.add('active');
-          buyButton.disabled = false;
-          buyButton.textContent = `⭐ Купить за ${price}`;
-        } else {
-          buyButton.classList.remove('active');
-          buyButton.disabled = true;
-          buyButton.textContent = `⭐ ${price} (не хватает)`;
-        }
-        
-        // Удаляем старый обработчик и добавляем новый
+        // Удаляем старые обработчики
         const newButton = buyButton.cloneNode(true);
         buyButton.parentNode.replaceChild(newButton, buyButton);
         
         newButton.addEventListener('click', async (e) => {
           e.preventDefault();
-          e.stopPropagation();
           
-          const currentBalance = cachedStarsBalance;
-          if (currentBalance < price) {
-            tg.showPopup({
-              title: '❌ Недостаточно звезд',
-              message: `Нужно ${price} ⭐, у вас ${currentBalance} ⭐`,
-              buttons: [{ type: 'cancel', text: 'OK' }]
-            });
-            return;
-          }
+          const itemId = item.dataset.itemId;
+          const price = parseInt(item.dataset.price);
+          const itemName = item.querySelector('.shop-item-name').textContent;
           
           tg.showPopup({
             title: 'Подтверждение покупки',
-            message: `Купить ${item.querySelector('.shop-item-name').textContent} за ${price} ⭐?`,
+            message: `Купить ${itemName} за ${price} ⭐?`,
             buttons: [
               { type: 'default', text: '✅ Купить', id: 'buy' },
               { type: 'cancel', text: '❌ Отмена' }
             ]
           }, async (buttonId) => {
             if (buttonId === 'buy') {
-              await purchaseItem(item.dataset.itemId, price);
+              await purchaseItem(itemId, price);
             }
           });
         });
@@ -1759,10 +1502,6 @@
       }
     }
 
-    function startStarsMonitoring() {
-      starsInterval = setInterval(fetchStarsBalance, 30000);
-    }
-
     function initializeTabs() {
       document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', function() {
@@ -1814,20 +1553,12 @@
         checkCoinsBalance(true);
       });
       
-      document.querySelector('.refresh-button')?.addEventListener('click', function() {
-        loadCharacterData();
-      });
-      
-      startStarsMonitoring();
-      setTimeout(() => fetchStarsBalance(), 1000);
-      
       console.log('✅ All event listeners initialized');
     });
 
     window.addEventListener('beforeunload', function() {
       stopCoinsMonitoring();
       if (updateInterval) clearInterval(updateInterval);
-      if (starsInterval) clearInterval(starsInterval);
     });
   </script>
 </body>
