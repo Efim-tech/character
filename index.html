@@ -941,13 +941,6 @@
           });
           return;
         }
-        
-        tg.showPopup({
-          title: '⏳ Обработка',
-          message: 'Создание платежа...',
-          buttons: []
-        });
-        
         const response = await fetch(`${PAYMENT_API_URL}/api/purchase`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -969,6 +962,7 @@
         };
         localStorage.setItem('pending_payment', JSON.stringify(paymentInfo));
         
+        // Открываем ссылку на оплату
         tg.openLink(data.invoice_link);
         
       } catch (error) {
@@ -1049,16 +1043,18 @@
           const price = parseInt(item.dataset.price);
           const itemName = item.querySelector('.shop-item-name').textContent;
           
+          // ПРАВИЛЬНЫЙ формат popup
           tg.showPopup({
             title: 'Подтверждение покупки',
             message: `Купить ${itemName} за ${price} ⭐?`,
             buttons: [
-              { type: 'default', text: '✅ Купить', id: 'buy' },
-              { type: 'cancel', text: '❌ Отмена' }
+              { type: 'default', text: '✅ Купить', id: 'buy' },  // id только у этой кнопки
+              { type: 'cancel', text: '❌ Отмена' }  // у cancel нет id
             ]
-          }, async (buttonId) => {
+          }, (buttonId) => {
+            // buttonId будет 'buy' если нажали "Купить", и null если "Отмена"
             if (buttonId === 'buy') {
-              await purchaseItem(itemId, price);
+              purchaseItem(itemId, price);
             }
           });
         });
@@ -1563,6 +1559,7 @@
   </script>
 </body>
 </html>
+
 
 
 
