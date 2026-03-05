@@ -57,6 +57,7 @@
       position: relative;
       z-index: 2;
       padding: 10px;
+      margin: 0 auto;
     }
 
     .header {
@@ -97,6 +98,8 @@
       transition: all 0.3s ease;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
       font-size: 0.9rem;
+      flex: 1;
+      min-width: 100px;
     }
 
     .tab-button.active {
@@ -273,7 +276,6 @@
       margin-bottom: 15px;
     }
 
-    /* Стили для карточек предметов (в стиле магазина) */
     .inventory-item-card {
       background: linear-gradient(135deg, rgba(70, 40, 20, 0.9), rgba(40, 20, 10, 0.9));
       border: 2px solid var(--secondary-color);
@@ -307,22 +309,11 @@
       border-color: #ffd700;
     }
 
-    /* Редкость предмета (цветная полоска сверху) */
-    .item-rarity-common {
-      border-top: 3px solid var(--item-rarity-common);
-    }
-    .item-rarity-uncommon {
-      border-top: 3px solid var(--item-rarity-uncommon);
-    }
-    .item-rarity-rare {
-      border-top: 3px solid var(--item-rarity-rare);
-    }
-    .item-rarity-epic {
-      border-top: 3px solid var(--item-rarity-epic);
-    }
-    .item-rarity-legendary {
-      border-top: 3px solid var(--item-rarity-legendary);
-    }
+    .item-rarity-common { border-top: 3px solid var(--item-rarity-common); }
+    .item-rarity-uncommon { border-top: 3px solid var(--item-rarity-uncommon); }
+    .item-rarity-rare { border-top: 3px solid var(--item-rarity-rare); }
+    .item-rarity-epic { border-top: 3px solid var(--item-rarity-epic); }
+    .item-rarity-legendary { border-top: 3px solid var(--item-rarity-legendary); }
 
     .inventory-item-icon {
       font-size: 2.2rem;
@@ -426,24 +417,27 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--secondary-color);
+      padding: 10px;
+      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
+      border-radius: 20px;
+      border: 1px solid var(--secondary-color);
     }
 
     .stars-balance {
-      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
+      background: linear-gradient(45deg, var(--primary-color), #6b4226);
       padding: 8px 15px;
       border-radius: 20px;
       border: 1px solid #ffd700;
       color: #ffd700;
       font-weight: bold;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+      transition: all 0.3s ease;
     }
 
     .shop-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 12px;
       margin-bottom: 20px;
     }
@@ -475,23 +469,24 @@
     }
 
     .shop-item-icon {
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       margin-bottom: 8px;
       text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
     }
 
     .shop-item-name {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: bold;
       margin-bottom: 5px;
       color: var(--secondary-color);
+      min-height: 40px;
     }
 
     .shop-item-description {
       font-size: 0.7rem;
       opacity: 0.8;
       margin-bottom: 8px;
-      min-height: 30px;
+      min-height: 35px;
       line-height: 1.3;
     }
 
@@ -504,21 +499,21 @@
       font-weight: bold;
       color: #ffd700;
       border: 1px solid #ffd700;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
     }
 
     .buy-button {
       background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
       border: 1px solid #ffd700;
       color: #ffd700;
-      padding: 6px 12px;
+      padding: 8px 12px;
       border-radius: 20px;
       cursor: not-allowed;
       font-weight: bold;
       width: 100%;
       opacity: 0.7;
       transition: all 0.3s ease;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
     }
 
     .buy-button.active {
@@ -532,27 +527,8 @@
       box-shadow: 0 4px 15px rgba(218, 165, 32, 0.5);
     }
 
-    .coming-soon-badge {
-      position: absolute;
-      top: 10px;
-      right: -30px;
-      background: var(--danger-color);
-      color: white;
-      padding: 5px 30px;
-      transform: rotate(45deg);
-      font-size: 0.7rem;
-      font-weight: bold;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      z-index: 10;
-    }
-
-    .status-alive {
-      color: var(--success-color);
-    }
-
-    .status-dead {
-      color: var(--danger-color);
-    }
+    .status-alive { color: var(--success-color); }
+    .status-dead { color: var(--danger-color); }
 
     .weapon-display {
       background: rgba(139, 69, 19, 0.3);
@@ -598,36 +574,46 @@
 
     /* Адаптивность для мобильных */
     @media (max-width: 480px) {
-      .container {
-        padding: 5px;
-      }
-      
-      .tab-button {
-        padding: 6px 10px;
-        font-size: 0.8rem;
-      }
-      
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .inventory-grid, .shop-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 8px;
-      }
-      
-      .stat-value {
-        font-size: 1.3rem;
-      }
-      
-      .inventory-item-icon, .shop-item-icon {
-        font-size: 2rem;
-      }
-      
-      .inventory-item-name, .shop-item-name {
-        font-size: 0.8rem;
-      }
+      .container { padding: 5px; }
+      .tab-button { padding: 6px 8px; font-size: 0.8rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .inventory-grid, .shop-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+      .stat-value { font-size: 1.3rem; }
+      .inventory-item-icon, .shop-item-icon { font-size: 2rem; }
+      .inventory-item-name, .shop-item-name { font-size: 0.8rem; }
     }
+
+    /* Анимации для уведомлений */
+    @keyframes damageFloat {
+      0% { opacity: 0; transform: translate(-50%, -30%) scale(0.8); }
+      20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      60% { opacity: 1; transform: translate(-50%, -60%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -80%) scale(0.9); }
+    }
+    
+    @keyframes armorDamageFloat {
+      0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); }
+      20% { opacity: 1; transform: translate(-50%, -40%) scale(1.1); }
+      60% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -70%) scale(0.9); }
+    }
+    
+    @keyframes coinsFloat {
+      0% { opacity: 0; transform: translate(-50%, -20%) scale(0.8); }
+      20% { opacity: 1; transform: translate(-50%, -40%) scale(1.1); }
+      60% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -70%) scale(0.9); }
+    }
+    
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    .shake-on-damage { animation: shake 0.3s ease-in-out; }
   </style>
 </head>
 <body>
@@ -710,7 +696,7 @@
       </button>
     </div>
 
-    <!-- ОБНОВЛЕННАЯ Вкладка инвентаря -->
+    <!-- Вкладка инвентаря -->
     <div id="inventory-content" class="content-section">
       <div class="inventory-header">
         <div class="stat-label">🎒 Снаряжение</div>
@@ -728,186 +714,172 @@
       </div>
     </div>
 
-    <!-- Вкладка магазина (обновленная) -->
-    <div id="shop-content" class="content-section">  
-        <div class="shop-header">
-            <div class="stat-label">⭐ Мои звезды</div>
-            <div class="stars-balance" id="stars-balance">0</div>
+    <!-- Вкладка магазина -->
+    <div id="shop-content" class="content-section">
+      <div class="shop-header">
+        <div class="stat-label">⭐ Мои звезды</div>
+        <div class="stars-balance" id="stars-balance">0</div>
+      </div>
+      
+      <!-- СЕКЦИЯ: Зелья энергии -->
+      <div style="margin-bottom: 15px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="font-size: 1.2rem;">⚡</span>
+          <span style="font-weight: bold; color: var(--secondary-color);">Зелья энергии</span>
+          <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Больше запросов к ИИ</span>
         </div>
-      
-      <!-- СЕКЦИЯ: Зелья энергии (три вида) -->
-      <div style="margin-bottom: 15px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-              <span style="font-size: 1.2rem;">⚡</span>
-              <span style="font-weight: bold; color: var(--secondary-color);">Зелья энергии</span>
-              <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Больше запросов к ИИ</span>
+        
+        <div class="shop-grid">
+          <div class="shop-item" data-item-id="energy10" data-price="2">
+            <div class="shop-item-icon">🧪</div>
+            <div class="shop-item-name">Маленькое зелье энергии</div>
+            <div class="shop-item-description">+10 энергии (10 запросов)</div>
+            <div class="shop-item-price">⭐ 2</div>
+            <button class="buy-button" disabled>Купить</button>
           </div>
           
-          <div class="shop-grid">
-              <!-- Маленькое зелье энергии (+10) -->
-              <div class="shop-item" data-item-id="energy10" data-price="2">
-                  <div class="shop-item-icon">🧪</div>
-                  <div class="shop-item-name">Маленькое зелье энергии</div>
-                  <div class="shop-item-description">+10 энергии (10 запросов к ИИ)</div>
-                  <div class="shop-item-price">⭐ 2</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- Среднее зелье энергии (+25) -->
-              <div class="shop-item" data-item-id="energy25" data-price="4">
-                  <div class="shop-item-icon">⚗️</div>
-                  <div class="shop-item-name">Среднее зелье энергии</div>
-                  <div class="shop-item-description">+25 энергии (25 запросов к ИИ)</div>
-                  <div class="shop-item-price">⭐ 4</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- Большое зелье энергии (+50) -->
-              <div class="shop-item" data-item-id="energy50" data-price="7">
-                  <div class="shop-item-icon">🧴</div>
-                  <div class="shop-item-name">Большое зелье энергии</div>
-                  <div class="shop-item-description">+50 энергии (50 запросов к ИИ)</div>
-                  <div class="shop-item-price">⭐ 7</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
+          <div class="shop-item" data-item-id="energy25" data-price="4">
+            <div class="shop-item-icon">⚗️</div>
+            <div class="shop-item-name">Среднее зелье энергии</div>
+            <div class="shop-item-description">+25 энергии (25 запросов)</div>
+            <div class="shop-item-price">⭐ 4</div>
+            <button class="buy-button" disabled>Купить</button>
           </div>
+          
+          <div class="shop-item" data-item-id="energy50" data-price="7">
+            <div class="shop-item-icon">🧴</div>
+            <div class="shop-item-name">Большое зелье энергии</div>
+            <div class="shop-item-description">+50 энергии (50 запросов)</div>
+            <div class="shop-item-price">⭐ 7</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+        </div>
       </div>
       
-      <!-- ========== СЕКЦИЯ: СЕРЕБРЯНЫЕ МОНЕТЫ ========== -->
+      <!-- СЕКЦИЯ: Серебряные монеты -->
       <div style="margin-bottom: 15px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-              <span style="font-size: 1.2rem;">💰</span>
-              <span style="font-weight: bold; color: var(--secondary-color);">Серебряные монеты</span>
-              <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Игровая валюта</span>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="font-size: 1.2rem;">💰</span>
+          <span style="font-weight: bold; color: var(--secondary-color);">Серебряные монеты</span>
+          <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Игровая валюта</span>
+        </div>
+        
+        <div class="shop-grid">
+          <div class="shop-item" data-item-id="coins500" data-price="10">
+            <div class="shop-item-icon">💰</div>
+            <div class="shop-item-name">500 монет</div>
+            <div class="shop-item-description">Обойди 5-10 сложных ситуаций</div>
+            <div class="shop-item-price">⭐ 10</div>
+            <button class="buy-button" disabled>Купить</button>
           </div>
           
-          <div class="shop-grid">
-              <!-- 500 монет -->
-              <div class="shop-item" data-item-id="coins500" data-price="10">
-                  <div class="shop-item-icon">💰</div>
-                  <div class="shop-item-name">500 монет</div>
-                  <div class="shop-item-description">Обойди 5-10 сложных ситуаций</div>
-                  <div class="shop-item-price">⭐ 10</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- 1000 монет -->
-              <div class="shop-item" data-item-id="coins1000" data-price="18">
-                  <div class="shop-item-icon">💰💰</div>
-                  <div class="shop-item-name">1000 монет</div>
-                  <div class="shop-item-description">Месячный запас удачи</div>
-                  <div class="shop-item-price">⭐ 18</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- 2500 монет -->
-              <div class="shop-item" data-item-id="coins2500" data-price="40">
-                  <div class="shop-item-icon">💰💰💰</div>
-                  <div class="shop-item-name">2500 монет</div>
-                  <div class="shop-item-description">Для серьезных игроков</div>
-                  <div class="shop-item-price">⭐ 40</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- 5000 монет -->
-              <div class="shop-item" data-item-id="coins5000" data-price="75">
-                  <div class="shop-item-icon">💎</div>
-                  <div class="shop-item-name">5000 монет</div>
-                  <div class="shop-item-description">VIP-запас</div>
-                  <div class="shop-item-price">⭐ 75</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- 10000 монет -->
-              <div class="shop-item" data-item-id="coins10000" data-price="140">
-                  <div class="shop-item-icon">👑</div>
-                  <div class="shop-item-name">10000 монет</div>
-                  <div class="shop-item-description">Легендарный запас</div>
-                  <div class="shop-item-price">⭐ 140</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
+          <div class="shop-item" data-item-id="coins1000" data-price="18">
+            <div class="shop-item-icon">💰💰</div>
+            <div class="shop-item-name">1000 монет</div>
+            <div class="shop-item-description">Месячный запас удачи</div>
+            <div class="shop-item-price">⭐ 18</div>
+            <button class="buy-button" disabled>Купить</button>
           </div>
+          
+          <div class="shop-item" data-item-id="coins2500" data-price="40">
+            <div class="shop-item-icon">💰💰💰</div>
+            <div class="shop-item-name">2500 монет</div>
+            <div class="shop-item-description">Для серьезных игроков</div>
+            <div class="shop-item-price">⭐ 40</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <div class="shop-item" data-item-id="coins5000" data-price="75">
+            <div class="shop-item-icon">💎</div>
+            <div class="shop-item-name">5000 монет</div>
+            <div class="shop-item-description">VIP-запас</div>
+            <div class="shop-item-price">⭐ 75</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+          
+          <div class="shop-item" data-item-id="coins10000" data-price="140">
+            <div class="shop-item-icon">👑</div>
+            <div class="shop-item-name">10000 монет</div>
+            <div class="shop-item-description">Легендарный запас</div>
+            <div class="shop-item-price">⭐ 140</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+        </div>
       </div>
       
-      <!-- ========== СЕКЦИЯ: ЛЕЧЕНИЕ И РЕМОНТ ========== -->
+      <!-- СЕКЦИЯ: Лечение и ремонт -->
       <div style="margin-bottom: 15px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-              <span style="font-size: 1.2rem;">🩹</span>
-              <span style="font-weight: bold; color: var(--secondary-color);">Лечение и ремонт</span>
-              <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Восстановление</span>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="font-size: 1.2rem;">🩹</span>
+          <span style="font-weight: bold; color: var(--secondary-color);">Лечение и ремонт</span>
+          <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Восстановление</span>
+        </div>
+        
+        <div class="shop-grid">
+          <div class="shop-item" data-item-id="bandage" data-price="4">
+            <div class="shop-item-icon">🩹</div>
+            <div class="shop-item-name">Бинт</div>
+            <div class="shop-item-description">Восстанавливает 5 HP</div>
+            <div class="shop-item-price">⭐ 4</div>
+            <button class="buy-button" disabled>Купить</button>
           </div>
           
-          <div class="shop-grid">
-              <!-- Бинт -->
-              <div class="shop-item" data-item-id="bandage" data-price="4">
-                  <div class="shop-item-icon">🩹</div>
-                  <div class="shop-item-name">Бинт</div>
-                  <div class="shop-item-description">Восстанавливает 5 HP</div>
-                  <div class="shop-item-price">⭐ 4</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- Зелье здоровья -->
-              <div class="shop-item" data-item-id="health_potion" data-price="6">
-                  <div class="shop-item-icon">🧪</div>
-                  <div class="shop-item-name">Зелье здоровья</div>
-                  <div class="shop-item-description">Восстанавливает 10 HP</div>
-                  <div class="shop-item-price">⭐ 6</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- Ремонтный набор -->
-              <div class="shop-item" data-item-id="repair_kit" data-price="6">
-                  <div class="shop-item-icon">🔧</div>
-                  <div class="shop-item-name">Ремонтный набор</div>
-                  <div class="shop-item-description">Восстанавливает 5 брони</div>
-                  <div class="shop-item-price">⭐ 6</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
+          <div class="shop-item" data-item-id="health_potion" data-price="6">
+            <div class="shop-item-icon">🧪</div>
+            <div class="shop-item-name">Зелье здоровья</div>
+            <div class="shop-item-description">Восстанавливает 10 HP</div>
+            <div class="shop-item-price">⭐ 6</div>
+            <button class="buy-button" disabled>Купить</button>
           </div>
+          
+          <div class="shop-item" data-item-id="repair_kit" data-price="6">
+            <div class="shop-item-icon">🔧</div>
+            <div class="shop-item-name">Ремонтный набор</div>
+            <div class="shop-item-description">Восстанавливает 5 брони</div>
+            <div class="shop-item-price">⭐ 6</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+        </div>
       </div>
       
-      <!-- ========== СЕКЦИЯ: ПРЕМИУМ НАБОРЫ ========== -->
+      <!-- СЕКЦИЯ: Премиум наборы -->
       <div style="margin-bottom: 15px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-              <span style="font-size: 1.2rem;">🎁</span>
-              <span style="font-weight: bold; color: var(--secondary-color);">Премиум наборы</span>
-              <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Выгодно!</span>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="font-size: 1.2rem;">🎁</span>
+          <span style="font-weight: bold; color: var(--secondary-color);">Премиум наборы</span>
+          <span style="font-size: 0.7rem; background: rgba(218,165,32,0.2); padding: 2px 8px; border-radius: 10px;">Выгодно!</span>
+        </div>
+        
+        <div class="shop-grid">
+          <div class="shop-item" data-item-id="traveler_set" data-price="15">
+            <div class="shop-item-icon">🎒</div>
+            <div class="shop-item-name">Набор путешественника</div>
+            <div class="shop-item-description">Бинт + Зелье здоровья + 100 монет</div>
+            <div class="shop-item-price">⭐ 15</div>
+            <button class="buy-button" disabled>Купить</button>
           </div>
           
-          <div class="shop-grid">
-              <!-- Набор путешественника -->
-              <div class="shop-item" data-item-id="traveler_set" data-price="15">
-                  <div class="shop-item-icon">🎒</div>
-                  <div class="shop-item-name">Набор путешественника</div>
-                  <div class="shop-item-description">Бинт + Зелье здоровья + 100 монет</div>
-                  <div class="shop-item-price">⭐ 15</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- Набор авантюриста -->
-              <div class="shop-item" data-item-id="adventurer_set" data-price="25">
-                  <div class="shop-item-icon">⚔️</div>
-                  <div class="shop-item-name">Набор авантюриста</div>
-                  <div class="shop-item-description">Ремнабор + Ср.зелье энергии + 250 монет</div>
-                  <div class="shop-item-price">⭐ 25</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
-              
-              <!-- Набор героя -->
-              <div class="shop-item" data-item-id="hero_set" data-price="45">
-                  <div class="shop-item-icon">🛡️</div>
-                  <div class="shop-item-name">Набор героя</div>
-                  <div class="shop-item-description">Б.зелье энергии + 1000 монет + Зелье здоровья</div>
-                  <div class="shop-item-price">⭐ 45</div>
-                  <button class="buy-button" disabled>Купить</button>
-              </div>
+          <div class="shop-item" data-item-id="adventurer_set" data-price="25">
+            <div class="shop-item-icon">⚔️</div>
+            <div class="shop-item-name">Набор авантюриста</div>
+            <div class="shop-item-description">Ремнабор + Ср.зелье энергии + 250 монет</div>
+            <div class="shop-item-price">⭐ 25</div>
+            <button class="buy-button" disabled>Купить</button>
           </div>
+          
+          <div class="shop-item" data-item-id="hero_set" data-price="45">
+            <div class="shop-item-icon">🛡️</div>
+            <div class="shop-item-name">Набор героя</div>
+            <div class="shop-item-description">Б.зелье энергии + 1000 монет + Зелье здоровья</div>
+            <div class="shop-item-price">⭐ 45</div>
+            <button class="buy-button" disabled>Купить</button>
+          </div>
+        </div>
       </div>
       
       <div style="text-align: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px;">
-        <p style="font-size: 0.8rem; opacity: 0.7;">⭐ Звезды Telegram - скоро появятся в магазине!</p>
-        <p style="font-size: 0.7rem; opacity: 0.5;">Следите за обновлениями</p>
+        <p style="font-size: 0.8rem; opacity: 0.7;">⭐ Звезды Telegram - покупайте и получайте предметы мгновенно!</p>
+        <p style="font-size: 0.7rem; opacity: 0.5;">После оплаты предмет появится в инвентаре</p>
       </div>
     </div>
     
@@ -923,1579 +895,788 @@
   </div>
 
   <script>
-    // 🔥 КОНСТАНТЫ
+    // ==================== КОНСТАНТЫ ====================
     const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
     const PAYMENT_API_URL = 'https://gmbtest-efich.amvera.io:8443';
     
-    // 🔥 ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+    // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
     const tg = window.Telegram.WebApp;
     tg.expand();
     tg.BackButton.hide();
+    tg.enableClosingConfirmation();
     
     let characterData = {};
     let updateInterval;
     let coinsCheckInterval;
+    let starsInterval;
     let lastDeathCheckTime = 0;
-    const DEATH_CHECK_COOLDOWN = 5000; // 5 секунд между проверками смерти
+    const DEATH_CHECK_COOLDOWN = 5000;
 
-    // ==================== ПЛАТЕЖНАЯ СИСТЕМА ====================
-    // Добавить после объявления переменных, но до loadCharacterData()
-    
-    // Обновленная функция покупки с проверкой баланса
-    async function purchaseItem(itemId, price) {
-        try {
-            const chatId = getChatId();
-            
-            if (!chatId) {
-                tg.showPopup({
-                    title: '❌ Ошибка',
-                    message: 'Не удалось определить пользователя',
-                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
-                });
-                return;
-            }
-            
-            // Финальная проверка баланса перед покупкой
-            if (!canAfford(price)) {
-                tg.showPopup({
-                    title: '❌ Недостаточно звезд',
-                    message: 'Баланс изменился. Попробуйте снова.',
-                    buttons: [{ type: 'cancel', text: 'OK' }]
-                });
-                fetchStarsBalance(); // Обновляем баланс
-                return;
-            }
-            
-            // Показываем загрузку
-            tg.showPopup({
-                title: '⏳ Обработка',
-                message: 'Создание платежа...',
-                buttons: []
-            });
-            
-            // Создаем платеж
-            const response = await fetch(`${PAYMENT_API_URL}/api/create_payment`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: chatId,
-                    item_id: itemId
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (!data.success) {
-                throw new Error(data.error || 'Ошибка создания платежа');
-            }
-            
-            // Сохраняем информацию о платеже
-            const paymentInfo = {
-                payload: data.payload,
-                itemId: itemId,
-                price: price,
-                timestamp: Date.now(),
-                expiresIn: data.expires_in
-            };
-            localStorage.setItem('pending_payment', JSON.stringify(paymentInfo));
-            
-            // Открываем ссылку на оплату
-            tg.openLink(data.invoice_link);
-            
-        } catch (error) {
-            console.error('Payment error:', error);
-            tg.showPopup({
-                title: '❌ Ошибка',
-                message: error.message || 'Не удалось создать платеж',
-                buttons: [{ type: 'cancel', text: 'Закрыть' }]
-            });
-        }
+    // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+
+    function getChatId() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const startappParam = urlParams.get('startapp');
+      if (startappParam) return startappParam;
+      
+      if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        return tg.initDataUnsafe.user.id;
+      }
+      
+      if (tg.initDataUnsafe && tg.initDataUnsafe.start_param) {
+        return tg.initDataUnsafe.start_param;
+      }
+      
+      return null;
     }
-    
-    // Функция для проверки статуса платежа
-    async function checkPaymentStatus(payload) {
-        try {
-            const response = await fetch(`${PAYMENT_API_URL}/api/check_payment/${payload}`);
-            const data = await response.json();
-            
-            if (data.success) {
-                if (data.status === 'completed') {
-                    // Платеж успешен
-                    tg.showPopup({
-                        title: '✅ Покупка завершена!',
-                        message: `Предмет "${data.item_name}" добавлен в инвентарь`,
-                        buttons: [{ type: 'default', text: 'OK' }]
-                    });
-                    
-                    // Очищаем pending
-                    localStorage.removeItem('pending_payment');
-                    
-                    // Обновляем данные персонажа
-                    loadCharacterData();
-                    
-                } else if (data.status === 'expired') {
-                    // Платеж просрочен
-                    tg.showPopup({
-                        title: '⏰ Время истекло',
-                        message: 'Платеж не был завершен вовремя. Попробуйте снова.',
-                        buttons: [{ type: 'default', text: 'OK' }]
-                    });
-                    localStorage.removeItem('pending_payment');
-                    
-                } else if (data.status === 'pending') {
-                    // Все еще ждем
-                    console.log('Payment still pending');
-                }
-            }
-        } catch (error) {
-            console.error('Error checking payment:', error);
-        }
+
+    function showLoading(show) {
+      document.getElementById('loading-message').style.display = show ? 'block' : 'none';
     }
-    
-    // Инициализация обработчиков магазина
-    function initShop() {
-        const shopItems = document.querySelectorAll('.shop-item');
-        
-        shopItems.forEach(item => {
-            const itemId = item.dataset.itemId;
-            const price = parseInt(item.dataset.price);
-            const buyButton = item.querySelector('.buy-button');
-            
-            if (buyButton) {
-                // Активируем кнопку
-                buyButton.classList.add('active');
-                buyButton.disabled = false;
-                buyButton.textContent = `⭐ Купить за ${price}`;
-                
-                // Удаляем старый обработчик, если был
-                const newButton = buyButton.cloneNode(true);
-                buyButton.parentNode.replaceChild(newButton, buyButton);
-                
-                // Добавляем новый обработчик
-                newButton.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    // Показываем подтверждение
-                    tg.showPopup({
-                        title: 'Подтверждение покупки',
-                        message: `Купить ${item.querySelector('.shop-item-name').textContent} за ${price} ⭐?`,
-                        buttons: [
-                            { type: 'default', text: '✅ Купить', id: 'buy' },
-                            { type: 'cancel', text: '❌ Отмена' }
-                        ]
-                    }, async (buttonId) => {
-                        if (buttonId === 'buy') {
-                            await purchaseItem(itemId, price);
-                        }
-                    });
-                });
-            }
-        });
+
+    function showError(message) {
+      const errorElement = document.getElementById('error-message');
+      errorElement.innerHTML = `❌ ${message}`;
+      errorElement.style.display = 'block';
     }
-    
-    // Проверка pending платежа при загрузке
-    function checkPendingPayment() {
-        const pending = localStorage.getItem('pending_payment');
-        if (pending) {
-            try {
-                const payment = JSON.parse(pending);
-                
-                // Проверяем, не истекло ли время (по умолчанию 10 минут)
-                const age = (Date.now() - payment.timestamp) / 1000;
-                const maxAge = payment.expiresIn || 600;
-                
-                if (age < maxAge) {
-                    // Проверяем статус
-                    checkPaymentStatus(payment.payload);
-                } else {
-                    // Слишком старое
-                    localStorage.removeItem('pending_payment');
-                }
-            } catch (e) {
-                localStorage.removeItem('pending_payment');
-            }
-        }
+
+    function hideError() {
+      document.getElementById('error-message').style.display = 'none';
     }
 
     // ==================== ФУНКЦИИ ДЛЯ РАБОТЫ СО ЗВЕЗДАМИ ====================
 
-    // Получение актуального баланса звезд пользователя
     async function fetchStarsBalance() {
-        try {
-            const chatId = getChatId();
-            if (!chatId) {
-                console.log('❌ Cannot fetch stars balance: no chat ID');
-                return;
-            }
-            
-            console.log('⭐ Fetching stars balance for user:', chatId);
-            
-            // Запрашиваем баланс у платежного бота
-            const response = await fetch(`${PAYMENT_API_URL}/api/stars_balance/${chatId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            console.log('⭐ Stars balance response:', data);
-            
-            if (data.success) {
-                const starsElement = document.getElementById('stars-balance');
-                if (starsElement) {
-                    starsElement.textContent = data.balance;
-                    
-                    // Меняем цвет в зависимости от баланса
-                    if (data.balance < 10) {
-                        starsElement.style.color = '#ff6b6b'; // Красный
-                    } else if (data.balance < 50) {
-                        starsElement.style.color = '#ffd700'; // Желтый
-                    } else {
-                        starsElement.style.color = '#daa520'; // Золотой
-                    }
-                }
-                
-                // Сохраняем в глобальные данные
-                if (!characterData.stars) {
-                    characterData.stars = {};
-                }
-                characterData.stars.balance = data.balance;
-                
-            } else {
-                console.warn('⚠️ Failed to fetch stars balance:', data.error);
-                // Показываем заглушку
-                const starsElement = document.getElementById('stars-balance');
-                if (starsElement) {
-                    starsElement.textContent = '?';
-                }
-            }
-            
-        } catch (error) {
-            console.error('❌ Error fetching stars balance:', error);
-            // При ошибке показываем прочерк
-            const starsElement = document.getElementById('stars-balance');
-            if (starsElement) {
-                starsElement.textContent = '—';
-            }
+      try {
+        const chatId = getChatId();
+        if (!chatId) {
+          console.log('❌ Cannot fetch stars balance: no chat ID');
+          return;
         }
-    }
-    
-    // Функция для проверки, хватает ли звезд на покупку
-    function canAfford(price) {
-        const starsElement = document.getElementById('stars-balance');
-        if (!starsElement) return false;
         
-        const currentBalance = parseInt(starsElement.textContent) || 0;
-        return currentBalance >= price;
-    }
-    
-    // Обновленная функция initShop с проверкой баланса
-    function initShop() {
-        const shopItems = document.querySelectorAll('.shop-item');
+        console.log('⭐ Fetching stars balance for user:', chatId);
         
-        // Сначала обновляем баланс звезд
-        fetchStarsBalance().then(() => {
-            
-            shopItems.forEach(item => {
-                const itemId = item.dataset.itemId;
-                const price = parseInt(item.dataset.price);
-                const buyButton = item.querySelector('.buy-button');
-                
-                if (buyButton) {
-                    // Проверяем, хватает ли звезд
-                    const canBuy = canAfford(price);
-                    
-                    // Активируем/деактивируем кнопку в зависимости от баланса
-                    if (canBuy) {
-                        buyButton.classList.add('active');
-                        buyButton.disabled = false;
-                        buyButton.textContent = `⭐ Купить за ${price}`;
-                    } else {
-                        buyButton.classList.remove('active');
-                        buyButton.disabled = true;
-                        buyButton.textContent = `⭐ ${price} (не хватает)`;
-                    }
-                    
-                    // Удаляем старый обработчик
-                    const newButton = buyButton.cloneNode(true);
-                    buyButton.parentNode.replaceChild(newButton, buyButton);
-                    
-                    // Добавляем новый обработчик
-                    newButton.addEventListener('click', async (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        // Двойная проверка баланса перед покупкой
-                        if (!canAfford(price)) {
-                            tg.showPopup({
-                                title: '❌ Недостаточно звезд',
-                                message: 'Пополните баланс звезд в Telegram',
-                                buttons: [{ type: 'cancel', text: 'OK' }]
-                            });
-                            return;
-                        }
-                        
-                        // Показываем подтверждение
-                        tg.showPopup({
-                            title: 'Подтверждение покупки',
-                            message: `Купить ${item.querySelector('.shop-item-name').textContent} за ${price} ⭐?`,
-                            buttons: [
-                                { type: 'default', text: '✅ Купить', id: 'buy' },
-                                { type: 'cancel', text: '❌ Отмена' }
-                            ]
-                        }, async (buttonId) => {
-                            if (buttonId === 'buy') {
-                                await purchaseItem(itemId, price);
-                            }
-                        });
-                    });
-                }
-            });
-        });
-    }
-    
-    // Добавить периодическое обновление баланса звезд
-    function startStarsMonitoring() {
-        // Обновляем каждые 30 секунд
-        setInterval(() => {
-            fetchStarsBalance();
-        }, 30000);
-    }
-
-    // 🔥 ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
-    document.addEventListener('DOMContentLoaded', function() {
-        // Инициализация Telegram Web App
-        tg.expand();
-        tg.BackButton.hide();
-        tg.enableClosingConfirmation(); // Предупреждение при закрытии
-        
-        console.log('🚀 Game Master Web App initialized');
-        
-        // Инициализация вкладок
-        initializeTabs();
-        
-        // Загрузка данных персонажа
-        loadCharacterData();
-        
-        // Запуск автообновления (каждые 30 секунд)
-        startAutoUpdate();
-        
-        // Запуск мониторинга монет (каждые 5 секунд)
-        startCoinsMonitoring();
-        
-        // ===== НОВЫЕ ПЛАТЕЖНЫЕ ФУНКЦИИ =====
-        
-        // Инициализация магазина с небольшой задержкой
-        setTimeout(() => {
-            initShop();
-            console.log('🛒 Shop initialized');
-        }, 500);
-        
-        // Проверка pending платежей при загрузке
-        checkPendingPayment();
-        
-        // Периодическая проверка статуса платежей (каждые 10 секунд)
-        setInterval(() => {
-            checkPendingPayment();
-        }, 10000);
-        
-        // Проверка видимости страницы (когда пользователь возвращается)
-        document.addEventListener('visibilitychange', function() {
-            if (!document.hidden) {
-                console.log('👁️ Page became visible, refreshing data...');
-                loadCharacterData();
-                checkPendingPayment(); // Проверяем платежи при возвращении
-            }
+        const response = await fetch(`${PAYMENT_API_URL}/api/user/${chatId}/stars`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
         });
         
-        // Обработчик для кнопки обновления баланса
-        const refreshCoinsBtn = document.getElementById('refresh-coins-btn');
-        if (refreshCoinsBtn) {
-            refreshCoinsBtn.addEventListener('click', function() {
-                checkCoinsBalance(true);
-            });
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
-        // Обработчик для кнопки обновления всех данных
-        const refreshBtn = document.querySelector('.refresh-button');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', function() {
-                loadCharacterData();
-            });
-        }
+        const data = await response.json();
+        console.log('⭐ Stars balance response:', data);
         
-        // Отлавливаем ошибки
-        window.addEventListener('error', function(e) {
-            console.error('❌ Global error:', e.error);
-        });
-        
-        console.log('✅ All event listeners initialized');
-      
-        // Запуск мониторинга звезд
-        startStarsMonitoring();
-        
-        // Первоначальная загрузка баланса звезд
-        setTimeout(() => {
-            fetchStarsBalance();
-        }, 1000);
-    });
-
-    // 🔥 ИНИЦИАЛИЗАЦИЯ ВКЛАДОК
-    function initializeTabs() {
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const targetTab = this.getAttribute('data-tab');
-                
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                this.classList.add('active');
-                
-                document.querySelectorAll('.content-section').forEach(section => {
-                    section.classList.remove('active');
-                });
-                document.getElementById(`${targetTab}-content`).classList.add('active');
-                
-                // Если открыта вкладка магазина, инициализируем кнопки
-                if (targetTab === 'shop') {
-                    setTimeout(() => {
-                        initShop();
-                    }, 100);
-                }
-            });
-        });
-    }
-    
-    // Функция запуска автообновления
-    function startAutoUpdate() {
-        if (window.updateInterval) {
-            clearInterval(window.updateInterval);
-        }
-        window.updateInterval = setInterval(loadCharacterData, 30000);
-    }
-    
-    // Функция запуска мониторинга монет
-    function startCoinsMonitoring() {
-        if (window.coinsInterval) {
-            clearInterval(window.coinsInterval);
-        }
-        window.coinsInterval = setInterval(() => checkCoinsBalance(false), 5000);
-    }
-    
-    // Функция получения chat_id
-    function getChatId() {
-        // 1. Пробуем получить из URL параметра (startapp)
-        const urlParams = new URLSearchParams(window.location.search);
-        const startappParam = urlParams.get('startapp');
-        if (startappParam) {
-            return startappParam;
-        }
-        
-        // 2. Пробуем получить из Telegram Web App
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            return tg.initDataUnsafe.user.id;
-        }
-        
-        // 3. Пробуем получить из start_param
-        if (tg.initDataUnsafe && tg.initDataUnsafe.start_param) {
-            return tg.initDataUnsafe.start_param;
-        }
-        
-        return null;
-    }
-
-    // 🔥 ФУНКЦИЯ ОПРЕДЕЛЕНИЯ РЕДКОСТИ ПРЕДМЕТА
-    function getItemRarity(item) {
-        if (item.is_equipped) return 'legendary';
-        if (item.type === 'weapon' || item.type === 'armor') return 'rare';
-        if (item.type === 'potion' || item.type === 'medical') return 'uncommon';
-        return 'common';
-    }
-
-    // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ ИКОНКИ ТИПА ПРЕДМЕТА
-    function getItemTypeIcon(itemType) {
-        const icons = {
-            'weapon': '⚔️',
-            'armor': '🛡️',
-            'potion': '🧪',
-            'medical': '🩹',
-            'repair': '🔧',
-            'amulet': '📿',
-            'scroll': '📜',
-            'food': '🍖',
-            'key': '🔑',
-            'gem': '💎',
-            'ammo': '🏹',
-            'currency': '💰'
-        };
-        return icons[itemType] || '📦';
-    }
-    
-    // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ ОСНОВНОЙ ИКОНКИ ПРЕДМЕТА
-    function getItemIcon(itemType, itemName) {
-        // Особая иконка для больших зелий по названию
-        if (itemName) {
-            if (itemName.includes('Большое')) return '🧴';
-            if (itemName.includes('Среднее')) return '⚗️';
-            if (itemName.includes('Маленькое')) return '🧪';
-        }
-        
-        const icons = {
-            'weapon': '⚔️',
-            'armor': '🛡️',
-            'potion': '🧪',
-            'medical': '🩹',
-            'repair': '🔧',
-            'amulet': '📿',
-            'scroll': '📜',
-            'food': '🍖',
-            'key': '🔑',
-            'gem': '💎',
-            'ammo': '🏹',
-            'currency': '💰'
-        };
-        return icons[itemType] || '🎁';
-    }
-    
-    // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ НАЗВАНИЯ ТИПА ПРЕДМЕТА
-    function getItemTypeName(itemType) {
-        const names = {
-            'weapon': 'Оружие',
-            'armor': 'Броня',
-            'potion': 'Зелье',
-            'medical': 'Медицина',
-            'repair': 'Ремонт',
-            'amulet': 'Амулет',
-            'scroll': 'Свиток',
-            'food': 'Еда',
-            'key': 'Ключ',
-            'gem': 'Самоцвет',
-            'ammo': 'Боеприпас',
-            'currency': 'Монеты'
-        };
-        return names[itemType] || 'Предмет';
-    }
-
-    // 🔥 ФУНКЦИЯ ОБНОВЛЕНИЯ БАЛАНСА ЗВЕЗД (для теста)
-    function updateStarsBalance() {
-        // Позже здесь будет запрос к боту для получения реального баланса звезд
-        document.getElementById('stars-balance').textContent = userStars;
-    }
-
-    // 🔥 ФУНКЦИЯ ЗАГРУЗКИ ДАННЫХ ПЕРСОНАЖА
-    async function loadCharacterData() {
-        try {
-            showLoading(true);
-            hideError();
-    
-            const chatId = getChatId();
+        if (data.success) {
+          const starsElement = document.getElementById('stars-balance');
+          if (starsElement) {
+            starsElement.textContent = data.balance;
             
-            if (!chatId) {
-                throw new Error('Не удалось определить пользователя. Вернитесь в бот и откройте характеристики снова.');
-            }
-    
-            console.log('🔍 Chat ID:', chatId);
-            
-            // 🔥 ПЫТАЕМСЯ ИСПОЛЬЗОВАТЬ НОВЫЙ ЭНДПОИНТ /full
-            const API_URL = `${API_BASE_URL}/api/character/${chatId}/full`;
-            console.log('🔍 API URL:', API_URL);
-            
-            // Добавляем таймаут для запроса
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000);
-    
-            try {
-                // Пробуем новый эндпоинт
-                const response = await fetch(API_URL, {
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) {
-                    // Если новый эндпоинт не работает, пробуем старый
-                    throw new Error(`Новый эндпоинт не доступен, пробуем старый...`);
-                }
-                
-                const data = await response.json();
-                console.log('🔍 API response data (FULL):', data);
-    
-                if (data.success) {
-                    // 🔥 ОБНОВЛЯЕМ ГЛОБАЛЬНУЮ ПЕРЕМЕННУЮ
-                    characterData = data.data;
-                    
-                    updateUI();
-                    showLoading(false);
-                    
-                    // АВТОМАТИЧЕСКАЯ ПРОВЕРКА СМЕРТИ
-                    if (characterData.hp <= 0) {
-                        console.log('💀 Загружен мертвый персонаж, проверяем...');
-                        setTimeout(() => checkDeathOnHPChange(), 1000);
-                    }
-                } else {
-                    throw new Error(data.error || 'Ошибка загрузки данных');
-                }
-                
-            } catch (fetchError) {
-                clearTimeout(timeoutId);
-                
-                // 🔥 РЕЗЕРВНЫЙ ВАРИАНТ: используем старые эндпоинты
-                console.log('🔄 Используем резервные эндпоинты...');
-                await loadCharacterDataFallback(chatId);
-            }
-        } catch (error) {
-            console.error('❌ Error loading character data:', error);
-            showLoading(false);
-            showError(error.message);
-        }
-    }
-
-    // 🔥 РЕЗЕРВНАЯ ФУНКЦИЯ ЗАГРУЗКИ
-    async function loadCharacterDataFallback(chatId) {
-        try {
-            // 1. Загружаем основные данные персонажа
-            const charResponse = await fetch(`${API_BASE_URL}/api/character/${chatId}`);
-            const charData = await charResponse.json();
-            
-            if (!charData.success) {
-                throw new Error(charData.error || 'Ошибка загрузки данных персонажа');
-            }
-            
-            // 2. Загружаем монеты отдельно
-            const coinsResponse = await fetch(`${API_BASE_URL}/api/character/${chatId}/coins`);
-            const coinsData = await coinsResponse.json();
-            
-            // 3. Объединяем данные
-            characterData = charData.data;
-            characterData.coins = coinsData.success ? coinsData.coins : 0;
-            
-            // 🔥 ДОБАВЛЯЕМ ДАННЫЕ ОБ УРОВНЕ (если их нет)
-            if (!characterData.xp && characterData.xp !== 0) {
-                characterData.xp = 0;
-            }
-            if (!characterData.xp_to_next) {
-                characterData.xp_to_next = 100;
-            }
-            if (!characterData.level_title) {
-                // Можно добавить простую логику или получать с сервера
-                characterData.level_title = getTitleForLevel(characterData.level || 1);
-            }
-            
-            console.log('🔍 Fallback data loaded:', characterData);
-            
-            updateUI();
-            showLoading(false);
-            
-            // АВТОМАТИЧЕСКАЯ ПРОВЕРКА СМЕРТИ
-            if (characterData.hp <= 0) {
-                setTimeout(() => checkDeathOnHPChange(), 1000);
-            }
-            
-        } catch (error) {
-            console.error('❌ Fallback loading failed:', error);
-            throw error;
-        }
-    }
-    
-    // 🔥 ДОБАВЛЯЕМ ВСПОМОГАТЕЛЬНУЮ ФУНКЦИЮ
-    function getTitleForLevel(level) {
-        if (level >= 46) return 'Божество';
-        if (level >= 41) return 'Бессмертный';
-        if (level >= 36) return 'Легенда';
-        if (level >= 31) return 'Властитель';
-        if (level >= 26) return 'Мифический герой';
-        if (level >= 21) return 'Герой';
-        if (level >= 16) return 'Мастер';
-        if (level >= 11) return 'Опытный воин';
-        if (level >= 6) return 'Искатель';
-        return 'Наемник';
-    }
-
-    // 🔥 ФУНКЦИЯ ПРОВЕРКИ СМЕРТИ
-    async function checkDeathOnHPChange() {
-        try {
-            // 🔥 ЗАЩИТА ОТ ПОВТОРНЫХ ЗАПРОСОВ
-            const now = Date.now();
-            if (now - lastDeathCheckTime < DEATH_CHECK_COOLDOWN) {
-                console.log('⏳ Death check cooldown - skipping');
-                return;
-            }
-            
-            lastDeathCheckTime = now;
+            if (data.balance < 10) starsElement.style.color = '#ff6b6b';
+            else if (data.balance < 50) starsElement.style.color = '#ffd700';
+            else starsElement.style.color = '#daa520';
+          }
           
-            const chatId = getChatId();
-            
-            if (!chatId) {
-                console.error('❌ Не удалось определить chat_id');
-                return;
-            }
-    
-            // Получаем текущее HP из UI
-            const hpElement = document.getElementById('hp-value');
-            if (!hpElement) return;
-            
-            const hpText = hpElement.textContent; // Формат: "25/50"
-            const currentHP = parseInt(hpText.split('/')[0]);
-            
-            // Если HP = 0 или меньше, проверяем смерть
-            if (currentHP <= 0) {
-                console.log('💀 Обнаружен 0 HP, проверяем смерть...');
-                
-                const API_URL = `${API_BASE_URL}/api/character/${chatId}/check_death`;
-                
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        hp: currentHP,
-                        armor: characterData.armor || 0
-                    })
-                });
-    
-                const data = await response.json();
-                
-                if (data.success && data.death_detected) {
-                    console.log('💀 Смерть подтверждена сервером');
-                    
-                    // Показываем уведомление в веб-приложении
-                    showDeathInWebApp(data.character_name);
-                    
-                    // Telegram уведомление уже отправлено сервером
-                }
-            }
-            
-        } catch (error) {
-            console.error('❌ Ошибка проверки смерти:', error);
-        }
-    }
-    
-    // 🔥 ФУНКЦИЯ: Показать смерть в веб-приложении
-    function showDeathInWebApp(characterName) {
-        // 🔥 ОСТАНАВЛИВАЕМ АВТООБНОВЛЕНИЕ
-        if (updateInterval) {
-            clearInterval(updateInterval);
-            updateInterval = null;
-            console.log('⏹️ Автообновление остановлено из-за смерти персонажа');
-        }
-        
-        // 🔥 ОСТАНАВЛИВАЕМ МОНИТОРИНГ МОНЕТ
-        stopCoinsMonitoring();
-        
-        // Создаем сообщение о смерти
-        const deathMessage = document.createElement('div');
-        deathMessage.className = 'error-message';
-        deathMessage.style.cssText = `
-            background: rgba(220, 53, 69, 0.9) !important;
-            border: 2px solid #ff0000 !important;
-            color: white !important;
-            text-align: center !important;
-            padding: 20px !important;
-            margin: 10px 0 !important;
-            border-radius: 10px !important;
-            font-size: 1.1rem !important;
-            animation: pulse 2s infinite !important;
-        `;
-        
-        deathMessage.innerHTML = `
-            <h3 style="margin: 0 0 10px 0;">💀 ${characterName.toUpperCase()} ПАЛ В БОЮ!</h3>
-            <p style="margin: 0 0 15px 0;">Вы получите уведомление в Telegram для создания нового персонажа</p>
-            <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">
-                Закройте это приложение и проверьте Telegram
-            </p>
-        `;
-        
-        // Вставляем в начало контейнера
-        const container = document.querySelector('.container');
-        if (container.firstChild) {
-            container.insertBefore(deathMessage, container.firstChild);
+          if (!characterData.stars) characterData.stars = {};
+          characterData.stars.balance = data.balance;
         } else {
-            container.appendChild(deathMessage);
+          document.getElementById('stars-balance').textContent = '?';
         }
-        
-        // Блокируем интерфейс
-        document.querySelectorAll('button, .inventory-item-card, .tab-button').forEach(el => {
-            el.style.pointerEvents = 'none';
-            el.style.opacity = '0.5';
-        });
-        
-        // Автоматическое закрытие через 10 секунд
-        setTimeout(() => {
-            tg.showAlert('Персонаж мертв. Проверьте Telegram для создания нового персонажа.');
-            setTimeout(() => tg.close(), 3000);
-        }, 10000);
+      } catch (error) {
+        console.error('❌ Error fetching stars balance:', error);
+        document.getElementById('stars-balance').textContent = '—';
+      }
     }
 
-    // 🔥 ФУНКЦИЯ ОБНОВЛЕНИЯ ИНТЕРФЕЙСА
-    function updateUI() {
-        document.getElementById('character-name').textContent = 
-            characterData.name || 'Безымянный герой';
-    
-        // 🔥 СОХРАНЯЕМ ПРЕДЫДУЩИЕ ЗНАЧЕНИЯ ДЛЯ СРАВНЕНИЯ
-        const previousHP = window.previousCharacterData?.hp || characterData.hp;
-        const previousArmor = window.previousCharacterData?.armor || characterData.armor;
-        const previousCoins = window.previousCharacterData?.coins || characterData.coins;
-        
-        // 🔥 ВЫЧИСЛЯЕМ УРОН (если HP уменьшилось)
-        if (previousHP > characterData.hp) {
-            const damageTaken = previousHP - characterData.hp;
-            showDamageNotification(damageTaken);
-            console.log(`💥 Урон получен: ${damageTaken} HP`);
-        }
-        
-        // 🔥 ВЫЧИСЛЯЕМ ПОТЕРЮ БРОНИ (если броня уменьшилась)
-        if (previousArmor > characterData.armor) {
-            const armorDamage = previousArmor - characterData.armor;
-            showArmorDamageNotification(armorDamage);
-            console.log(`🛡️ Потеряно брони: ${armorDamage}`);
-        }
-        
-        // 🔥 ВЫЧИСЛЯЕМ ИЗМЕНЕНИЕ МОНЕТ
-        if (previousCoins !== characterData.coins) {
-            const coinsDiff = characterData.coins - previousCoins;
-            console.log(`💰 Изменение баланса: ${coinsDiff} (${previousCoins} -> ${characterData.coins})`);
-            
-            // Показываем уведомление об изменении баланса
-            if (coinsDiff !== 0) {
-                showCoinsChangeNotification(coinsDiff);
-            }
-        }
-        
-        // 🔥 СОХРАНЯЕМ ТЕКУЩИЕ ДАННЫЕ ДЛЯ СЛЕДУЮЩЕГО СРАВНЕНИЯ
-        window.previousCharacterData = {
-            hp: characterData.hp,
-            armor: characterData.armor,
-            max_hp: characterData.max_hp,
-            max_armor: characterData.max_armor,
-            coins: characterData.coins
-        };
-    
-        // Здоровье
-        const hpPercent = characterData.max_hp > 0 ? (characterData.hp / characterData.max_hp) * 100 : 0;
-        document.getElementById('hp-value').textContent = `${characterData.hp}/${characterData.max_hp}`;
-        document.getElementById('health-fill').style.width = `${hpPercent}%`;
-        document.getElementById('health-text').textContent = `${characterData.hp}/${characterData.max_hp}`;
-    
-        // 🔥 АНИМАЦИЯ УРОНА НА ШКАЛЕ HP
-        if (previousHP > characterData.hp) {
-            animateHealthDamage(previousHP, characterData.hp, characterData.max_hp);
-        }
-    
-        // Энергия
-        const energyCurrent = characterData.energy?.current || 0;
-        const energyMax = characterData.energy?.max || 0;
-        const energyPercent = energyMax > 0 ? (energyCurrent / energyMax) * 100 : 0;
-        
-        document.getElementById('energy-value').textContent = `${energyCurrent}/${energyMax}`;
-        document.getElementById('energy-fill').style.width = `${energyPercent}%`;
-        document.getElementById('energy-text').textContent = `${energyCurrent}/${energyMax}`;
-    
-        // 🔥 ТАЙМЕР ВОССТАНОВЛЕНИЯ
-        const energyTimer = document.getElementById('energy-timer');
-        const timerValue = document.getElementById('timer-value');
-        
-        // Показываем таймер если энергия не полная ИЛИ равна 0
-        if (energyCurrent < energyMax || energyCurrent === 0) {
-            const timeRemaining = characterData.energy?.time_remaining || 60;
-            timerValue.textContent = timeRemaining;
-            
-            if (timeRemaining <= 10) {
-                energyTimer.className = 'energy-timer warning';
-            } else {
-                energyTimer.className = 'energy-timer';
-            }
-            
-            energyTimer.style.display = 'block';
-            startEnergyCountdown(timeRemaining);
-        } else {
-            energyTimer.style.display = 'none';
-        }
-    
-        // Броня
-        const armorPercent = characterData.max_armor > 0 ? 
-            (characterData.armor / characterData.max_armor) * 100 : 0;
-        document.getElementById('armor-value').textContent = characterData.armor || 0;
-        document.getElementById('armor-fill').style.width = `${armorPercent}%`;
-        document.getElementById('armor-text').textContent = characterData.armor || 0;
-    
-        // 🔥 АНИМАЦИЯ УРОНА НА БРОНЕ
-        if (previousArmor > characterData.armor) {
-            animateArmorDamage(previousArmor, characterData.armor, characterData.max_armor);
-        }
-    
-        // Уровень и XP - ВСЁ В ОДНОМ БЛОКЕ
-        const level = characterData.level || 1;
-        const xp = characterData.xp || 0;
-        const xpToNext = characterData.xp_to_next || 100;
-        const xpPercent = xpToNext > 0 ? (xp / xpToNext) * 100 : 0;
-        const levelTitle = characterData.level_title || 'Наемник';
-        
-        // Обновляем значения
-        document.getElementById('level-value').textContent = level;
-        document.getElementById('level-title').textContent = `(${levelTitle})`;
-        
-        // XP бар - используем существующий элемент (он уже в HTML)
-        document.getElementById('xp-fill').style.width = `${xpPercent}%`;
-        document.getElementById('xp-text').textContent = `${xp}/${xpToNext} XP`;
-      
-        // 🔥 СЕРЕБРЯНЫЕ МОНЕТЫ
-        const coins = characterData.coins || 0;
-        document.getElementById('coins-value').textContent = coins;
-        
-        // Меняем цвет если монет мало
-        const coinsElement = document.getElementById('coins-value');
-        if (coins < 100) {
-            coinsElement.style.color = '#ff6b6b'; // Красный при малом балансе
-        } else if (coins < 500) {
-            coinsElement.style.color = '#ffd700'; // Желтый при среднем балансе
-        } else {
-            coinsElement.style.color = '#daa520'; // Золотой при большом балансе
-        }
-    
-        // Оружие
-        document.getElementById('weapon-value').textContent = characterData.weapon || 'Нет';
-    
-        // 🔥 СТАТУС
-        const statusElement = document.getElementById('status-value');
-        if (characterData.hp <= 0 || !characterData.is_alive || characterData.is_dead) {
-            statusElement.textContent = 'Мёртв';
-            statusElement.className = 'status-dead';
-        } else {
-            statusElement.textContent = 'Жив';
-            statusElement.className = 'status-alive';
-        }
-    
-        updateInventory();
-        
-        // 🔥 ОТЛАДОЧНЫЙ ВЫВОД
-        console.log('💰 Current coins in characterData:', characterData.coins);
-        console.log('📊 Full character data:', characterData);
-        console.log(`🎮 Level info: ${level} (${levelTitle}), XP: ${xp}/${xpToNext} (${xpPercent.toFixed(1)}%)`);
-    
-        // 🔥 ОДНА проверка смерти в конце функции
-        if (characterData.hp <= 0 && !characterData.is_dead) {
-            // 🔥 ЗАДЕРЖКА чтобы избежать множественных проверок
-            if (!window.deathCheckScheduled) {
-                window.deathCheckScheduled = true;
-                setTimeout(() => {
-                    checkDeathOnHPChange();
-                    window.deathCheckScheduled = false;
-                }, 1000);
-            }
-        }
-    }
-    
-    // 🔥 ФУНКЦИЯ: Показать уведомление об изменении баланса
-    function showCoinsChangeNotification(coinsDiff) {
-        const isPositive = coinsDiff > 0;
-        const coinMsg = document.createElement('div');
-        coinMsg.className = 'coins-notification';
-        coinMsg.style.cssText = `
-            position: fixed;
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, ${isPositive ? 'rgba(40, 167, 69, 0.95)' : 'rgba(220, 53, 69, 0.95)'}, 
-                                         ${isPositive ? 'rgba(46, 204, 113, 0.95)' : 'rgba(178, 34, 34, 0.95)'});
-            color: white;
-            padding: 15px 25px;
-            border-radius: 15px;
-            font-size: 2rem;
-            font-weight: bold;
-            z-index: 9998;
-            animation: coinsFloat 1.5s ease-out forwards;
-            pointer-events: none;
-            box-shadow: 0 8px 25px ${isPositive ? 'rgba(40, 167, 69, 0.4)' : 'rgba(220, 53, 69, 0.4)'};
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        `;
-        coinMsg.textContent = `${isPositive ? '+' : ''}${coinsDiff} 💰`;
-        
-        document.body.appendChild(coinMsg);
-        
-        setTimeout(() => {
-            coinMsg.remove();
-        }, 1500);
-    }
-    
-    // 🔥 ФУНКЦИЯ: Показать уведомление об уроне
-    function showDamageNotification(damage) {
-        // Добавляем эффект тряски
-        addShakeEffect();
-        
-        // Создаем сообщение об уроне
-        const damageMsg = document.createElement('div');
-        damageMsg.className = 'damage-notification';
-        damageMsg.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.95), rgba(178, 34, 34, 0.95));
-            color: white;
-            padding: 20px 30px;
-            border-radius: 20px;
-            font-size: 2.5rem;
-            font-weight: bold;
-            z-index: 10000;
-            animation: damageFloat 1.5s ease-out forwards;
-            pointer-events: none;
-            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.5);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            border: 3px solid rgba(255, 255, 255, 0.3);
-        `;
-        damageMsg.textContent = `-${damage} ❤️`;
-        
-        document.body.appendChild(damageMsg);
-        
-        // Добавляем звуковой эффект
-        playDamageSound();
-        
-        setTimeout(() => {
-            damageMsg.remove();
-        }, 1500);
-    }
-    
-    // 🔥 ФУНКЦИЯ: Показать уведомление о потере брони
-    function showArmorDamageNotification(damage) {
-        const armorMsg = document.createElement('div');
-        armorMsg.className = 'armor-damage-notification';
-        armorMsg.style.cssText = `
-            position: fixed;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, rgba(70, 130, 180, 0.95), rgba(30, 144, 255, 0.95));
-            color: white;
-            padding: 15px 25px;
-            border-radius: 15px;
-            font-size: 2rem;
-            font-weight: bold;
-            z-index: 9999;
-            animation: armorDamageFloat 1.5s ease-out forwards;
-            pointer-events: none;
-            box-shadow: 0 8px 25px rgba(70, 130, 180, 0.4);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        `;
-        armorMsg.textContent = `-${damage} 🛡️`;
-        
-        document.body.appendChild(armorMsg);
-        
-        setTimeout(() => {
-            armorMsg.remove();
-        }, 1500);
-    }
-    
-    // 🔥 ФУНКЦИЯ: Анимация урона на шкале HP
-    function animateHealthDamage(oldHP, newHP, maxHP) {
-        const healthBar = document.getElementById('health-fill');
-        const oldPercent = (oldHP / maxHP) * 100;
-        const newPercent = (newHP / maxHP) * 100;
-        
-        // Сначала показываем красную вспышку на потерянной части
-        const damageOverlay = document.createElement('div');
-        damageOverlay.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: ${newPercent}%;
-            width: ${oldPercent - newPercent}%;
-            height: 100%;
-            background: rgba(255, 0, 0, 0.6);
-            border-radius: 10px;
-            animation: damageFlash 0.5s ease-out forwards;
-            pointer-events: none;
-        `;
-        
-        healthBar.parentElement.appendChild(damageOverlay);
-        
-        setTimeout(() => {
-            if (damageOverlay.parentElement) {
-                damageOverlay.remove();
-            }
-        }, 500);
-    }
-    
-    // 🔥 ФУНКЦИЯ: Анимация урона на броне
-    function animateArmorDamage(oldArmor, newArmor, maxArmor) {
-        const armorBar = document.getElementById('armor-fill');
-        const oldPercent = (oldArmor / maxArmor) * 100;
-        const newPercent = (newArmor / maxArmor) * 100;
-        
-        // Сначала показываем синюю вспышку на потерянной части
-        const armorOverlay = document.createElement('div');
-        armorOverlay.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: ${newPercent}%;
-            width: ${oldPercent - newPercent}%;
-            height: 100%;
-            background: rgba(0, 150, 255, 0.6);
-            border-radius: 10px;
-            animation: armorFlash 0.5s ease-out forwards;
-            pointer-events: none;
-        `;
-        
-        armorBar.parentElement.appendChild(armorOverlay);
-        
-        setTimeout(() => {
-            if (armorOverlay.parentElement) {
-                armorOverlay.remove();
-            }
-        }, 500);
-    }
-    
-    // 🔥 ФУНКЦИЯ: Добавить эффект тряски
-    function addShakeEffect() {
-        const container = document.querySelector('.container');
-        container.classList.add('shake-on-damage');
-        
-        setTimeout(() => {
-            container.classList.remove('shake-on-damage');
-        }, 300);
-    }
-    
-    // 🔥 ФУНКЦИЯ: Воспроизвести звук урона
-    function playDamageSound() {
-        if (navigator.vibrate) {
-            navigator.vibrate([100, 50, 100]);
-        }
-    }
-    
-    // 🔥 ФУНКЦИЯ ДЛЯ ОБРАТНОГО ОТСЧЕТА ЭНЕРГИИ
-    let countdownInterval;
-    function startEnergyCountdown(initialTime) {
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-        }
-        
-        let timeLeft = initialTime;
-        const timerElement = document.getElementById('timer-value');
-        const energyTimer = document.getElementById('energy-timer');
-        
-        countdownInterval = setInterval(() => {
-            timeLeft--;
-            
-            if (timeLeft <= 0) {
-                timerElement.textContent = '0';
-                clearInterval(countdownInterval);
-                
-                // Меняем текст когда время вышло
-                energyTimer.innerHTML = '⚡ Энергия восстановлена!';
-                energyTimer.className = 'energy-timer';
-                
-                // Через 2 секунды скрываем и обновляем данные
-                setTimeout(() => {
-                    energyTimer.style.display = 'none';
-                    loadCharacterData(); // Обновляем данные
-                }, 2000);
-                
-                return;
-            }
-            
-            timerElement.textContent = timeLeft;
-            
-            // Меняем стиль когда мало времени
-            if (timeLeft <= 10) {
-                energyTimer.className = 'energy-timer warning';
-            }
-        }, 1000);
+    function canAfford(price) {
+      const starsElement = document.getElementById('stars-balance');
+      if (!starsElement) return false;
+      const currentBalance = parseInt(starsElement.textContent) || 0;
+      return currentBalance >= price;
     }
 
-    // 🔥 ФУНКЦИЯ ОБНОВЛЕНИЯ ИНВЕНТАРЯ
-    function updateInventory() {
-        const inventoryGrid = document.getElementById('inventory-grid');
-        const emptyMessage = document.getElementById('inventory-empty');
-        const inventoryStats = document.getElementById('inventory-stats');
-    
-        if (!characterData.inventory || characterData.inventory.length === 0) {
-            inventoryGrid.innerHTML = '';
-            emptyMessage.style.display = 'block';
-            inventoryStats.textContent = '0 предметов';
-            return;
-        }
-    
-        emptyMessage.style.display = 'none';
-        inventoryGrid.innerHTML = '';
-    
-        // Сортируем предметы: сначала экипированные, потом по типу
-        const sortedInventory = [...characterData.inventory].sort((a, b) => {
-            if (a.is_equipped && !b.is_equipped) return -1;
-            if (!a.is_equipped && b.is_equipped) return 1;
-            return (a.name || '').localeCompare(b.name || '');
-        });
-    
-        sortedInventory.forEach(item => {
-            const itemElement = document.createElement('div');
-            const rarity = getItemRarity(item);
-            itemElement.className = `inventory-item-card item-rarity-${rarity} ${item.is_equipped ? 'inventory-item-equipped' : ''}`;
-            
-            // 🔥 ИСПОЛЬЗУЕМ getItemIcon с передачей имени предмета
-            const icon = getItemIcon(item.type, item.name);
-            const typeName = getItemTypeName(item.type);
-            const typeIcon = getItemTypeIcon(item.type);
-    
-            itemElement.innerHTML = `
-              <div class="inventory-item-icon">${icon}</div>
-              <div class="inventory-item-name" title="${item.name}">${item.name}</div>
-              <div class="inventory-item-description">${item.description || 'Обычный предмет'}</div>
-              <div class="inventory-item-footer">
-                <span class="inventory-item-quantity">x${item.quantity || 1}</span>
-                <span class="inventory-item-type">${typeIcon} ${typeName}</span>
-              </div>
-            `;
-    
-            itemElement.addEventListener('click', () => showItemDetails(item));
-            inventoryGrid.appendChild(itemElement);
-        });
-    
-        // Обновляем статистику
-        const totalItems = sortedInventory.reduce((sum, item) => sum + (item.quantity || 1), 0);
-        inventoryStats.textContent = `${sortedInventory.length} предметов (${totalItems} шт.)`;
-    }
-
-    // 🔥 ФУНКЦИЯ ПОЛУЧЕНИЯ ИКОНКИ ПРЕДМЕТА (оставляем для обратной совместимости)
-    function getItemIcon(itemType) {
-        return getItemTypeIcon(itemType);
-    }
-
-    // 🔥 ФУНКЦИЯ ПОКАЗА ДЕТАЛЕЙ ПРЕДМЕТА
-    function showItemDetails(item) {
-        let buttons = [];
+    async function purchaseItem(itemId, price) {
+      try {
+        const chatId = getChatId();
         
-        if (item.type === 'potion' || item.type === 'medical' || item.type === 'repair') {
-            buttons.push({
-                type: 'default', 
-                text: '🧪 Использовать',
-                id: 'use_item'
-            });
+        if (!chatId) {
+          tg.showPopup({
+            title: '❌ Ошибка',
+            message: 'Не удалось определить пользователя',
+            buttons: [{ type: 'cancel', text: 'Закрыть' }]
+          });
+          return;
         }
         
-        buttons.push({ type: 'cancel', text: 'Закрыть' });
-    
+        if (!canAfford(price)) {
+          tg.showPopup({
+            title: '❌ Недостаточно звезд',
+            message: 'Пополните баланс звезд в Telegram',
+            buttons: [{ type: 'cancel', text: 'OK' }]
+          });
+          fetchStarsBalance();
+          return;
+        }
+        
         tg.showPopup({
-            title: item.name,
-            message: `${item.description || 'Описание отсутствует'}\n\nТип: ${getItemTypeName(item.type)}\nКоличество: ${item.quantity}`,
-            buttons: buttons
-        }, (buttonId) => {
-            if (buttonId === 'use_item') {
-                useItem(item.name);
-            }
+          title: '⏳ Обработка',
+          message: 'Создание платежа...',
+          buttons: []
         });
+        
+        const response = await fetch(`${PAYMENT_API_URL}/api/purchase`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: chatId, item_id: itemId })
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) throw new Error(data.error || 'Ошибка создания платежа');
+        
+        const paymentInfo = {
+          payload: data.payload,
+          itemId: itemId,
+          price: price,
+          timestamp: Date.now(),
+          expiresIn: data.expires_in
+        };
+        localStorage.setItem('pending_payment', JSON.stringify(paymentInfo));
+        
+        tg.openLink(data.invoice_link);
+        
+        tg.showPopup({
+          title: '✅ Готово',
+          message: 'Окно оплаты открыто. После оплаты предмет появится в инвентаре.',
+          buttons: [{ type: 'cancel', text: 'OK' }]
+        });
+        
+      } catch (error) {
+        console.error('Payment error:', error);
+        tg.showPopup({
+          title: '❌ Ошибка',
+          message: error.message || 'Не удалось создать платеж',
+          buttons: [{ type: 'cancel', text: 'Закрыть' }]
+        });
+      }
     }
-    
-    // 🔥 ФУНКЦИЯ ИСПОЛЬЗОВАНИЯ ПРЕДМЕТА
-    async function useItem(itemName) {
-        try {
-            const chatId = getChatId();
+
+    async function checkPaymentStatus(payload) {
+      try {
+        const response = await fetch(`${PAYMENT_API_URL}/api/purchase/${payload}/status`);
+        const data = await response.json();
+        
+        if (data.success) {
+          if (data.status === 'completed') {
+            tg.showPopup({
+              title: '✅ Покупка завершена!',
+              message: `Предмет "${data.item_name}" добавлен в инвентарь`,
+              buttons: [{ type: 'default', text: 'OK' }]
+            });
             
-            if (!chatId) {
+            localStorage.removeItem('pending_payment');
+            loadCharacterData();
+            fetchStarsBalance();
+            
+          } else if (data.status === 'expired') {
+            tg.showPopup({
+              title: '⏰ Время истекло',
+              message: 'Платеж не был завершен вовремя. Попробуйте снова.',
+              buttons: [{ type: 'default', text: 'OK' }]
+            });
+            localStorage.removeItem('pending_payment');
+          }
+        }
+      } catch (error) {
+        console.error('Error checking payment:', error);
+      }
+    }
+
+    function checkPendingPayment() {
+      const pending = localStorage.getItem('pending_payment');
+      if (pending) {
+        try {
+          const payment = JSON.parse(pending);
+          const age = (Date.now() - payment.timestamp) / 1000;
+          const maxAge = payment.expiresIn || 600;
+          
+          if (age < maxAge) {
+            checkPaymentStatus(payment.payload);
+          } else {
+            localStorage.removeItem('pending_payment');
+          }
+        } catch (e) {
+          localStorage.removeItem('pending_payment');
+        }
+      }
+    }
+
+    function initShop() {
+      const shopItems = document.querySelectorAll('.shop-item');
+      
+      fetchStarsBalance().then(() => {
+        shopItems.forEach(item => {
+          const itemId = item.dataset.itemId;
+          const price = parseInt(item.dataset.price);
+          const buyButton = item.querySelector('.buy-button');
+          
+          if (buyButton) {
+            const canBuy = canAfford(price);
+            
+            if (canBuy) {
+              buyButton.classList.add('active');
+              buyButton.disabled = false;
+              buyButton.textContent = `⭐ Купить за ${price}`;
+            } else {
+              buyButton.classList.remove('active');
+              buyButton.disabled = true;
+              buyButton.textContent = `⭐ ${price} (не хватает)`;
+            }
+            
+            const newButton = buyButton.cloneNode(true);
+            buyButton.parentNode.replaceChild(newButton, buyButton);
+            
+            newButton.addEventListener('click', async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              
+              if (!canAfford(price)) {
                 tg.showPopup({
-                    title: 'Ошибка',
-                    message: 'Не удалось определить пользователя',
-                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
+                  title: '❌ Недостаточно звезд',
+                  message: 'Пополните баланс звезд в Telegram',
+                  buttons: [{ type: 'cancel', text: 'OK' }]
                 });
                 return;
-            }
-    
-            const API_URL = `${API_BASE_URL}/api/character/${chatId}/use_item`;
-            
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    item_name: itemName
-                })
+              }
+              
+              tg.showPopup({
+                title: 'Подтверждение покупки',
+                message: `Купить ${item.querySelector('.shop-item-name').textContent} за ${price} ⭐?`,
+                buttons: [
+                  { type: 'default', text: '✅ Купить', id: 'buy' },
+                  { type: 'cancel', text: '❌ Отмена' }
+                ]
+              }, async (buttonId) => {
+                if (buttonId === 'buy') {
+                  await purchaseItem(itemId, price);
+                }
+              });
             });
-    
-            const data = await response.json();
-            
-            if (data.success) {
-                tg.showPopup({
-                    title: '✅ Успех',
-                    message: data.message,
-                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
-                });
-                
-                // Обновляем данные персонажа
-                setTimeout(() => {
-                    loadCharacterData();
-                }, 1000);
-                
-            } else {
-                tg.showPopup({
-                    title: '❌ Ошибка',
-                    message: data.error || 'Не удалось использовать предмет',
-                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
-                });
-            }
-            
-        } catch (error) {
-            console.error('Error using item:', error);
-            tg.showPopup({
-                title: '❌ Ошибка',
-                message: 'Ошибка при использовании предмета',
-                buttons: [{ type: 'cancel', text: 'Закрыть' }]
-            });
-        }
+          }
+        });
+      });
     }
 
-    // 🔥 ФУНКЦИЯ ПРОВЕРКИ БАЛАНСА МОНЕТ
+    // ==================== ФУНКЦИИ ДЛЯ РАБОТЫ С ПЕРСОНАЖЕМ ====================
+
+    async function loadCharacterData() {
+      try {
+        showLoading(true);
+        hideError();
+        
+        const chatId = getChatId();
+        if (!chatId) throw new Error('Не удалось определить пользователя');
+        
+        const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/full`);
+        const data = await response.json();
+        
+        if (data.success) {
+          characterData = data.data;
+          updateUI();
+          showLoading(false);
+          
+          if (characterData.hp <= 0) {
+            setTimeout(() => checkDeathOnHPChange(), 1000);
+          }
+        } else {
+          throw new Error(data.error || 'Ошибка загрузки данных');
+        }
+      } catch (error) {
+        console.error('❌ Error loading character data:', error);
+        showLoading(false);
+        showError(error.message);
+      }
+    }
+
+    function updateUI() {
+      document.getElementById('character-name').textContent = characterData.name || 'Безымянный герой';
+      
+      const previousHP = window.previousCharacterData?.hp || characterData.hp;
+      const previousArmor = window.previousCharacterData?.armor || characterData.armor;
+      
+      if (previousHP > characterData.hp) {
+        showDamageNotification(previousHP - characterData.hp);
+      }
+      
+      if (previousArmor > characterData.armor) {
+        showArmorDamageNotification(previousArmor - characterData.armor);
+      }
+      
+      window.previousCharacterData = {
+        hp: characterData.hp,
+        armor: characterData.armor,
+        max_hp: characterData.max_hp,
+        max_armor: characterData.max_armor,
+        coins: characterData.coins
+      };
+      
+      // HP
+      const hpPercent = characterData.max_hp > 0 ? (characterData.hp / characterData.max_hp) * 100 : 0;
+      document.getElementById('hp-value').textContent = `${characterData.hp}/${characterData.max_hp}`;
+      document.getElementById('health-fill').style.width = `${hpPercent}%`;
+      document.getElementById('health-text').textContent = `${characterData.hp}/${characterData.max_hp}`;
+      
+      // Энергия
+      const energyCurrent = characterData.energy?.current || 0;
+      const energyMax = characterData.energy?.max || 0;
+      const energyPercent = energyMax > 0 ? (energyCurrent / energyMax) * 100 : 0;
+      
+      document.getElementById('energy-value').textContent = `${energyCurrent}/${energyMax}`;
+      document.getElementById('energy-fill').style.width = `${energyPercent}%`;
+      document.getElementById('energy-text').textContent = `${energyCurrent}/${energyMax}`;
+      
+      // Броня
+      const armorPercent = characterData.max_armor > 0 ? (characterData.armor / characterData.max_armor) * 100 : 0;
+      document.getElementById('armor-value').textContent = characterData.armor || 0;
+      document.getElementById('armor-fill').style.width = `${armorPercent}%`;
+      document.getElementById('armor-text').textContent = characterData.armor || 0;
+      
+      // Уровень и XP
+      const level = characterData.level || 1;
+      const xp = characterData.xp || 0;
+      const xpToNext = characterData.xp_to_next || 100;
+      const xpPercent = xpToNext > 0 ? (xp / xpToNext) * 100 : 0;
+      const levelTitle = characterData.level_title || 'Наемник';
+      
+      document.getElementById('level-value').textContent = level;
+      document.getElementById('level-title').textContent = `(${levelTitle})`;
+      document.getElementById('xp-fill').style.width = `${xpPercent}%`;
+      document.getElementById('xp-text').textContent = `${xp}/${xpToNext} XP`;
+      
+      // Монеты
+      const coins = characterData.coins || 0;
+      document.getElementById('coins-value').textContent = coins;
+      
+      const coinsElement = document.getElementById('coins-value');
+      if (coins < 100) coinsElement.style.color = '#ff6b6b';
+      else if (coins < 500) coinsElement.style.color = '#ffd700';
+      else coinsElement.style.color = '#daa520';
+      
+      // Оружие
+      document.getElementById('weapon-value').textContent = characterData.weapon || 'Нет';
+      
+      // Статус
+      const statusElement = document.getElementById('status-value');
+      if (characterData.hp <= 0 || !characterData.is_alive || characterData.is_dead) {
+        statusElement.textContent = 'Мёртв';
+        statusElement.className = 'status-dead';
+      } else {
+        statusElement.textContent = 'Жив';
+        statusElement.className = 'status-alive';
+      }
+      
+      updateInventory();
+      
+      if (characterData.hp <= 0 && !characterData.is_dead && !window.deathCheckScheduled) {
+        window.deathCheckScheduled = true;
+        setTimeout(() => {
+          checkDeathOnHPChange();
+          window.deathCheckScheduled = false;
+        }, 1000);
+      }
+    }
+
+    function updateInventory() {
+      const inventoryGrid = document.getElementById('inventory-grid');
+      const emptyMessage = document.getElementById('inventory-empty');
+      const inventoryStats = document.getElementById('inventory-stats');
+      
+      if (!characterData.inventory || characterData.inventory.length === 0) {
+        inventoryGrid.innerHTML = '';
+        emptyMessage.style.display = 'block';
+        inventoryStats.textContent = '0 предметов';
+        return;
+      }
+      
+      emptyMessage.style.display = 'none';
+      inventoryGrid.innerHTML = '';
+      
+      const sortedInventory = [...characterData.inventory].sort((a, b) => {
+        if (a.is_equipped && !b.is_equipped) return -1;
+        if (!a.is_equipped && b.is_equipped) return 1;
+        return (a.name || '').localeCompare(b.name || '');
+      });
+      
+      sortedInventory.forEach(item => {
+        const itemElement = document.createElement('div');
+        const rarity = getItemRarity(item);
+        itemElement.className = `inventory-item-card item-rarity-${rarity} ${item.is_equipped ? 'inventory-item-equipped' : ''}`;
+        
+        const icon = getItemIcon(item.type, item.name);
+        const typeName = getItemTypeName(item.type);
+        const typeIcon = getItemTypeIcon(item.type);
+        
+        itemElement.innerHTML = `
+          <div class="inventory-item-icon">${icon}</div>
+          <div class="inventory-item-name" title="${item.name}">${item.name}</div>
+          <div class="inventory-item-description">${item.description || 'Обычный предмет'}</div>
+          <div class="inventory-item-footer">
+            <span class="inventory-item-quantity">x${item.quantity || 1}</span>
+            <span class="inventory-item-type">${typeIcon} ${typeName}</span>
+          </div>
+        `;
+        
+        itemElement.addEventListener('click', () => showItemDetails(item));
+        inventoryGrid.appendChild(itemElement);
+      });
+      
+      const totalItems = sortedInventory.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      inventoryStats.textContent = `${sortedInventory.length} предметов (${totalItems} шт.)`;
+    }
+
+    function getItemRarity(item) {
+      if (item.is_equipped) return 'legendary';
+      if (item.type === 'weapon' || item.type === 'armor') return 'rare';
+      if (item.type === 'potion' || item.type === 'medical') return 'uncommon';
+      return 'common';
+    }
+
+    function getItemTypeIcon(itemType) {
+      const icons = {
+        'weapon': '⚔️', 'armor': '🛡️', 'potion': '🧪', 'medical': '🩹',
+        'repair': '🔧', 'amulet': '📿', 'scroll': '📜', 'food': '🍖',
+        'key': '🔑', 'gem': '💎', 'ammo': '🏹', 'currency': '💰'
+      };
+      return icons[itemType] || '📦';
+    }
+
+    function getItemIcon(itemType, itemName) {
+      if (itemName) {
+        if (itemName.includes('Большое')) return '🧴';
+        if (itemName.includes('Среднее')) return '⚗️';
+        if (itemName.includes('Маленькое')) return '🧪';
+      }
+      
+      const icons = {
+        'weapon': '⚔️', 'armor': '🛡️', 'potion': '🧪', 'medical': '🩹',
+        'repair': '🔧', 'amulet': '📿', 'scroll': '📜', 'food': '🍖',
+        'key': '🔑', 'gem': '💎', 'ammo': '🏹', 'currency': '💰'
+      };
+      return icons[itemType] || '🎁';
+    }
+
+    function getItemTypeName(itemType) {
+      const names = {
+        'weapon': 'Оружие', 'armor': 'Броня', 'potion': 'Зелье',
+        'medical': 'Медицина', 'repair': 'Ремонт', 'amulet': 'Амулет',
+        'scroll': 'Свиток', 'food': 'Еда', 'key': 'Ключ',
+        'gem': 'Самоцвет', 'ammo': 'Боеприпас', 'currency': 'Монеты'
+      };
+      return names[itemType] || 'Предмет';
+    }
+
+    function showItemDetails(item) {
+      let buttons = [];
+      
+      if (item.type === 'potion' || item.type === 'medical' || item.type === 'repair') {
+        buttons.push({ type: 'default', text: '🧪 Использовать', id: 'use_item' });
+      }
+      
+      buttons.push({ type: 'cancel', text: 'Закрыть' });
+      
+      tg.showPopup({
+        title: item.name,
+        message: `${item.description || 'Описание отсутствует'}\n\nТип: ${getItemTypeName(item.type)}\nКоличество: ${item.quantity}`,
+        buttons: buttons
+      }, (buttonId) => {
+        if (buttonId === 'use_item') useItem(item.name);
+      });
+    }
+
+    async function useItem(itemName) {
+      try {
+        const chatId = getChatId();
+        if (!chatId) {
+          tg.showPopup({ title: 'Ошибка', message: 'Не удалось определить пользователя', buttons: [{ type: 'cancel', text: 'Закрыть' }] });
+          return;
+        }
+        
+        const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/use_item`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ item_name: itemName })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          tg.showPopup({ title: '✅ Успех', message: data.message, buttons: [{ type: 'cancel', text: 'Закрыть' }] });
+          setTimeout(() => loadCharacterData(), 1000);
+        } else {
+          tg.showPopup({ title: '❌ Ошибка', message: data.error || 'Не удалось использовать предмет', buttons: [{ type: 'cancel', text: 'Закрыть' }] });
+        }
+      } catch (error) {
+        console.error('Error using item:', error);
+        tg.showPopup({ title: '❌ Ошибка', message: 'Ошибка при использовании предмета', buttons: [{ type: 'cancel', text: 'Закрыть' }] });
+      }
+    }
+
+    // ==================== ФУНКЦИИ МОНИТОРИНГА ====================
+
+    async function checkDeathOnHPChange() {
+      const now = Date.now();
+      if (now - lastDeathCheckTime < DEATH_CHECK_COOLDOWN) return;
+      
+      lastDeathCheckTime = now;
+      
+      const chatId = getChatId();
+      if (!chatId) return;
+      
+      const hpElement = document.getElementById('hp-value');
+      if (!hpElement) return;
+      
+      const currentHP = parseInt(hpElement.textContent.split('/')[0]);
+      
+      if (currentHP <= 0) {
+        const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/check_death`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ hp: currentHP, armor: characterData.armor || 0 })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.death_detected) {
+          showDeathInWebApp(data.character_name);
+        }
+      }
+    }
+
+    function showDeathInWebApp(characterName) {
+      if (updateInterval) {
+        clearInterval(updateInterval);
+        updateInterval = null;
+      }
+      
+      stopCoinsMonitoring();
+      
+      const deathMessage = document.createElement('div');
+      deathMessage.className = 'error-message';
+      deathMessage.style.cssText = `
+        background: rgba(220, 53, 69, 0.9) !important;
+        border: 2px solid #ff0000 !important;
+        color: white !important;
+        text-align: center !important;
+        padding: 20px !important;
+        margin: 10px 0 !important;
+        border-radius: 10px !important;
+        font-size: 1.1rem !important;
+        animation: pulse 2s infinite !important;
+      `;
+      
+      deathMessage.innerHTML = `
+        <h3 style="margin: 0 0 10px 0;">💀 ${characterName.toUpperCase()} ПАЛ В БОЮ!</h3>
+        <p style="margin: 0 0 15px 0;">Вы получите уведомление в Telegram для создания нового персонажа</p>
+        <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Закройте это приложение и проверьте Telegram</p>
+      `;
+      
+      const container = document.querySelector('.container');
+      if (container.firstChild) {
+        container.insertBefore(deathMessage, container.firstChild);
+      } else {
+        container.appendChild(deathMessage);
+      }
+      
+      document.querySelectorAll('button, .inventory-item-card, .tab-button').forEach(el => {
+        el.style.pointerEvents = 'none';
+        el.style.opacity = '0.5';
+      });
+      
+      setTimeout(() => {
+        tg.showAlert('Персонаж мертв. Проверьте Telegram для создания нового персонажа.');
+        setTimeout(() => tg.close(), 3000);
+      }, 10000);
+    }
+
+    function showDamageNotification(damage) {
+      addShakeEffect();
+      
+      const damageMsg = document.createElement('div');
+      damageMsg.className = 'damage-notification';
+      damageMsg.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.95), rgba(178, 34, 34, 0.95));
+        color: white;
+        padding: 20px 30px;
+        border-radius: 20px;
+        font-size: 2.5rem;
+        font-weight: bold;
+        z-index: 10000;
+        animation: damageFloat 1.5s ease-out forwards;
+        pointer-events: none;
+        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.5);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        border: 3px solid rgba(255, 255, 255, 0.3);
+      `;
+      damageMsg.textContent = `-${damage} ❤️`;
+      
+      document.body.appendChild(damageMsg);
+      playDamageSound();
+      
+      setTimeout(() => damageMsg.remove(), 1500);
+    }
+
+    function showArmorDamageNotification(damage) {
+      const armorMsg = document.createElement('div');
+      armorMsg.className = 'armor-damage-notification';
+      armorMsg.style.cssText = `
+        position: fixed;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(70, 130, 180, 0.95), rgba(30, 144, 255, 0.95));
+        color: white;
+        padding: 15px 25px;
+        border-radius: 15px;
+        font-size: 2rem;
+        font-weight: bold;
+        z-index: 9999;
+        animation: armorDamageFloat 1.5s ease-out forwards;
+        pointer-events: none;
+        box-shadow: 0 8px 25px rgba(70, 130, 180, 0.4);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      `;
+      armorMsg.textContent = `-${damage} 🛡️`;
+      
+      document.body.appendChild(armorMsg);
+      setTimeout(() => armorMsg.remove(), 1500);
+    }
+
+    function addShakeEffect() {
+      const container = document.querySelector('.container');
+      container.classList.add('shake-on-damage');
+      setTimeout(() => container.classList.remove('shake-on-damage'), 300);
+    }
+
+    function playDamageSound() {
+      if (navigator.vibrate) {
+        navigator.vibrate([100, 50, 100]);
+      }
+    }
+
     async function checkCoinsBalance(forceUpdate = false) {
-        try {
-            const chatId = getChatId();
-            if (!chatId) return;
-            
-            const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/coins`);
-            const data = await response.json();
-            
-            if (data.success) {
-                const coinsElement = document.getElementById('coins-value');
-                const currentCoins = parseInt(coinsElement.textContent) || 0;
-                
-                if (forceUpdate || currentCoins !== data.coins) {
-                    console.log(`💰 Balance ${forceUpdate ? 'forced' : 'changed'}: ${currentCoins} -> ${data.coins}`);
-                    coinsElement.textContent = data.coins;
-                    
-                    // Обновляем глобальные данные
-                    if (characterData) {
-                        characterData.coins = data.coins;
-                    }
-                    
-                    // Показываем уведомление только при изменении или принудительном обновлении
-                    if (forceUpdate || currentCoins !== data.coins) {
-                        const coinsDiff = data.coins - currentCoins;
-                        if (coinsDiff !== 0 || forceUpdate) {
-                            tg.showPopup({
-                                title: '💰 Баланс обновлен',
-                                message: `Теперь у вас ${data.coins} серебряных монет`,
-                                buttons: [{ type: 'cancel', text: 'OK' }]
-                            });
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Error checking coins balance:', error);
-        }
-    }
-
-    // 🔥 ФУНКЦИЯ ТРАТЫ МОНЕТ
-    async function spendCoins(amount) {
-        try {
-            const chatId = getChatId();
-            
-            if (!chatId) {
-                tg.showPopup({
-                    title: 'Ошибка',
-                    message: 'Не удалось определить пользователя',
-                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
-                });
-                return false;
-            }
+      try {
+        const chatId = getChatId();
+        if (!chatId) return;
         
-            const API_URL = `${API_BASE_URL}/api/character/${chatId}/spend_coins`;
-            
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    amount: amount
-                })
-            });
+        const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/coins`);
+        const data = await response.json();
         
-            const data = await response.json();
-            
-            if (data.success) {
-                // Обновляем отображение монет
-                document.getElementById('coins-value').textContent = data.new_amount;
-                
-                // Обновляем глобальные данные
-                if (characterData) {
-                    characterData.coins = data.new_amount;
-                }
-                
-                tg.showPopup({
-                    title: '✅ Успех',
-                    message: data.message,
-                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
-                });
-                
-                return true;
-            } else {
-                tg.showPopup({
-                    title: '❌ Ошибка',
-                    message: data.error,
-                    buttons: [{ type: 'cancel', text: 'Закрыть' }]
-                });
-                return false;
-            }
-            
-        } catch (error) {
-            console.error('Error spending coins:', error);
-            tg.showPopup({
-                title: '❌ Ошибка',
-                message: 'Ошибка при трате монет',
-                buttons: [{ type: 'cancel', text: 'Закрыть' }]
-            });
-            return false;
+        if (data.success) {
+          const coinsElement = document.getElementById('coins-value');
+          const currentCoins = parseInt(coinsElement.textContent) || 0;
+          
+          if (forceUpdate || currentCoins !== data.coins) {
+            coinsElement.textContent = data.coins;
+            if (characterData) characterData.coins = data.coins;
+          }
         }
+      } catch (error) {
+        console.error('Error checking coins balance:', error);
+      }
     }
 
-    // 🔥 ФУНКЦИИ УПРАВЛЕНИЯ ЗАГРУЗКОЙ И ОШИБКАМИ
-    function showLoading(show) {
-        document.getElementById('loading-message').style.display = show ? 'block' : 'none';
-    }
-
-    function showError(message) {
-        const errorElement = document.getElementById('error-message');
-        errorElement.innerHTML = `❌ ${message}`;
-        errorElement.style.display = 'block';
-    }
-
-    function hideError() {
-        document.getElementById('error-message').style.display = 'none';
-    }
-
-    // 🔥 ФУНКЦИИ МОНИТОРИНГА
     function startAutoUpdate() {
-        updateInterval = setInterval(loadCharacterData, 30000);
+      updateInterval = setInterval(loadCharacterData, 30000);
     }
 
     function startCoinsMonitoring() {
-        coinsCheckInterval = setInterval(() => checkCoinsBalance(false), 5000);
+      coinsCheckInterval = setInterval(() => checkCoinsBalance(false), 5000);
     }
 
     function stopCoinsMonitoring() {
-        if (coinsCheckInterval) {
-            clearInterval(coinsCheckInterval);
-        }
+      if (coinsCheckInterval) {
+        clearInterval(coinsCheckInterval);
+      }
     }
 
-    // 🔥 ОБРАБОТЧИКИ СОБЫТИЙ
-    window.addEventListener('beforeunload', function() {
-        stopCoinsMonitoring();
-        if (updateInterval) {
-            clearInterval(updateInterval);
-        }
-    });
+    function startStarsMonitoring() {
+      starsInterval = setInterval(fetchStarsBalance, 30000);
+    }
 
-    document.addEventListener('visibilitychange', function() {
+    function initializeTabs() {
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function() {
+          const targetTab = this.getAttribute('data-tab');
+          
+          document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          
+          document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+          document.getElementById(`${targetTab}-content`).classList.add('active');
+          
+          if (targetTab === 'shop') {
+            setTimeout(() => initShop(), 100);
+          }
+        });
+      });
+    }
+
+    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+
+    document.addEventListener('DOMContentLoaded', function() {
+      tg.expand();
+      tg.BackButton.hide();
+      tg.enableClosingConfirmation();
+      
+      console.log('🚀 Game Master Web App initialized');
+      
+      initializeTabs();
+      loadCharacterData();
+      startAutoUpdate();
+      startCoinsMonitoring();
+      
+      setTimeout(() => {
+        initShop();
+        console.log('🛒 Shop initialized');
+      }, 500);
+      
+      checkPendingPayment();
+      setInterval(() => checkPendingPayment(), 10000);
+      
+      document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
-            loadCharacterData();
+          loadCharacterData();
+          checkPendingPayment();
         }
+      });
+      
+      document.getElementById('refresh-coins-btn').addEventListener('click', function() {
+        checkCoinsBalance(true);
+      });
+      
+      document.querySelector('.refresh-button')?.addEventListener('click', function() {
+        loadCharacterData();
+      });
+      
+      startStarsMonitoring();
+      setTimeout(() => fetchStarsBalance(), 1000);
+      
+      console.log('✅ All event listeners initialized');
     });
 
-    // 🔥 ДОБАВЛЯЕМ СТИЛИ ДЛЯ АНИМАЦИЙ
-    if (!window.damageStylesAdded) {
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes damageFloat {
-                0% { 
-                    opacity: 0; 
-                    transform: translate(-50%, -30%) scale(0.8); 
-                }
-                20% { 
-                    opacity: 1; 
-                    transform: translate(-50%, -50%) scale(1.1); 
-                }
-                60% { 
-                    opacity: 1; 
-                    transform: translate(-50%, -60%) scale(1); 
-                }
-                100% { 
-                    opacity: 0; 
-                    transform: translate(-50%, -80%) scale(0.9); 
-                }
-            }
-            
-            @keyframes armorDamageFloat {
-                0% { 
-                    opacity: 0; 
-                    transform: translate(-50%, -20%) scale(0.8); 
-                }
-                20% { 
-                    opacity: 1; 
-                    transform: translate(-50%, -40%) scale(1.1); 
-                }
-                60% { 
-                    opacity: 1; 
-                    transform: translate(-50%, -50%) scale(1); 
-                }
-                100% { 
-                    opacity: 0; 
-                    transform: translate(-50%, -70%) scale(0.9); 
-                }
-            }
-            
-            @keyframes coinsFloat {
-                0% { 
-                    opacity: 0; 
-                    transform: translate(-50%, -20%) scale(0.8); 
-                }
-                20% { 
-                    opacity: 1; 
-                    transform: translate(-50%, -40%) scale(1.1); 
-                }
-                60% { 
-                    opacity: 1; 
-                    transform: translate(-50%, -50%) scale(1); 
-                }
-                100% { 
-                    opacity: 0; 
-                    transform: translate(-50%, -70%) scale(0.9); 
-                }
-            }
-            
-            @keyframes damageFlash {
-                0% { opacity: 0.8; }
-                50% { opacity: 1; }
-                100% { opacity: 0; }
-            }
-            
-            @keyframes armorFlash {
-                0% { opacity: 0.8; }
-                50% { opacity: 1; }
-                100% { opacity: 0; }
-            }
-            
-            /* Стили для уведомлений */
-            .damage-notification, .armor-damage-notification, .coins-notification {
-                font-family: 'Georgia', serif;
-            }
-            
-            /* Эффект тряски при получении урона */
-            @keyframes shake {
-                0% { transform: translateX(0); }
-                25% { transform: translateX(-5px); }
-                50% { transform: translateX(5px); }
-                75% { transform: translateX(-5px); }
-                100% { transform: translateX(0); }
-            }
-            
-            .shake-on-damage {
-                animation: shake 0.3s ease-in-out;
-            }
-        `;
-        document.head.appendChild(style);
-        window.damageStylesAdded = true;
-    }
+    window.addEventListener('beforeunload', function() {
+      stopCoinsMonitoring();
+      if (updateInterval) clearInterval(updateInterval);
+      if (starsInterval) clearInterval(starsInterval);
+    });
   </script>
 </body>
 </html>
+
 
 
 
