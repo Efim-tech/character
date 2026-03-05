@@ -897,7 +897,77 @@
   <script>
     // ==================== КОНСТАНТЫ ====================
     const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
-    const PAYMENT_API_URL = 'https://gmbtest-efich.amvera.io:8443';
+    const PAYMENT_API_URL = 'https://gmbtest-efich.amvera.io';
+
+    let cachedStarsBalance = null;
+    let lastStarsFetch = 0;
+    const STARS_CACHE_TIME = 30000; // 30 секунд
+    
+    async function fetchStarsBalance(force = false) {
+      try {
+        const chatId = getChatId();
+        if (!chatId) return false;
+        
+        // Проверяем кэш
+        const now = Date.now();
+        if (!force && cachedStarsBalance !== null && (now - lastStarsFetch) < STARS_CACHE_TIME) {
+          console.log('⭐ Using cached stars balance:', cachedStarsBalance);
+          updateStarsDisplay(cachedStarsBalance);
+          return true;
+        }
+        
+        console.log('⭐ Fetching fresh stars balance...');
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch(`${PAYMENT_API_URL}/api/user/${chatId}/stars`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          mode: 'cors',
+          cache: 'no-cache'
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          cachedStarsBalance = data.balance;
+          lastStarsFetch = now;
+          updateStarsDisplay(data.balance);
+          return true;
+        } else {
+          throw new Error(data.error || 'Unknown error');
+        }
+      } catch (error) {
+        console.error('❌ Error fetching stars balance:', error);
+        
+        // Показываем заглушку
+        updateStarsDisplay('?', true);
+        return false;
+      }
+    }
+    
+    function updateStarsDisplay(balance, isError = false) {
+      const starsElement = document.getElementById('stars-balance');
+      if (!starsElement) return;
+      
+      if (isError) {
+        starsElement.textContent = '?';
+        starsElement.style.color = '#ff6b6b';
+        return;
+      }
+      
+      starsElement.textContent = balance;
+      
+      if (balance < 10) starsElement.style.color = '#ff6b6b';
+      else if (balance < 50) starsElement.style.color = '#ffd700';
+      else starsElement.style.color = '#daa520';
+    }
     
     // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
     const tg = window.Telegram.WebApp;
@@ -946,7 +1016,7 @@
 
     // ==================== ФУНКЦИИ ДЛЯ РАБОТЫ СО ЗВЕЗДАМИ ====================
 
-    async function fetchStarsBalance() {
+    async function fetchStarsBalance(retryCount = 0) {
       try {
         const chatId = getChatId();
         if (!chatId) {
@@ -954,12 +1024,21 @@
           return;
         }
         
-        console.log('⭐ Fetching stars balance for user:', chatId);
+        console.log(`⭐ Fetching stars balance for user: ${chatId} (attempt ${retryCount + 1})`);
+        
+        // Добавляем таймаут и контроллер для отмены
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 секунд таймаут
         
         const response = await fetch(`${PAYMENT_API_URL}/api/user/${chatId}/stars`, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          mode: 'cors',
+          cache: 'no-cache'
         });
+        
+        clearTimeout(timeoutId);
         
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
@@ -978,12 +1057,29 @@
           
           if (!characterData.stars) characterData.stars = {};
           characterData.stars.balance = data.balance;
+          return true;
         } else {
-          document.getElementById('stars-balance').textContent = '?';
+          throw new Error(data.error || 'Unknown error');
         }
       } catch (error) {
         console.error('❌ Error fetching stars balance:', error);
-        document.getElementById('stars-balance').textContent = '—';
+        
+        // Показываем заглушку
+        const starsElement = document.getElementById('stars-balance');
+        if (starsElement) {
+          starsElement.textContent = '?';
+          starsElement.style.color = '#ff6b6b';
+        }
+        
+        // Пробуем повторить до 3 раз с увеличивающейся задержкой
+        if (retryCount < 3) {
+          const delay = Math.pow(2, retryCount) * 1000; // 1с, 2с, 4с
+          console.log(`⏳ Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return fetchStarsBalance(retryCount + 1);
+        }
+        
+        return false;
       }
     }
 
@@ -1113,55 +1209,77 @@
     function initShop() {
       const shopItems = document.querySelectorAll('.shop-item');
       
-      fetchStarsBalance().then(() => {
+      // Используем кэшированный баланс или показываем загрузку
+      if (cachedStarsBalance !== null) {
+        updateShopButtons(shopItems, cachedStarsBalance);
+      } else {
+        // Показываем кнопки в состоянии загрузки
         shopItems.forEach(item => {
-          const itemId = item.dataset.itemId;
-          const price = parseInt(item.dataset.price);
           const buyButton = item.querySelector('.buy-button');
-          
           if (buyButton) {
-            const canBuy = canAfford(price);
-            
-            if (canBuy) {
-              buyButton.classList.add('active');
-              buyButton.disabled = false;
-              buyButton.textContent = `⭐ Купить за ${price}`;
-            } else {
-              buyButton.classList.remove('active');
-              buyButton.disabled = true;
-              buyButton.textContent = `⭐ ${price} (не хватает)`;
-            }
-            
-            const newButton = buyButton.cloneNode(true);
-            buyButton.parentNode.replaceChild(newButton, buyButton);
-            
-            newButton.addEventListener('click', async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              
-              if (!canAfford(price)) {
-                tg.showPopup({
-                  title: '❌ Недостаточно звезд',
-                  message: 'Пополните баланс звезд в Telegram',
-                  buttons: [{ type: 'cancel', text: 'OK' }]
-                });
-                return;
-              }
-              
-              tg.showPopup({
-                title: 'Подтверждение покупки',
-                message: `Купить ${item.querySelector('.shop-item-name').textContent} за ${price} ⭐?`,
-                buttons: [
-                  { type: 'default', text: '✅ Купить', id: 'buy' },
-                  { type: 'cancel', text: '❌ Отмена' }
-                ]
-              }, async (buttonId) => {
-                if (buttonId === 'buy') {
-                  await purchaseItem(itemId, price);
-                }
-              });
-            });
+            buyButton.textContent = '⏳ Загрузка...';
+            buyButton.disabled = true;
           }
+        });
+      }
+      
+      // Обновляем баланс
+      fetchStarsBalance().then(balance => {
+        if (balance !== false) {
+          updateShopButtons(shopItems, cachedStarsBalance);
+        }
+      });
+    }
+    
+    function updateShopButtons(shopItems, balance) {
+      shopItems.forEach(item => {
+        const price = parseInt(item.dataset.price);
+        const buyButton = item.querySelector('.buy-button');
+        
+        if (!buyButton) return;
+        
+        const canBuy = balance >= price;
+        
+        if (canBuy) {
+          buyButton.classList.add('active');
+          buyButton.disabled = false;
+          buyButton.textContent = `⭐ Купить за ${price}`;
+        } else {
+          buyButton.classList.remove('active');
+          buyButton.disabled = true;
+          buyButton.textContent = `⭐ ${price} (не хватает)`;
+        }
+        
+        // Удаляем старый обработчик и добавляем новый
+        const newButton = buyButton.cloneNode(true);
+        buyButton.parentNode.replaceChild(newButton, buyButton);
+        
+        newButton.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const currentBalance = cachedStarsBalance;
+          if (currentBalance < price) {
+            tg.showPopup({
+              title: '❌ Недостаточно звезд',
+              message: `Нужно ${price} ⭐, у вас ${currentBalance} ⭐`,
+              buttons: [{ type: 'cancel', text: 'OK' }]
+            });
+            return;
+          }
+          
+          tg.showPopup({
+            title: 'Подтверждение покупки',
+            message: `Купить ${item.querySelector('.shop-item-name').textContent} за ${price} ⭐?`,
+            buttons: [
+              { type: 'default', text: '✅ Купить', id: 'buy' },
+              { type: 'cancel', text: '❌ Отмена' }
+            ]
+          }, async (buttonId) => {
+            if (buttonId === 'buy') {
+              await purchaseItem(item.dataset.itemId, price);
+            }
+          });
         });
       });
     }
@@ -1676,6 +1794,7 @@
   </script>
 </body>
 </html>
+
 
 
 
