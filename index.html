@@ -945,6 +945,7 @@
     tg.enableClosingConfirmation();
     
     let characterData = {};
+    let activeSubscription = null;
     let updateInterval;
     let coinsCheckInterval;
     let lastDeathCheckTime = 0;
@@ -1130,13 +1131,25 @@
         const activeExpires = document.getElementById('active-sub-expires');
         
         if (data.success && data.subscription) {
+          // 🔥 СОХРАНЯЕМ ГЛОБАЛЬНО
+          activeSubscription = data.subscription;
+          
           const sub = SUBSCRIPTIONS.find(s => s.id === data.subscription.id) || { name: data.subscription.id };
           activeName.textContent = sub.name;
           
           const expiryDate = new Date(data.subscription.expires_at * 1000);
           activeExpires.textContent = `Действует до: ${expiryDate.toLocaleDateString()}`;
           activeCard.style.display = 'block';
+          
+          // 🔥 ОПЦИОНАЛЬНО: Меняем текст кнопки для активного тарифа
+          document.querySelectorAll('.subscribe-btn').forEach(btn => {
+            if (btn.dataset.subId === data.subscription.id) {
+              btn.textContent = '✅ Активна';
+              btn.style.opacity = '0.7';
+            }
+          });
         } else {
+          activeSubscription = null;
           activeCard.style.display = 'none';
         }
       } catch (error) {
@@ -1174,26 +1187,76 @@
         grid.appendChild(card);
       });
       
-      // Добавляем обработчики на кнопки
+      // 🔥 ОБНОВЛЁННЫЙ ОБРАБОТЧИК С ПРОВЕРКОЙ АКТИВНОЙ ПОДПИСКИ
       document.querySelectorAll('.subscribe-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           const subId = btn.dataset.subId;
           const subPrice = parseInt(btn.dataset.subPrice);
           const subName = SUBSCRIPTIONS.find(s => s.id === subId).name;
           
-          // Показываем подтверждение
-          tg.showPopup({
-            title: '✨ Подписка',
-            message: `Оформить подписку "${subName}" за ${subPrice} ⭐ в месяц?\n\nБонусы начисляются ежедневно.`,
-            buttons: [
-              { type: 'default', text: '✅ Оформить', id: 'subscribe' },
-              { type: 'cancel', text: '❌ Отмена' }
-            ]
-          }, (buttonId) => {
-            if (buttonId === 'subscribe') {
-              purchaseSubscription(subId, subPrice);
+          // 🔥 ЗАГРУЖАЕМ СТАТУС ТЕКУЩЕЙ ПОДПИСКИ
+          let activeSubscription = null;
+          try {
+            const chatId = getChatId();
+            if (chatId) {
+              const response = await fetch(`${API_BASE_URL}/api/user/${chatId}/subscription`);
+              const data = await response.json();
+              if (data.success && data.subscription) {
+                activeSubscription = data.subscription;
+              }
             }
-          });
+          } catch (error) {
+            console.error('Error checking subscription:', error);
+          }
+          
+          // 🔥 ЕСЛИ ЕСТЬ АКТИВНАЯ ПОДПИСКА - ПОКАЗЫВАЕМ ПРЕДУПРЕЖДЕНИЕ ОБ АПГРЕЙДЕ
+          if (activeSubscription) {
+            // Проверяем, не тот же самый ли тариф
+            if (activeSubscription.id === subId) {
+              tg.showPopup({
+                title: 'ℹ️ Информация',
+                message: `У вас уже активен тариф "${subName}".`,
+                buttons: [{ type: 'cancel', text: 'Закрыть' }]
+              });
+              return;
+            }
+            
+            // Находим название текущего тарифа
+            const currentSub = SUBSCRIPTIONS.find(s => s.id === activeSubscription.id) || { name: activeSubscription.id };
+            
+            // Рассчитываем оставшиеся дни
+            const now = Date.now() / 1000;
+            const expiresAt = activeSubscription.expires_at;
+            const daysLeft = Math.ceil((expiresAt - now) / (24 * 3600));
+            
+            // Показываем предупреждение об апгрейде
+            tg.showPopup({
+              title: '⚠️ Апгрейд подписки',
+              message: `У вас осталось ${daysLeft} дн. по тарифу "${currentSub.name}".\n\nПри апгрейде оставшиеся дни сгорят, и новая подписка будет действовать 30 дней.\n\nПродолжить?`,
+              buttons: [
+                { type: 'default', text: '✅ Да, апгрейд', id: 'upgrade' },
+                { type: 'cancel', text: '❌ Отмена' }
+              ]
+            }, (buttonId) => {
+              if (buttonId === 'upgrade') {
+                purchaseSubscription(subId, subPrice);
+              }
+            });
+          } else {
+            // 🔥 НЕТ АКТИВНОЙ ПОДПИСКИ - ОБЫЧНОЕ ПОДТВЕРЖДЕНИЕ
+            tg.showPopup({
+              title: '✨ Подписка',
+              message: `Оформить подписку "${subName}" за ${subPrice} ⭐ в месяц?\n\nБонусы начисляются ежедневно.`,
+              buttons: [
+                { type: 'default', text: '✅ Оформить', id: 'subscribe' },
+                { type: 'cancel', text: '❌ Отмена' }
+              ]
+            }, (buttonId) => {
+              if (buttonId === 'subscribe') {
+                purchaseSubscription(subId, subPrice);
+              }
+            });
+          }
         });
       });
     }
