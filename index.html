@@ -613,6 +613,7 @@
       <button class="tab-button active" data-tab="stats">📊 Характеристики</button>
       <button class="tab-button" data-tab="inventory">🎒 Инвентарь</button>
       <button class="tab-button" data-tab="shop">🛒 Лавка</button>
+      <button class="tab-button" data-tab="subscriptions">✨ Подписки</button>
     </div>
 
     <!-- Вкладка характеристик -->
@@ -852,6 +853,31 @@
         <p style="font-size: 0.7rem; opacity: 0.5;">После оплаты предмет появится в инвентаре</p>
       </div>
     </div>
+
+    <!-- Вкладка подписок -->
+    <div id="subscriptions-content" class="content-section">
+      <div class="shop-header"> <!-- Используем стили шапки магазина -->
+        <h3>✨ Гильдейские привилегии</h3>
+        <p style="font-size: 0.8rem; margin: 5px 0 0 0; opacity: 0.8;">Ежедневные награды в инвентарь</p>
+      </div>
+      
+      <!-- Статус текущей подписки -->
+      <div id="active-subscription-card" style="display: none; margin-bottom: 20px; padding: 15px; background: linear-gradient(45deg, #2c3e50, #3498db); border-radius: 15px; border: 1px solid #f1c40f; text-align: center;">
+        <div style="font-size: 1rem; margin-bottom: 5px;">Ваша подписка:</div>
+        <div id="active-sub-name" style="font-size: 1.4rem; font-weight: bold; color: #f1c40f; margin-bottom: 10px;">Авантюрист</div>
+        <div id="active-sub-expires" style="font-size: 0.9rem; opacity: 0.9;">Действует до: 01.01.2025</div>
+      </div>
+    
+      <!-- Сетка подписок -->
+      <div class="shop-grid" id="subscriptions-grid" style="grid-template-columns: 1fr;"> <!-- Карточки в колонку для читаемости -->
+        <!-- Карточки будут добавлены через JS -->
+      </div>
+      
+      <div style="text-align: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+        <p style="font-size: 0.8rem; opacity: 0.7;">⚡ Автопродление каждый месяц</p>
+        <p style="font-size: 0.7rem; opacity: 0.5;">Награда приходит раз в 24 часа в 00:00 UTC</p>
+      </div>
+    </div>
     
     <!-- Сообщение о загрузке -->
     <div id="loading-message" class="loading-spinner">
@@ -868,6 +894,49 @@
     // ==================== КОНСТАНТЫ ====================
     const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
     const PAYMENT_API_URL = 'https://gmbtest-efich.amvera.io';
+    const SUBSCRIPTIONS = [
+      {
+        id: 'sub_adventurer',
+        name: '🧭 Авантюрист',
+        price: 1, // Для теста 1 звезда
+        features: [
+          '+1 большое зелье энергии',
+          '+50 серебряных монет'
+        ]
+      },
+      {
+        id: 'sub_hero',
+        name: '⚔️ Герой',
+        price: 1, // Для теста 1 звезда
+        features: [
+          '+2 больших зелья энергии',
+          '+100 серебряных монет',
+          '+1 бинт'
+        ]
+      },
+      {
+        id: 'sub_champion',
+        name: '👑 Чемпион',
+        price: 1, // Для теста 1 звезда
+        features: [
+          '+3 больших зелья энергии',
+          '+200 серебряных монет',
+          '+1 бинт',
+          '+1 ремонтный набор'
+        ]
+      },
+      {
+        id: 'sub_legend',
+        name: '🌟 Легенда',
+        price: 1, // Для теста 1 звезда
+        features: [
+          '+5 больших зелий энергии',
+          '+300 серебряных монет',
+          '+1 зелье здоровья',
+          '+1 ремонтный набор'
+        ]
+      }
+    ];
     
     // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
     const tg = window.Telegram.WebApp;
@@ -1045,6 +1114,146 @@
           });
         });
       });
+    }
+
+    // Функция загрузки статуса подписки
+    async function loadSubscriptionStatus() {
+      try {
+        const chatId = getChatId();
+        if (!chatId) return;
+        
+        const response = await fetch(`${API_BASE_URL}/api/user/${chatId}/subscription`);
+        const data = await response.json();
+        
+        const activeCard = document.getElementById('active-subscription-card');
+        const activeName = document.getElementById('active-sub-name');
+        const activeExpires = document.getElementById('active-sub-expires');
+        
+        if (data.success && data.subscription) {
+          const sub = SUBSCRIPTIONS.find(s => s.id === data.subscription.id) || { name: data.subscription.id };
+          activeName.textContent = sub.name;
+          
+          const expiryDate = new Date(data.subscription.expires_at * 1000);
+          activeExpires.textContent = `Действует до: ${expiryDate.toLocaleDateString()}`;
+          activeCard.style.display = 'block';
+        } else {
+          activeCard.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading subscription status:', error);
+      }
+    }
+    
+    // Функция отрисовки карточек подписок
+    function renderSubscriptions() {
+      const grid = document.getElementById('subscriptions-grid');
+      if (!grid) return;
+      
+      grid.innerHTML = '';
+      
+      SUBSCRIPTIONS.forEach(sub => {
+        const card = document.createElement('div');
+        card.className = 'shop-item';
+        card.style.marginBottom = '15px';
+        card.style.padding = '15px';
+        
+        const featuresHtml = sub.features.map(f => `<li style="text-align: left; font-size: 0.8rem; margin-bottom: 5px;">${f}</li>`).join('');
+        
+        card.innerHTML = `
+          <div style="font-size: 2rem; margin-bottom: 5px;">${sub.name.split(' ')[0]}</div>
+          <div class="shop-item-name" style="font-size: 1.2rem; margin-bottom: 10px;">${sub.name}</div>
+          <div class="shop-item-price" style="margin-bottom: 15px;">⭐ ${sub.price} / месяц</div>
+          <ul style="padding-left: 20px; margin-bottom: 20px; min-height: 120px;">
+            ${featuresHtml}
+          </ul>
+          <button class="buy-button subscribe-btn" data-sub-id="${sub.id}" data-sub-price="${sub.price}">
+            Оформить подписку
+          </button>
+        `;
+        
+        grid.appendChild(card);
+      });
+      
+      // Добавляем обработчики на кнопки
+      document.querySelectorAll('.subscribe-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const subId = btn.dataset.subId;
+          const subPrice = parseInt(btn.dataset.subPrice);
+          const subName = SUBSCRIPTIONS.find(s => s.id === subId).name;
+          
+          // Показываем подтверждение
+          tg.showPopup({
+            title: '✨ Подписка',
+            message: `Оформить подписку "${subName}" за ${subPrice} ⭐ в месяц?\n\nБонусы начисляются ежедневно.`,
+            buttons: [
+              { type: 'default', text: '✅ Оформить', id: 'subscribe' },
+              { type: 'cancel', text: '❌ Отмена' }
+            ]
+          }, (buttonId) => {
+            if (buttonId === 'subscribe') {
+              purchaseSubscription(subId, subPrice);
+            }
+          });
+        });
+      });
+    }
+    
+    // Функция покупки подписки
+    async function purchaseSubscription(subscriptionId, price) {
+      try {
+        const chatId = getChatId();
+        
+        if (!chatId) {
+          tg.showPopup({
+            title: '❌ Ошибка',
+            message: 'Не удалось определить пользователя',
+            buttons: [{ type: 'cancel', text: 'Закрыть' }]
+          });
+          return;
+        }
+        
+        // Показываем индикатор загрузки (можно добавить лоадер)
+        tg.MainButton.showProgress();
+        
+        const response = await fetch(`${PAYMENT_API_URL}/api/create_subscription`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: chatId, subscription_id: subscriptionId })
+        });
+        
+        tg.MainButton.hideProgress();
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+          throw new Error(data.error || 'Ошибка создания подписки');
+        }
+        
+        // Открываем ссылку на оплату
+        tg.openInvoice(data.invoice_link, (status) => {
+          if (status === 'paid') {
+            tg.showPopup({
+              title: '🎉 Успех!',
+              message: 'Подписка оформлена! Ежедневные награды будут приходить в инвентарь.',
+              buttons: [{ type: 'default', text: 'Отлично!' }]
+            });
+            // Обновляем статус через 3 секунды, чтобы бэкенд успел обработать
+            setTimeout(() => {
+              loadSubscriptionStatus();
+              loadCharacterData(); // На всякий случай обновим и данные персонажа
+            }, 3000);
+          }
+        });
+        
+      } catch (error) {
+        console.error('Subscription error:', error);
+        tg.MainButton.hideProgress();
+        tg.showPopup({
+          title: '❌ Ошибка',
+          message: error.message || 'Не удалось создать подписку',
+          buttons: [{ type: 'cancel', text: 'Закрыть' }]
+        });
+      }
     }
 
     // ==================== ФУНКЦИИ ДЛЯ РАБОТЫ С ПЕРСОНАЖЕМ ====================
@@ -1498,6 +1707,14 @@
           if (targetTab === 'shop') {
             setTimeout(() => initShop(), 100);
           }
+
+          // НОВОЕ: При переходе на вкладку подписок - грузим данные
+          if (targetTab === 'subscriptions') {
+            setTimeout(() => {
+              renderSubscriptions();
+              loadSubscriptionStatus();
+            }, 50);
+          }
         });
       });
     }
@@ -1520,6 +1737,13 @@
         initShop();
         console.log('🛒 Shop initialized');
       }, 500);
+
+      // Инициализация подписок (рендер карточек)
+      setTimeout(() => {
+        renderSubscriptions();
+        loadSubscriptionStatus();
+        console.log('✨ Subscriptions tab initialized');
+      }, 800);
       
       checkPendingPayment();
       setInterval(() => checkPendingPayment(), 10000);
