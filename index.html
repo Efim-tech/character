@@ -1606,15 +1606,23 @@
     function showItemDetails(item) {
       let buttons = [];
       
-      if (item.type === 'potion' || item.type === 'medical' || item.type === 'repair') {
+      // Предметы, которые можно использовать
+      if (item.type === 'potion' || item.type === 'medical' || item.type === 'repair' || item.type === 'consumable') {
         buttons.push({ type: 'default', text: '🧪 Использовать', id: 'use_item' });
       }
       
       buttons.push({ type: 'cancel', text: 'Закрыть' });
       
+      let message = `${item.description || 'Описание отсутствует'}\n\nТип: ${getItemTypeName(item.type)}\nКоличество: ${item.quantity}`;
+      
+      // 🔥 Дополнительная информация для кристаллов
+      if (item.effects && item.effects.visual_energy) {
+        message += `\n\n🔮 Восстановит: ${item.effects.visual_energy} зарядов кристалла`;
+      }
+      
       tg.showPopup({
         title: item.name,
-        message: `${item.description || 'Описание отсутствует'}\n\nТип: ${getItemTypeName(item.type)}\nКоличество: ${item.quantity}`,
+        message: message,
         buttons: buttons
       }, (buttonId) => {
         if (buttonId === 'use_item') useItem(item.name);
