@@ -636,16 +636,6 @@
             <div class="bar-text" id="armor-text">0</div>
           </div>
         </div>
-
-        <div class="stat-card">
-          <div class="stat-value" id="crystal-value">0/50</div>
-          <div class="stat-label">🔮 Плазменный кристалл</div>
-          <div class="crystal-bar" style="height: 20px; background: rgba(0, 0, 0, 0.5); border-radius: 10px; margin: 10px 0; overflow: hidden; position: relative;">
-            <div class="crystal-fill" id="crystal-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #9b59b6, #8e44ad); border-radius: 10px; transition: width 0.5s ease; box-shadow: 0 0 10px rgba(155, 89, 182, 0.5);"></div>
-            <div class="bar-text" id="crystal-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); font-size: 0.8rem;">0/50</div>
-          </div>
-          <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 5px;">Для генерации картинок</div>
-        </div>
     
         <div class="stat-card">
           <div class="stat-value" id="energy-value">0/0</div>
@@ -657,6 +647,16 @@
           <div id="energy-timer" class="energy-timer" style="display: none;">
             ⏳ <span id="timer-value">60</span> сек
           </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-value" id="crystal-value">0/50</div>
+          <div class="stat-label">🔮 Плазменный кристалл</div>
+          <div class="crystal-bar" style="height: 20px; background: rgba(0, 0, 0, 0.5); border-radius: 10px; margin: 10px 0; overflow: hidden; position: relative;">
+            <div class="crystal-fill" id="crystal-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #9b59b6, #8e44ad); border-radius: 10px; transition: width 0.5s ease; box-shadow: 0 0 10px rgba(155, 89, 182, 0.5);"></div>
+            <div class="bar-text" id="crystal-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); font-size: 0.8rem;">0/50</div>
+          </div>
+          <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 5px;">Для генерации изображений</div>
         </div>
 
         <div class="stat-card">
@@ -745,15 +745,47 @@
             <div class="shop-item-description">+50 энергии (50 запросов)</div>
             <button class="buy-button">Купить за 7⭐</button>
           </div>
-          <div class="shop-item" data-item-id="crystal_charge" data-price="5">
-              <div class="shop-item-icon">🔮</div>
-              <div class="shop-item-name">Заряд для кристалла</div>
-              <div class="shop-item-description">+1 заряд для генерации картинок</div>
-              <button class="buy-button">Купить за 1⭐</button>
-          </div>
+      <!-- СЕКЦИЯ: Заряды для кристалла -->
+      <div style="margin-bottom: 15px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="font-size: 1.2rem;">🔮</span>
+          <span style="font-weight: bold; color: var(--secondary-color);">Заряды для кристалла</span>
+          <span style="font-size: 0.7rem; background: rgba(155, 89, 182, 0.2); padding: 2px 8px; border-radius: 10px;">Генерация изображений</span>
         </div>
-      </div>
-      
+        
+        <div class="shop-grid">
+          <!-- Малый заряд (+5) -->
+          <div class="shop-item" data-item-id="crystal_charge_5" data-price="3">
+            <div class="shop-item-icon">🔮</div>
+            <div class="shop-item-name">Малый заряд кристалла</div>
+            <div class="shop-item-description">+5 зарядов для генерации картинок</div>
+            <button class="buy-button">Купить за 1⭐</button>
+          </div>
+          
+          <!-- Средний заряд (+10) -->
+          <div class="shop-item" data-item-id="crystal_charge_10" data-price="5">
+            <div class="shop-item-icon">🔮🔮</div>
+            <div class="shop-item-name">Средний заряд кристалла</div>
+            <div class="shop-item-description">+10 зарядов для генерации картинок</div>
+            <button class="buy-button">Купить за 5⭐</button>
+          </div>
+          
+          <!-- Большой заряд (+25) -->
+          <div class="shop-item" data-item-id="crystal_charge_25" data-price="10">
+            <div class="shop-item-icon">🔮🔮🔮</div>
+            <div class="shop-item-name">Большой заряд кристалла</div>
+            <div class="shop-item-description">+25 зарядов для генерации картинок</div>
+            <button class="buy-button">Купить за 10⭐</button>
+          </div>
+          
+          <!-- Огромный заряд (+50) -->
+          <div class="shop-item" data-item-id="crystal_charge_50" data-price="18">
+            <div class="shop-item-icon">💎</div>
+            <div class="shop-item-name">Огромный заряд кристалла</div>
+            <div class="shop-item-description">+50 зарядов для генерации картинок</div>
+            <button class="buy-button">Купить за 18⭐</button>
+          </div>
+          
       <!-- СЕКЦИЯ: Серебряные монеты -->
       <div style="margin-bottom: 15px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
