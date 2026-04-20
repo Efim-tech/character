@@ -636,6 +636,16 @@
             <div class="bar-text" id="armor-text">0</div>
           </div>
         </div>
+
+        <div class="stat-card">
+          <div class="stat-value" id="crystal-value">0/50</div>
+          <div class="stat-label">🔮 Плазменный кристалл</div>
+          <div class="crystal-bar" style="height: 20px; background: rgba(0, 0, 0, 0.5); border-radius: 10px; margin: 10px 0; overflow: hidden; position: relative;">
+            <div class="crystal-fill" id="crystal-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #9b59b6, #8e44ad); border-radius: 10px; transition: width 0.5s ease; box-shadow: 0 0 10px rgba(155, 89, 182, 0.5);"></div>
+            <div class="bar-text" id="crystal-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); font-size: 0.8rem;">0/50</div>
+          </div>
+          <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 5px;">Для генерации картинок</div>
+        </div>
     
         <div class="stat-card">
           <div class="stat-value" id="energy-value">0/0</div>
@@ -734,6 +744,12 @@
             <div class="shop-item-name">Большое зелье энергии</div>
             <div class="shop-item-description">+50 энергии (50 запросов)</div>
             <button class="buy-button">Купить за 7⭐</button>
+          </div>
+          <div class="shop-item" data-item-id="crystal_charge" data-price="5">
+              <div class="shop-item-icon">🔮</div>
+              <div class="shop-item-name">Заряд для кристалла</div>
+              <div class="shop-item-description">+1 заряд для генерации картинок</div>
+              <button class="buy-button">Купить за 1⭐</button>
           </div>
         </div>
       </div>
@@ -1385,6 +1401,30 @@
       document.getElementById('energy-value').textContent = `${energyCurrent}/${energyMax}`;
       document.getElementById('energy-fill').style.width = `${energyPercent}%`;
       document.getElementById('energy-text').textContent = `${energyCurrent}/${energyMax}`;
+
+      // ОБНОВЛЕНИЕ КРИСТАЛЛОВ
+      const crystalsCurrent = characterData.visual_energy?.current || 0;
+      const crystalsMax = characterData.visual_energy?.max || 50;
+      const crystalsPercent = crystalsMax > 0 ? (crystalsCurrent / crystalsMax) * 100 : 0;
+      
+      const crystalValueEl = document.getElementById('crystal-value');
+      const crystalFillEl = document.getElementById('crystal-fill');
+      const crystalTextEl = document.getElementById('crystal-text');
+      
+      if (crystalValueEl) crystalValueEl.textContent = `${crystalsCurrent}/${crystalsMax}`;
+      if (crystalFillEl) crystalFillEl.style.width = `${crystalsPercent}%`;
+      if (crystalTextEl) crystalTextEl.textContent = `${crystalsCurrent}/${crystalsMax}`;
+      
+      // Изменение цвета в зависимости от заряда
+      if (crystalValueEl) {
+          if (crystalsCurrent === 0) {
+              crystalValueEl.style.color = '#ff6b6b';
+          } else if (crystalsCurrent < 10) {
+              crystalValueEl.style.color = '#ffd700';
+          } else {
+              crystalValueEl.style.color = '#daa520';
+          }
+      }
       
       // Броня
       const armorPercent = characterData.max_armor > 0 ? (characterData.armor / characterData.max_armor) * 100 : 0;
