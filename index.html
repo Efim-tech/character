@@ -2,30 +2,34 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>⚔️ СВИТОК ГЕРОЯ ⚔️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>⚔️ ХРОНИКИ ГЕРОЯ ⚔️</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Подключаем атмосферный шрифт -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ==================== МАГИЧЕСКИЙ РЕДИЗАЙН ==================== */
+    /* ============================================
+       СОВРЕМЕННЫЙ ФЭНТЕЗИ-ДИЗАЙН С НУЛЯ
+       ============================================ */
     :root {
-      --primary-gold: #daa520;
-      --deep-gold: #b8860b;
-      --magic-purple: #8a2be2;
-      --crimson-red: #dc143c;
-      --emerald-green: #2ecc71;
-      --sapphire-blue: #3498db;
-      --shadow-black: #0a0a0f;
-      --parchment-light: #f5e6c8;
-      --parchment-dark: #d4b896;
+      --gold: #ffd700;
+      --gold-dim: #b8860b;
+      --gold-glow: rgba(255, 215, 0, 0.5);
+      --blood: #8b0000;
+      --blood-light: #ff4444;
+      --sapphire: #0a1930;
+      --sapphire-light: #1a3a5c;
+      --emerald: #0a3020;
+      --amethyst: #2a1030;
+      --parchment: #f0e6d2;
+      --parchment-dark: #8b7355;
+      --shadow: #0a0a0f;
       
-      --bg-gradient: linear-gradient(145deg, #0a0a0f 0%, #1a1025 30%, #0d1520 70%, #0a0a0f 100%);
-      --card-bg: rgba(15, 10, 20, 0.75);
-      --card-border: 1px solid rgba(218, 165, 32, 0.3);
-      --glow-gold: 0 0 15px rgba(218, 165, 32, 0.4);
-      --glow-magic: 0 0 20px rgba(138, 43, 226, 0.3);
-      --inner-glow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+      --glass-bg: rgba(10, 20, 30, 0.7);
+      --glass-border: rgba(255, 215, 0, 0.2);
+      --glass-highlight: rgba(255, 255, 255, 0.05);
+      
+      --card-radius: 24px;
+      --card-padding: 18px;
     }
 
     * {
@@ -35,747 +39,1016 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg-gradient);
+      font-family: 'Manrope', sans-serif;
+      background: #0a0f18;
       min-height: 100vh;
-      color: var(--parchment-light);
+      color: var(--parchment);
       overflow-x: hidden;
       position: relative;
     }
 
-    /* Атмосферный фон с анимированными рунами */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: 
-        radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(218, 165, 32, 0.06) 0%, transparent 60%),
-        repeating-linear-gradient(45deg, rgba(218, 165, 32, 0.02) 0px, rgba(218, 165, 32, 0.02) 2px, 
-                                  transparent 2px, transparent 8px);
-      pointer-events: none;
-      z-index: 1;
-      animation: runeFloat 30s infinite linear;
-    }
-
-    @keyframes runeFloat {
-      0% { background-position: 0 0, 0 0, 0 0; }
-      100% { background-position: 100px 50px, -50px 100px, 20px 20px; }
-    }
-
-    /* Магическая дымка */
-    .magic-mist {
+    /* ===== ЭПИЧЕСКИЙ ФОН С ПАРАЛЛАКСОМ ===== */
+    .background-layer {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      z-index: 0;
       pointer-events: none;
-      background: 
-        radial-gradient(circle at 30% 40%, rgba(220, 20, 60, 0.04) 0%, transparent 40%),
-        radial-gradient(circle at 70% 60%, rgba(138, 43, 226, 0.04) 0%, transparent 50%);
-      z-index: 2;
-      animation: mistFlow 20s infinite alternate;
     }
 
-    @keyframes mistFlow {
-      0% { opacity: 0.5; transform: scale(1); }
-      100% { opacity: 1; transform: scale(1.05); }
-    }
-
-    .container {
+    /* Глубокое космическое небо */
+    .bg-sky {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 15px 12px;
+      height: 100%;
+      background: radial-gradient(ellipse at 30% 20%, #1a2a4a 0%, #0a1220 50%, #050a10 100%);
+    }
+
+    /* Звёзды */
+    .bg-stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 15% 25%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1px 1px at 35% 45%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(2px 2px at 55% 15%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1px 1px at 75% 35%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(3px 3px at 85% 65%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1px 1px at 10% 75%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(2px 2px at 45% 85%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1px 1px at 95% 15%, rgba(255, 255, 255, 0.6), transparent);
+      animation: twinkle 4s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    /* Туманности */
+    .bg-nebula {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(0, 150, 200, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(255, 100, 50, 0.08) 0%, transparent 60%);
+      filter: blur(40px);
+      animation: nebulaFlow 30s infinite alternate ease-in-out;
+    }
+
+    @keyframes nebulaFlow {
+      0% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(-2%, 1%) scale(1.05); }
+      66% { transform: translate(1%, -2%) scale(1.02); }
+      100% { transform: translate(2%, 2%) scale(1.08); }
+    }
+
+    /* Горы на горизонте */
+    .bg-mountains {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      background: linear-gradient(0deg, 
+        #0a1220 0%,
+        #0d1a2a 20%,
+        #111e30 40%,
+        transparent 100%);
+      clip-path: polygon(0% 100%, 0% 60%, 8% 45%, 15% 55%, 22% 35%, 30% 50%, 
+                         38% 30%, 45% 48%, 52% 25%, 60% 42%, 68% 20%, 75% 38%, 
+                         82% 28%, 90% 45%, 95% 35%, 100% 50%, 100% 100%);
+    }
+
+    .bg-mountains::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(0deg, 
+        #060a12 0%,
+        #0a1220 30%,
+        transparent 100%);
+      clip-path: polygon(0% 100%, 0% 75%, 10% 60%, 20% 70%, 30% 55%, 40% 65%, 
+                         50% 45%, 60% 60%, 70% 40%, 80% 55%, 90% 48%, 100% 65%, 100% 100%);
+    }
+
+    /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+    .app-container {
       position: relative;
       z-index: 10;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 12px 14px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* ==================== ЗАГОЛОВОК С ЭФФЕКТОМ СВИТКА ==================== */
-    .hero-header {
-      text-align: center;
-      margin-bottom: 20px;
-      position: relative;
+    /* ===== ВЕРХНЯЯ ПАНЕЛЬ ===== */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 8px 0;
     }
 
-    .scroll-decoration {
+    .hero-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 5px;
-    }
-
-    .scroll-line {
-      height: 2px;
-      width: 40px;
-      background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
-    }
-
-    .title-rune {
-      font-size: 1.2rem;
-      color: var(--primary-gold);
-      text-shadow: var(--glow-gold);
-      opacity: 0.8;
-    }
-
-    h1 {
-      font-family: 'Cinzel', serif;
-      font-size: 1.9rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, #f5e6c8 0%, #daa520 50%, #ffd700 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 30px rgba(218, 165, 32, 0.5);
-      letter-spacing: 3px;
-      margin: 5px 0;
-      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
-    }
-
-    #character-name {
-      font-family: 'Cinzel', serif;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--parchment-light);
-      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
-      background: rgba(10, 10, 15, 0.5);
-      display: inline-block;
-      padding: 5px 20px;
-      border-radius: 30px;
-      border: 1px solid rgba(218, 165, 32, 0.3);
-      backdrop-filter: blur(5px);
-      margin-top: 5px;
-    }
-
-    /* ==================== ВКЛАДКИ В СТИЛЕ РУН ==================== */
-    .rune-tabs {
-      display: flex;
-      justify-content: space-around;
-      gap: 5px;
-      margin-bottom: 20px;
-      background: rgba(10, 10, 15, 0.5);
-      padding: 6px;
-      border-radius: 50px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(218, 165, 32, 0.2);
-    }
-
-    .tab-button {
-      font-family: 'Cinzel', serif;
-      background: transparent;
-      border: none;
-      padding: 10px 8px;
-      border-radius: 40px;
-      color: var(--parchment-dark);
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.8rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(5px);
-      border: 1px solid transparent;
-    }
-
-    .tab-button.active {
-      background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(184, 134, 11, 0.1));
-      color: var(--primary-gold);
-      text-shadow: var(--glow-gold);
-      border: 1px solid rgba(218, 165, 32, 0.5);
-      box-shadow: inset 0 0 15px rgba(218, 165, 32, 0.1), 0 5px 15px rgba(0, 0, 0, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .tab-button::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      width: 0;
-      height: 2px;
-      background: var(--primary-gold);
-      transition: all 0.3s ease;
-      transform: translateX(-50%);
-      box-shadow: var(--glow-gold);
-    }
-
-    .tab-button.active::after {
-      width: 70%;
-    }
-
-    /* ==================== КАРТОЧКИ СТАТИСТИК ==================== */
-    .content-section {
-      display: none;
-      animation: sectionFade 0.5s ease;
-    }
-
-    .content-section.active {
-      display: block;
-    }
-
-    @keyframes sectionFade {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 15px;
-    }
-
-    .stat-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 15px 10px;
-      border: var(--card-border);
-      box-shadow: var(--inner-glow), 0 8px 20px rgba(0, 0, 0, 0.4);
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s ease, box-shadow 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--inner-glow), 0 12px 25px rgba(0, 0, 0, 0.5), var(--glow-gold);
-      border-color: rgba(218, 165, 32, 0.5);
-    }
-
-    /* Декоративные руны на карточках */
-    .stat-card::before {
-      content: '⚔️';
-      position: absolute;
-      bottom: 5px;
-      right: 5px;
-      font-size: 2rem;
-      opacity: 0.05;
-      transform: rotate(-15deg);
-      pointer-events: none;
-    }
-
-    .stat-value {
-      font-family: 'Cinzel', serif;
-      font-size: 1.8rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #f5e6c8, #daa520);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: var(--glow-gold);
-      line-height: 1.2;
-      margin-bottom: 5px;
-    }
-
-    .stat-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--parchment-dark);
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    /* Стилизованные полосы прогресса */
-    .health-bar, .energy-bar, .armor-bar, .crystal-bar {
-      height: 18px;
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 30px;
-      margin: 10px 0 5px;
-      overflow: hidden;
-      position: relative;
-      border: 1px solid rgba(218, 165, 32, 0.3);
-      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
-    }
-
-    .health-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #8b0000, #dc143c, #ff6b6b);
-      border-radius: 30px;
-      box-shadow: 0 0 15px rgba(220, 20, 60, 0.5);
-      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 28px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 215, 0, 0.3), 0 0 20px var(--gold-glow);
       position: relative;
       overflow: hidden;
     }
 
-    .health-fill::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      animation: shine 3s infinite;
-    }
-
-    .energy-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #1e3a5f, #3498db, #5dade2);
-      border-radius: 30px;
-      box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
-      transition: width 0.5s ease;
-    }
-
-    .armor-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #2c3e50, #7f8c8d, #bdc3c7);
-      border-radius: 30px;
-      box-shadow: 0 0 15px rgba(189, 195, 199, 0.5);
-      transition: width 0.5s ease;
-    }
-
-    .crystal-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #4a235a, #8e44ad, #d2b4de);
-      border-radius: 30px;
-      box-shadow: 0 0 20px rgba(155, 89, 182, 0.7);
-      transition: width 0.5s ease;
-      animation: crystalPulse 3s infinite;
-    }
-
-    @keyframes crystalPulse {
-      0%, 100% { filter: brightness(1); }
-      50% { filter: brightness(1.2); }
-    }
-
-    @keyframes shine {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    .bar-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-weight: bold;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
-      font-size: 0.7rem;
-      color: white;
-      z-index: 2;
-    }
-
-    /* XP Bar */
-    .xp-bar {
-      height: 10px;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 20px;
-      margin: 8px 0;
-      overflow: hidden;
-      border: 1px solid var(--primary-gold);
-    }
-
-    .xp-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #b8860b, #ffd700, #ffaa00);
-      border-radius: 20px;
-      box-shadow: 0 0 10px #ffd700;
-      transition: width 0.5s ease;
-    }
-
-    /* Энергетический таймер */
-    .energy-timer {
-      background: rgba(52, 152, 219, 0.15);
-      border: 1px solid #3498db;
-      border-radius: 30px;
-      padding: 4px 10px;
-      margin-top: 8px;
-      font-size: 0.7rem;
-      text-align: center;
-      color: #5dade2;
-      text-shadow: 0 0 8px #3498db;
-      backdrop-filter: blur(5px);
-      animation: gentlePulse 2s infinite;
-    }
-
-    @keyframes gentlePulse {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 1; }
-    }
-
-    /* ==================== ИНВЕНТАРЬ И МАГАЗИН ==================== */
-    .inventory-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      padding: 10px 15px;
-      background: rgba(218, 165, 32, 0.1);
-      border-radius: 40px;
-      border: 1px solid rgba(218, 165, 32, 0.2);
-      backdrop-filter: blur(10px);
-    }
-
-    .inventory-grid, .shop-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 12px;
-    }
-
-    .inventory-item-card, .shop-item {
-      background: linear-gradient(145deg, rgba(30, 20, 40, 0.9), rgba(15, 10, 20, 0.95));
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(218, 165, 32, 0.3);
-      border-radius: 20px;
-      padding: 15px 10px;
-      text-align: center;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .inventory-item-card::before, .shop-item::before {
+    .hero-avatar::before {
       content: '';
       position: absolute;
       top: -50%;
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(218, 165, 32, 0.1) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: avatarShine 4s infinite;
     }
 
-    .inventory-item-card:hover::before, .shop-item:hover::before {
-      opacity: 1;
+    @keyframes avatarShine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      25% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
     }
 
-    .inventory-item-card:hover, .shop-item:hover {
-      transform: translateY(-5px) scale(1.02);
-      border-color: var(--primary-gold);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), var(--glow-gold);
+    .hero-info h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--parchment), var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 2px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
-    .inventory-item-icon, .shop-item-icon {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 0 10px rgba(218, 165, 32, 0.3));
+    .hero-info p {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
-    .inventory-item-name, .shop-item-name {
+    /* Кошелёк в правом верхнем углу */
+    .wallet-display {
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.3), rgba(255, 215, 0, 0.1));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 10px 16px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wallet-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+      animation: walletShine 5s infinite;
+    }
+
+    @keyframes walletShine {
+      0%, 100% { left: -100%; }
+      50% { left: 100%; }
+    }
+
+    .wallet-icon {
+      font-size: 1.3rem;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+    }
+
+    #wallet-value {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--gold-glow);
+      min-width: 60px;
+      text-align: right;
+    }
+
+    /* ===== НАВИГАЦИЯ - СТИЛЬНЫЕ ПИЛЮЛИ ===== */
+    .nav-pills {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      background: rgba(10, 20, 30, 0.5);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 6px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 215, 0, 0.15);
+    }
+
+    .nav-pill {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      background: transparent;
+      color: var(--parchment-dark);
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-pill.active {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(184, 134, 11, 0.15));
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--gold-glow);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .nav-pill::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      box-shadow: 0 0 15px var(--gold);
+      transition: width 0.3s ease;
+    }
+
+    .nav-pill.active::after {
+      width: 40%;
+    }
+
+    /* ===== КОНТЕНТНЫЕ СЕКЦИИ ===== */
+    .content-section {
+      display: none;
+      flex: 1;
+      animation: fadeSlide 0.4s ease;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== КАРТОЧКИ ХАРАКТЕРИСТИК ===== */
+    .stats-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Основные бары (HP, Energy, Armor) */
+    .vital-card {
+      background: linear-gradient(145deg, rgba(10, 25, 35, 0.8), rgba(5, 15, 25, 0.9));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 20px var(--card-padding);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .vital-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.5;
+    }
+
+    .vital-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .vital-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-family: 'Cinzel', serif;
       font-weight: 600;
       font-size: 0.9rem;
-      color: var(--primary-gold);
-      margin-bottom: 5px;
-      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    }
-
-    .inventory-item-description, .shop-item-description {
-      font-size: 0.7rem;
-      color: var(--parchment-dark);
-      margin-bottom: 10px;
-      line-height: 1.3;
-    }
-
-    .buy-button {
-      background: linear-gradient(135deg, #2c3e50, #1a252f);
-      border: 1px solid var(--primary-gold);
-      color: var(--primary-gold);
-      padding: 8px 12px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: bold;
-      width: 100%;
-      transition: all 0.3s ease;
-      font-family: 'Cinzel', serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 0.75rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .buy-button:hover {
-      background: linear-gradient(135deg, var(--primary-gold), #b8860b);
-      color: #0a0a0f;
-      box-shadow: 0 0 20px var(--primary-gold);
-      transform: scale(1.02);
-    }
-
-    /* Редкости предметов */
-    .item-rarity-common { border-top: 3px solid #95a5a6; }
-    .item-rarity-uncommon { border-top: 3px solid #2ecc71; }
-    .item-rarity-rare { border-top: 3px solid #3498db; }
-    .item-rarity-epic { border-top: 3px solid #9b59b6; }
-    .item-rarity-legendary { border-top: 3px solid #f1c40f; }
-
-    .inventory-item-equipped {
-      border: 2px solid #2ecc71;
-      box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
-    }
-
-    .inventory-item-equipped::after {
-      content: '⚔️ ЭКИП';
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      background: #27ae60;
-      color: white;
-      font-size: 0.55rem;
-      padding: 3px 6px;
-      border-radius: 20px;
-      font-weight: bold;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Кнопки и элементы управления */
-    .magic-button {
-      background: linear-gradient(135deg, rgba(218, 165, 32, 0.2), rgba(184, 134, 11, 0.1));
-      border: 1px solid var(--primary-gold);
-      color: var(--primary-gold);
-      padding: 12px 20px;
-      border-radius: 40px;
-      cursor: pointer;
-      font-weight: bold;
-      margin: 15px auto;
-      display: block;
-      width: fit-content;
-      transition: all 0.3s ease;
-      font-family: 'Cinzel', serif;
       text-transform: uppercase;
       letter-spacing: 2px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      color: var(--parchment);
     }
 
-    .magic-button:hover {
-      background: var(--primary-gold);
-      color: #0a0a0f;
-      box-shadow: 0 0 30px var(--primary-gold);
-      transform: translateY(-2px);
+    .vital-icon {
+      font-size: 1.3rem;
     }
 
-    /* Сообщения об ошибках и загрузке */
-    .loading-spinner {
-      text-align: center;
-      padding: 40px 20px;
-      background: var(--card-bg);
-      border-radius: 30px;
-      border: 1px solid var(--primary-gold);
-      backdrop-filter: blur(15px);
-      color: var(--primary-gold);
+    .vital-value {
       font-family: 'Cinzel', serif;
-      animation: gentlePulse 2s infinite;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--gold-glow);
     }
 
-    .error-message {
-      background: rgba(220, 20, 60, 0.2);
-      border: 2px solid var(--crimson-red);
-      border-radius: 20px;
-      padding: 20px;
-      text-align: center;
-      margin: 15px 0;
-      backdrop-filter: blur(15px);
-      color: #ff6b6b;
-      text-shadow: 0 0 10px rgba(220, 20, 60, 0.5);
-      font-weight: 600;
+    /* Кастомные прогресс-бары */
+    .progress-bar-container {
+      position: relative;
+      height: 28px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 40px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
     }
 
-    /* Адаптивность */
-    @media (max-width: 480px) {
-      .container { padding: 10px 8px; }
-      h1 { font-size: 1.6rem; }
-      .tab-button { padding: 8px 5px; font-size: 0.7rem; }
-      .stats-grid { grid-template-columns: 1fr; }
-      .stat-value { font-size: 1.5rem; }
+    .progress-fill {
+      height: 100%;
+      border-radius: 40px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Анимации урона */
-    .damage-notification, .armor-damage-notification {
-      position: fixed;
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: barShine 2.5s infinite;
+    }
+
+    @keyframes barShine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .hp-fill {
+      background: linear-gradient(90deg, #8b0000, #dc143c, #ff4444);
+      box-shadow: 0 0 20px rgba(220, 20, 60, 0.6);
+    }
+
+    .energy-fill {
+      background: linear-gradient(90deg, #1a3a5c, #3498db, #5dade2);
+      box-shadow: 0 0 20px rgba(52, 152, 219, 0.6);
+    }
+
+    .armor-fill {
+      background: linear-gradient(90deg, #2c3e50, #7f8c8d, #bdc3c7);
+      box-shadow: 0 0 20px rgba(189, 195, 199, 0.5);
+    }
+
+    .crystal-fill {
+      background: linear-gradient(90deg, #4a235a, #8e44ad, #d2b4de);
+      box-shadow: 0 0 25px rgba(155, 89, 182, 0.8);
+      animation: crystalPulse 2.5s infinite;
+    }
+
+    @keyframes crystalPulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.3); }
+    }
+
+    .progress-text {
+      position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: linear-gradient(135deg, rgba(220, 20, 60, 0.95), rgba(139, 0, 0, 0.95));
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
       color: white;
-      padding: 20px 35px;
-      border-radius: 50px;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    /* Сетка для остальных статов */
+    .stats-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stat-tile {
+      background: linear-gradient(145deg, rgba(10, 25, 35, 0.7), rgba(5, 15, 25, 0.8));
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 22px;
+      padding: 16px 12px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.1);
+      border-color: rgba(255, 215, 0, 0.3);
+    }
+
+    .stat-tile .icon {
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+    }
+
+    .stat-tile .value {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--gold-glow);
+      line-height: 1.2;
+    }
+
+    .stat-tile .label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    /* XP Bar специальный */
+    .xp-container {
+      margin-top: 8px;
+    }
+
+    .xp-bar-small {
+      height: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 8px 0 4px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .xp-fill-small {
+      height: 100%;
+      background: linear-gradient(90deg, #b8860b, #ffd700, #ffaa00);
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ffd700;
+    }
+
+    /* Карточка оружия */
+    .weapon-showcase {
+      background: linear-gradient(145deg, rgba(20, 40, 50, 0.8), rgba(10, 20, 30, 0.9));
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 18px var(--card-padding);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 5px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .weapon-icon {
+      font-size: 2.5rem;
+      filter: drop-shadow(0 0 15px var(--gold-glow));
+    }
+
+    .weapon-details {
+      flex: 1;
+    }
+
+    .weapon-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0.6;
+    }
+
+    #weapon-value {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--parchment);
+    }
+
+    /* Статус (Жив/Мёртв) */
+    .status-indicator {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .status-alive {
+      color: #2ecc71;
+      text-shadow: 0 0 10px #2ecc71;
+      border-color: #2ecc71;
+    }
+
+    .status-dead {
+      color: #ff4444;
+      text-shadow: 0 0 10px #ff4444;
+      border-color: #ff4444;
+    }
+
+    /* ===== ИНВЕНТАРЬ ===== */
+    .inventory-header-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      background: rgba(10, 25, 35, 0.5);
+      backdrop-filter: blur(15px);
+      border-radius: 40px;
+      border: 1px solid rgba(255, 215, 0, 0.15);
+    }
+
+    .inventory-grid-new {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .item-card {
+      background: linear-gradient(145deg, rgba(15, 30, 40, 0.9), rgba(8, 18, 28, 0.95));
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 16px 10px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .item-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--gold);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--gold-glow);
+    }
+
+    .item-card.equipped {
+      border: 2px solid #2ecc71;
+      box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
+    }
+
+    .item-card.equipped::after {
+      content: '⚔️';
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 0.8rem;
+      background: #2ecc71;
+      padding: 3px 6px;
+      border-radius: 30px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .item-icon-large {
       font-size: 2.8rem;
-      font-weight: 900;
-      z-index: 10000;
-      animation: damageFloat 1.5s ease-out forwards;
-      pointer-events: none;
-      box-shadow: 0 0 40px rgba(220, 20, 60, 0.7);
-      text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 8px;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+    }
+
+    .item-name {
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .item-desc {
+      font-size: 0.65rem;
+      opacity: 0.7;
+      margin-bottom: 10px;
+    }
+
+    .item-footer-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .item-quantity-badge {
+      background: var(--gold-dim);
+      padding: 3px 10px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #0a0f18;
+    }
+
+    /* ===== МАГАЗИН И ПОДПИСКИ ===== */
+    .shop-category {
+      margin-bottom: 24px;
+    }
+
+    .shop-category-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+    }
+
+    .shop-grid-new {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .shop-item-card {
+      background: linear-gradient(145deg, rgba(15, 30, 40, 0.9), rgba(8, 18, 28, 0.95));
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 16px 10px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      text-align: center;
+      transition: all 0.25s ease;
+    }
+
+    .shop-item-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 25px var(--gold-glow);
+    }
+
+    .price-tag {
+      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+      color: #0a0f18;
+      padding: 6px 12px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: inline-block;
+      margin: 10px 0;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .buy-btn {
+      background: transparent;
+      border: 1.5px solid var(--gold);
+      color: var(--gold);
+      padding: 10px 12px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
       font-family: 'Cinzel', serif;
     }
 
-    .armor-damage-notification {
-      background: linear-gradient(135deg, rgba(52, 152, 219, 0.95), rgba(30, 80, 120, 0.95));
-      box-shadow: 0 0 40px rgba(52, 152, 219, 0.7);
+    .buy-btn:hover {
+      background: var(--gold);
+      color: #0a0f18;
+      box-shadow: 0 0 20px var(--gold);
     }
 
-    @keyframes damageFloat {
+    /* Кнопка обновления */
+    .action-btn {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(184, 134, 11, 0.05));
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 14px 20px;
+      border-radius: 50px;
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .action-btn:hover {
+      background: var(--gold);
+      color: #0a0f18;
+      box-shadow: 0 0 30px var(--gold);
+    }
+
+    /* Энергетический таймер */
+    .energy-timer-notice {
+      background: rgba(52, 152, 219, 0.15);
+      border: 1px solid #3498db;
+      border-radius: 40px;
+      padding: 8px 14px;
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #5dade2;
+      backdrop-filter: blur(10px);
+      display: none;
+    }
+
+    /* Сообщения */
+    .loading-state {
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(10, 20, 30, 0.7);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+    }
+
+    .error-state {
+      background: rgba(220, 20, 60, 0.2);
+      border: 2px solid #dc143c;
+      border-radius: 24px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      color: #ff6b6b;
+    }
+
+    /* Анимации урона */
+    .damage-popup {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #dc143c, #8b0000);
+      color: white;
+      padding: 18px 35px;
+      border-radius: 60px;
+      font-size: 2.5rem;
+      font-weight: 900;
+      z-index: 10000;
+      animation: damagePop 1.2s ease-out forwards;
+      pointer-events: none;
+      box-shadow: 0 0 50px #dc143c;
+      text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .armor-popup {
+      background: linear-gradient(135deg, #3498db, #1a3a5c);
+      box-shadow: 0 0 50px #3498db;
+    }
+
+    @keyframes damagePop {
       0% { opacity: 0; transform: translate(-50%, -30%) scale(0.7); }
-      20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-      60% { opacity: 1; transform: translate(-50%, -60%) scale(1); }
+      15% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      70% { opacity: 1; transform: translate(-50%, -60%) scale(1); }
       100% { opacity: 0; transform: translate(-50%, -80%) scale(0.9); }
     }
 
-    .shake-on-damage {
-      animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    .shake-effect {
+      animation: shakeAnim 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     }
 
-    @keyframes shake {
+    @keyframes shakeAnim {
       10%, 90% { transform: translate3d(-1px, 0, 0); }
       20%, 80% { transform: translate3d(2px, 0, 0); }
       30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
       40%, 60% { transform: translate3d(4px, 0, 0); }
     }
+
+    /* Адаптивность */
+    @media (max-width: 380px) {
+      .app-container { padding: 10px 10px 15px; }
+      .stats-grid-3 { gap: 8px; }
+      .inventory-grid-new, .shop-grid-new { gap: 8px; }
+    }
   </style>
 </head>
 <body>
-  <div class="magic-mist"></div>
-  <div class="container">
-    <div class="hero-header">
-      <div class="scroll-decoration">
-        <span class="scroll-line"></span>
-        <span class="title-rune">✦</span>
-        <span class="scroll-line"></span>
-      </div>
-      <h1>СВИТОК ГЕРОЯ</h1>
-      <div id="character-name">Призыв героя...</div>
-    </div>
+  <!-- Эпический фон -->
+  <div class="background-layer">
+    <div class="bg-sky"></div>
+    <div class="bg-stars"></div>
+    <div class="bg-nebula"></div>
+    <div class="bg-mountains"></div>
+  </div>
 
-    <div class="rune-tabs">
-      <button class="tab-button active" data-tab="stats">Характеристики</button>
-      <button class="tab-button" data-tab="inventory">Инвентарь</button>
-      <button class="tab-button" data-tab="shop">Лавка</button>
-      <button class="tab-button" data-tab="subscriptions">Подписки</button>
-    </div>
-
-    <!-- Контентные секции (структура сохранена, только обертки и классы обновлены) -->
-    <div id="stats-content" class="content-section active">
-      <div class="stats-grid">
-        <!-- Карточки статистики с обновленными классами -->
-        <div class="stat-card">
-          <div class="stat-value" id="hp-value">0/0</div>
-          <div class="stat-label">❤️ Жизненная сила</div>
-          <div class="health-bar">
-            <div class="health-fill" id="health-fill" style="width: 0%"></div>
-            <div class="bar-text" id="health-text">0/0</div>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-value" id="armor-value">0</div>
-          <div class="stat-label">🛡️ Броня</div>
-          <div class="armor-bar">
-            <div class="armor-fill" id="armor-fill" style="width: 0%"></div>
-            <div class="bar-text" id="armor-text">0</div>
-          </div>
-        </div>
+  <!-- Основное приложение -->
+  <div class="app-container">
     
-        <div class="stat-card">
-          <div class="stat-value" id="energy-value">0/0</div>
-          <div class="stat-label">⚡ Энергия</div>
-          <div class="energy-bar">
-            <div class="energy-fill" id="energy-fill" style="width: 0%"></div>
-            <div class="bar-text" id="energy-text">0/0</div>
-          </div>
-          <div id="energy-timer" class="energy-timer" style="display: none;">
-            ⏳ <span id="timer-value">60</span> сек
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-value" id="crystal-value">0/50</div>
-          <div class="stat-label">🔮 Кристалл</div>
-          <div class="crystal-bar">
-            <div class="crystal-fill" id="crystal-fill" style="width: 0%"></div>
-            <div class="bar-text" id="crystal-text">0/50</div>
-          </div>
-          <div style="font-size: 0.65rem; opacity: 0.7; margin-top: 5px;">Для создания образов</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-value" id="level-value">1</div>
-          <div class="stat-label">⭐ Уровень <span id="level-title">(Наемник)</span></div>
-          <div class="xp-bar">
-            <div class="xp-fill" id="xp-fill" style="width: 0%"></div>
-            <div class="bar-text" id="xp-text">0/100 XP</div>
-          </div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-value" id="coins-value">0</div>
-          <div class="stat-label">💰 Серебро</div>
-          <button id="refresh-coins-btn" class="magic-button" style="padding: 6px 12px; font-size: 0.7rem; margin-top: 5px;">
-            Обновить
-          </button>
+    <!-- Верхняя панель с кошельком -->
+    <div class="top-bar">
+      <div class="hero-identity">
+        <div class="hero-avatar">⚔️</div>
+        <div class="hero-info">
+          <h2 id="character-name-display">Эйдан Теней</h2>
+          <p id="level-title-display">Наемник 1 ур.</p>
         </div>
       </div>
       
-      <div class="stat-card" style="grid-column: 1/-1; text-align: center;">
-        <div class="stat-label">⚔️ Экипированное оружие</div>
-        <div class="stat-value" id="weapon-value" style="font-size: 1.2rem;">Нет</div>
+      <div class="wallet-display">
+        <span class="wallet-icon">💰</span>
+        <span id="wallet-value">0</span>
       </div>
-
-      <div class="stat-card" style="grid-column: 1/-1; text-align: center;">
-        <div class="stat-label">🎯 Статус</div>
-        <div class="stat-value" id="status-value" style="font-size: 1.2rem;">Загрузка...</div>
-      </div>
-
-      <button class="magic-button" onclick="loadCharacterData()">
-        ✦ Обновить свиток ✦
-      </button>
     </div>
 
-    <!-- Инвентарь, Магазин, Подписки - структура та же, но классы обновлены -->
+    <!-- Навигация -->
+    <div class="nav-pills">
+      <button class="nav-pill active" data-tab="stats">Характеристики</button>
+      <button class="nav-pill" data-tab="inventory">Инвентарь</button>
+      <button class="nav-pill" data-tab="shop">Лавка</button>
+      <button class="nav-pill" data-tab="subscriptions">Подписки</button>
+    </div>
+
+    <!-- Секция Характеристик -->
+    <div id="stats-content" class="content-section active">
+      <div class="stats-container">
+        
+        <!-- HP Card -->
+        <div class="vital-card">
+          <div class="vital-header">
+            <span class="vital-label"><span class="vital-icon">❤️</span> Жизнь</span>
+            <span class="vital-value" id="hp-value-display">0/0</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-fill hp-fill" id="health-fill-new" style="width: 0%"></div>
+            <div class="progress-text" id="health-text-new">0/0</div>
+          </div>
+        </div>
+
+        <!-- Energy Card -->
+        <div class="vital-card">
+          <div class="vital-header">
+            <span class="vital-label"><span class="vital-icon">⚡</span> Энергия</span>
+            <span class="vital-value" id="energy-value-display">0/0</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-fill energy-fill" id="energy-fill-new" style="width: 0%"></div>
+            <div class="progress-text" id="energy-text-new">0/0</div>
+          </div>
+          <div id="energy-timer-new" class="energy-timer-notice">
+            ⏳ Восстановление через <span id="timer-value-new">60</span>с
+          </div>
+        </div>
+
+        <!-- Armor Card -->
+        <div class="vital-card">
+          <div class="vital-header">
+            <span class="vital-label"><span class="vital-icon">🛡️</span> Броня</span>
+            <span class="vital-value" id="armor-value-display">0</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-fill armor-fill" id="armor-fill-new" style="width: 0%"></div>
+            <div class="progress-text" id="armor-text-new">0</div>
+          </div>
+        </div>
+
+        <!-- Сетка статов -->
+        <div class="stats-grid-3">
+          <!-- Уровень и XP -->
+          <div class="stat-tile">
+            <div class="icon">⭐</div>
+            <div class="value" id="level-value-new">1</div>
+            <div class="label">Уровень</div>
+            <div class="xp-container">
+              <div class="xp-bar-small">
+                <div class="xp-fill-small" id="xp-fill-new" style="width: 0%"></div>
+              </div>
+              <div style="font-size: 0.6rem;" id="xp-text-new">0/100 XP</div>
+            </div>
+          </div>
+
+          <!-- Кристалл -->
+          <div class="stat-tile">
+            <div class="icon">🔮</div>
+            <div class="value" id="crystal-value-new">0/50</div>
+            <div class="label">Кристалл</div>
+            <div class="progress-bar-container" style="height: 10px; margin-top: 8px;">
+              <div class="progress-fill crystal-fill" id="crystal-fill-new" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Оружие -->
+        <div class="weapon-showcase">
+          <div class="weapon-icon">⚔️</div>
+          <div class="weapon-details">
+            <div class="weapon-label">Экипированное оружие</div>
+            <div id="weapon-value-new">Нет</div>
+          </div>
+        </div>
+
+        <!-- Статус -->
+        <div style="text-align: center;">
+          <span id="status-value-new" class="status-indicator status-alive">ЖИВ</span>
+        </div>
+
+        <button class="action-btn" onclick="loadCharacterData()">
+          ✦ Обновить свиток ✦
+        </button>
+      </div>
+    </div>
+
+    <!-- Секция Инвентаря -->
     <div id="inventory-content" class="content-section">
-      <div class="inventory-header">
-        <div class="stat-label">🎒 Снаряжение</div>
-        <div class="inventory-stats" id="inventory-stats">0 предметов</div>
+      <div class="inventory-header-stats">
+        <span style="font-family: 'Cinzel', serif;">🎒 СНАРЯЖЕНИЕ</span>
+        <span id="inventory-stats-new">0 предметов</span>
       </div>
-      <div id="inventory-empty" class="loading-spinner" style="display: none;">
-        <div style="font-size: 3rem;">📦</div>
+      
+      <div id="inventory-empty-new" class="loading-state" style="display: none;">
+        <div style="font-size: 3rem; margin-bottom: 10px;">📦</div>
         <div>Инвентарь пуст</div>
-        <div style="font-size: 0.8rem; opacity: 0.6;">Сокровища появятся здесь</div>
+        <div style="font-size: 0.7rem; opacity: 0.6;">Сокровища ждут вас в приключениях</div>
       </div>
-      <div class="inventory-grid" id="inventory-grid"></div>
+      
+      <div class="inventory-grid-new" id="inventory-grid-new"></div>
     </div>
 
+    <!-- Секция Магазина -->
     <div id="shop-content" class="content-section">
-      <div class="shop-header" style="text-align: center; margin-bottom: 20px;">
-        <h3 style="font-family: 'Cinzel', serif; color: var(--primary-gold);">🛒 Лавка древностей</h3>
-      </div>
-      <!-- Контент магазина генерируется JS, структура сохранена -->
+      <div id="shop-dynamic-content"></div>
     </div>
 
+    <!-- Секция Подписок -->
     <div id="subscriptions-content" class="content-section">
-      <div class="shop-header" style="text-align: center; margin-bottom: 20px;">
-        <h3 style="font-family: 'Cinzel', serif; color: var(--primary-gold);">✨ Благословения</h3>
-        <p style="font-size: 0.8rem;">Ежедневные дары в инвентарь</p>
+      <div id="active-subscription-card-new" style="display: none; margin-bottom: 20px; padding: 20px; background: linear-gradient(135deg, #2c3e50, #3498db); border-radius: 24px; text-align: center;">
+        <div>Ваша подписка:</div>
+        <div id="active-sub-name-new" style="font-family: 'Cinzel', serif; font-size: 1.4rem; color: #f1c40f;"></div>
+        <div id="active-sub-expires-new"></div>
       </div>
-      <div id="active-subscription-card" style="display: none; margin-bottom: 20px; padding: 20px; background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(52, 152, 219, 0.8)); border-radius: 20px; border: 2px solid #f1c40f; text-align: center; backdrop-filter: blur(10px);">
-        <div style="font-size: 1rem; margin-bottom: 5px;">Ваше благословение:</div>
-        <div id="active-sub-name" style="font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: bold; color: #f1c40f; text-shadow: 0 0 15px #f1c40f;">Авантюрист</div>
-        <div id="active-sub-expires" style="font-size: 0.9rem;">Действует до: 01.01.2025</div>
-      </div>
-      <div class="shop-grid" id="subscriptions-grid" style="grid-template-columns: 1fr;"></div>
-      <div style="text-align: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 20px;">
-        <p style="font-size: 0.7rem; opacity: 0.6;">Дары приходят раз в день на рассвете</p>
-      </div>
+      <div class="shop-grid-new" id="subscriptions-grid-new"></div>
     </div>
-    
-    <div id="loading-message" class="loading-spinner">
+
+    <!-- Сообщения -->
+    <div id="loading-message-new" class="loading-state">
       ⏳ Читаем свиток судьбы...
     </div>
-    <div id="error-message" class="error-message" style="display: none;"></div>
+    <div id="error-message-new" class="error-state" style="display: none;"></div>
   </div>
 
   <script>
