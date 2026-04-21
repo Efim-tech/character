@@ -1052,7 +1052,7 @@
   </div>
 
   <script>
-    
+    // ==================== КОНСТАНТЫ И НАСТРОЙКИ ====================
     const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
     const PAYMENT_API_URL = 'https://gmbtest-efich.amvera.io';
     const SUBSCRIPTIONS = [
@@ -1060,23 +1060,28 @@
       { id: 'sub_hero', name: '⚔️ Герой', price: 1, features: ['+2 больших зелья энергии', '+100 серебряных монет', '+1 бинт'] },
       { id: 'sub_champion', name: '👑 Чемпион', price: 1, features: ['+3 больших зелья энергии', '+200 серебряных монет', '+1 бинт', '+1 ремонтный набор'] },
       { id: 'sub_legend', name: '🌟 Легенда', price: 1, features: ['+5 больших зелий энергии', '+300 серебряных монет', '+1 зелье здоровья', '+1 ремонтный набор'] },
-      { id: 'sub_crystal_novice', name: '🔮 Послушник кристалла', price: 1, features: ['+5 зарядов кристалла', '+1 большое зелье энергии', '+150 серебряных монет', '+2 бинта'] },
-      { id: 'sub_crystal_master', name: '💎 Мастер кристалла', price: 1, features: ['+15 зарядов кристалла', '+2 больших зелья энергии', '+250 серебряных монет', '+2 зелья здоровья', '+2 ремонтных набора'] },
-      { id: 'sub_crystal_archon', name: '✨ Архонт кристалла', price: 1, features: ['+25 зарядов кристалла', '+3 больших зелья энергии', '+500 серебряных монет', '+3 зелья здоровья', '+3 ремонтных набора'] }
+      { id: 'sub_crystal_novice', name: '🔮 Послушник', price: 1, features: ['+5 зарядов кристалла', '+1 большое зелье энергии', '+150 серебряных монет', '+2 бинта'] },
+      { id: 'sub_crystal_master', name: '💎 Мастер', price: 1, features: ['+15 зарядов кристалла', '+2 больших зелья энергии', '+250 серебряных монет', '+2 зелья здоровья', '+2 ремнабора'] },
+      { id: 'sub_crystal_archon', name: '✨ Архонт', price: 1, features: ['+25 зарядов кристалла', '+3 больших зелья энергии', '+500 серебряных монет', '+3 зелья здоровья', '+3 ремнабора'] }
     ];
-    
+  
+    // ==================== ИНИЦИАЛИЗАЦИЯ TELEGRAM ====================
     const tg = window.Telegram.WebApp;
     tg.expand();
     tg.BackButton.hide();
     tg.enableClosingConfirmation();
     
+    // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
     let characterData = {};
     let activeSubscription = null;
-    let updateInterval;
-    let coinsCheckInterval;
+    let updateInterval = null;
+    let coinsCheckInterval = null;
     let lastDeathCheckTime = 0;
+    let previousHP = 0;
+    let previousArmor = 0;
     const DEATH_CHECK_COOLDOWN = 5000;
-
+  
+    // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
     function getChatId() {
       const urlParams = new URLSearchParams(window.location.search);
       const startappParam = urlParams.get('startapp');
@@ -1085,293 +1090,313 @@
       if (tg.initDataUnsafe && tg.initDataUnsafe.start_param) return tg.initDataUnsafe.start_param;
       return null;
     }
-
+  
     function showLoading(show) {
-      document.getElementById('loading-message').style.display = show ? 'block' : 'none';
+      const loader = document.getElementById('loading-message-new');
+      if (loader) loader.style.display = show ? 'block' : 'none';
     }
-
+  
     function showError(message) {
-      const errorElement = document.getElementById('error-message');
-      errorElement.innerHTML = `❌ ${message}`;
-      errorElement.style.display = 'block';
-    }
-
-    function hideError() {
-      document.getElementById('error-message').style.display = 'none';
-    }
-
-    async function purchaseItem(itemId, price) {
-      try {
-        const chatId = getChatId();
-        if (!chatId) {
-          tg.showPopup({ title: '❌ Ошибка', message: 'Не удалось определить пользователя', buttons: [{ type: 'cancel', text: 'Закрыть' }] });
-          return;
-        }
-        const response = await fetch(`${PAYMENT_API_URL}/api/purchase`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: chatId, item_id: itemId })
-        });
-        const data = await response.json();
-        if (!data.success) throw new Error(data.error || 'Ошибка создания платежа');
-        
-        const paymentInfo = { payload: data.payload, itemId: itemId, price: price, timestamp: Date.now(), expiresIn: data.expires_in };
-        localStorage.setItem('pending_payment', JSON.stringify(paymentInfo));
-        tg.openLink(data.invoice_link);
-      } catch (error) {
-        console.error('Payment error:', error);
-        tg.showPopup({ title: '❌ Ошибка', message: error.message || 'Не удалось создать платеж', buttons: [{ type: 'cancel', text: 'Закрыть' }] });
+      const errorEl = document.getElementById('error-message-new');
+      if (errorEl) {
+        errorEl.innerHTML = `❌ ${message}`;
+        errorEl.style.display = 'block';
       }
     }
-
-    async function checkPaymentStatus(payload) {
-      try {
-        const response = await fetch(`${PAYMENT_API_URL}/api/purchase/${payload}/status`);
-        const data = await response.json();
-        if (data.success) {
-          if (data.status === 'completed') {
-            tg.showPopup({ title: '✅ Покупка завершена!', message: `Предмет "${data.item_name}" добавлен в инвентарь`, buttons: [{ type: 'default', text: 'OK' }] });
-            localStorage.removeItem('pending_payment');
-            loadCharacterData();
-          } else if (data.status === 'expired') {
-            tg.showPopup({ title: '⏰ Время истекло', message: 'Платеж не был завершен вовремя. Попробуйте снова.', buttons: [{ type: 'default', text: 'OK' }] });
-            localStorage.removeItem('pending_payment');
+  
+    function hideError() {
+      const errorEl = document.getElementById('error-message-new');
+      if (errorEl) errorEl.style.display = 'none';
+    }
+  
+    function getItemIcon(item) {
+      if (item.name) {
+        if (item.name.includes('Большое')) return '🧴';
+        if (item.name.includes('Среднее')) return '⚗️';
+        if (item.name.includes('Маленькое')) return '🧪';
+        if (item.name.includes('Бинт')) return '🩹';
+        if (item.name.includes('Ремонтный')) return '🔧';
+        if (item.name.includes('Зелье здоровья')) return '🧪';
+      }
+      const icons = {
+        'weapon': '⚔️', 'armor': '🛡️', 'potion': '🧪', 'medical': '🩹',
+        'repair': '🔧', 'amulet': '📿', 'scroll': '📜', 'food': '🍖',
+        'key': '🔑', 'gem': '💎', 'ammo': '🏹', 'currency': '💰'
+      };
+      return icons[item.type] || '📦';
+    }
+  
+    function getItemTypeName(itemType) {
+      const names = {
+        'weapon': 'Оружие', 'armor': 'Броня', 'potion': 'Зелье',
+        'medical': 'Медицина', 'repair': 'Ремонт', 'amulet': 'Амулет',
+        'scroll': 'Свиток', 'food': 'Еда', 'key': 'Ключ',
+        'gem': 'Самоцвет', 'ammo': 'Боеприпас', 'currency': 'Монеты'
+      };
+      return names[itemType] || 'Предмет';
+    }
+  
+    // ==================== АНИМАЦИИ УРОНА ====================
+    function showDamageNotification(damage) {
+      const container = document.querySelector('.app-container');
+      if (container) {
+        container.classList.add('shake-effect');
+        setTimeout(() => container.classList.remove('shake-effect'), 400);
+      }
+      
+      const popup = document.createElement('div');
+      popup.className = 'damage-popup';
+      popup.textContent = `-${damage} ❤️`;
+      document.body.appendChild(popup);
+      
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      
+      setTimeout(() => popup.remove(), 1200);
+    }
+  
+    function showArmorDamageNotification(damage) {
+      const popup = document.createElement('div');
+      popup.className = 'damage-popup armor-popup';
+      popup.textContent = `-${damage} 🛡️`;
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 1200);
+    }
+  
+    // ==================== ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ====================
+    function updateUI() {
+      if (!characterData) return;
+      
+      const cd = characterData;
+      
+      // Имя и уровень в хедере
+      document.getElementById('character-name-display').textContent = cd.name || 'Безымянный герой';
+      document.getElementById('level-title-display').textContent = `${cd.level_title || 'Наемник'} ${cd.level || 1} ур.`;
+      
+      // Кошелёк
+      const walletEl = document.getElementById('wallet-value');
+      if (walletEl) {
+        walletEl.textContent = cd.coins || 0;
+        if (cd.coins < 100) walletEl.style.color = '#ff6b6b';
+        else if (cd.coins < 500) walletEl.style.color = '#ffd700';
+        else walletEl.style.color = '#daa520';
+      }
+      
+      // Проверка на получение урона
+      if (previousHP > cd.hp) {
+        showDamageNotification(previousHP - cd.hp);
+      }
+      if (previousArmor > cd.armor) {
+        showArmorDamageNotification(previousArmor - cd.armor);
+      }
+      previousHP = cd.hp;
+      previousArmor = cd.armor;
+      
+      // HP
+      const hpPercent = cd.max_hp > 0 ? (cd.hp / cd.max_hp) * 100 : 0;
+      document.getElementById('hp-value-display').textContent = `${cd.hp}/${cd.max_hp}`;
+      document.getElementById('health-fill-new').style.width = `${hpPercent}%`;
+      document.getElementById('health-text-new').textContent = `${cd.hp}/${cd.max_hp}`;
+      
+      // Energy
+      const energyCurrent = cd.energy?.current || 0;
+      const energyMax = cd.energy?.max || 0;
+      const energyPercent = energyMax > 0 ? (energyCurrent / energyMax) * 100 : 0;
+      document.getElementById('energy-value-display').textContent = `${energyCurrent}/${energyMax}`;
+      document.getElementById('energy-fill-new').style.width = `${energyPercent}%`;
+      document.getElementById('energy-text-new').textContent = `${energyCurrent}/${energyMax}`;
+      
+      // Таймер энергии (если есть данные)
+      if (cd.energy?.next_regen_at) {
+        const timerEl = document.getElementById('energy-timer-new');
+        const timerValueEl = document.getElementById('timer-value-new');
+        if (timerEl && timerValueEl) {
+          const now = Date.now() / 1000;
+          const timeLeft = Math.max(0, Math.ceil(cd.energy.next_regen_at - now));
+          if (timeLeft > 0 && energyCurrent < energyMax) {
+            timerEl.style.display = 'block';
+            timerValueEl.textContent = timeLeft;
+            if (timeLeft <= 30) timerEl.classList.add('warning');
+            else timerEl.classList.remove('warning');
+          } else {
+            timerEl.style.display = 'none';
           }
         }
-      } catch (error) {
-        console.error('Error checking payment:', error);
+      } else {
+        const timerEl = document.getElementById('energy-timer-new');
+        if (timerEl) timerEl.style.display = 'none';
+      }
+      
+      // Armor
+      const armorPercent = cd.max_armor > 0 ? (cd.armor / cd.max_armor) * 100 : 0;
+      document.getElementById('armor-value-display').textContent = cd.armor || 0;
+      document.getElementById('armor-fill-new').style.width = `${armorPercent}%`;
+      document.getElementById('armor-text-new').textContent = cd.armor || 0;
+      
+      // Level & XP
+      const level = cd.level || 1;
+      const xp = cd.xp || 0;
+      const xpToNext = cd.xp_to_next || 100;
+      const xpPercent = xpToNext > 0 ? (xp / xpToNext) * 100 : 0;
+      document.getElementById('level-value-new').textContent = level;
+      document.getElementById('xp-fill-new').style.width = `${xpPercent}%`;
+      document.getElementById('xp-text-new').textContent = `${xp}/${xpToNext} XP`;
+      
+      // Crystal
+      const crystalsCurrent = cd.visual_energy?.current || 0;
+      const crystalsMax = cd.visual_energy?.max || 50;
+      const crystalsPercent = crystalsMax > 0 ? (crystalsCurrent / crystalsMax) * 100 : 0;
+      document.getElementById('crystal-value-new').textContent = `${crystalsCurrent}/${crystalsMax}`;
+      document.getElementById('crystal-fill-new').style.width = `${crystalsPercent}%`;
+      
+      // Weapon
+      document.getElementById('weapon-value-new').textContent = cd.weapon || 'Нет';
+      
+      // Status
+      const statusEl = document.getElementById('status-value-new');
+      if (cd.hp <= 0 || !cd.is_alive || cd.is_dead) {
+        statusEl.textContent = 'МЁРТВ';
+        statusEl.className = 'status-indicator status-dead';
+      } else {
+        statusEl.textContent = 'ЖИВ';
+        statusEl.className = 'status-indicator status-alive';
+      }
+      
+      // Обновляем инвентарь
+      updateInventory();
+      
+      // Проверка на смерть
+      if (cd.hp <= 0 && !cd.is_dead && !window.deathCheckScheduled) {
+        window.deathCheckScheduled = true;
+        setTimeout(() => {
+          checkDeathOnHPChange();
+          window.deathCheckScheduled = false;
+        }, 1000);
       }
     }
-
-    function checkPendingPayment() {
-      const pending = localStorage.getItem('pending_payment');
-      if (pending) {
-        try {
-          const payment = JSON.parse(pending);
-          const age = (Date.now() - payment.timestamp) / 1000;
-          const maxAge = payment.expiresIn || 600;
-          if (age < maxAge) checkPaymentStatus(payment.payload);
-          else localStorage.removeItem('pending_payment');
-        } catch (e) {
-          localStorage.removeItem('pending_payment');
-        }
-      }
-    }
-
-    function initShop() {
-      // Динамическое создание магазина остается без изменений
-      const shopContent = document.getElementById('shop-content');
-      // Проверяем, есть ли уже контент, чтобы не дублировать
-      if (shopContent.querySelector('.shop-grid')) return;
+  
+    // ==================== ИНВЕНТАРЬ ====================
+    function updateInventory() {
+      const grid = document.getElementById('inventory-grid-new');
+      const emptyMsg = document.getElementById('inventory-empty-new');
+      const stats = document.getElementById('inventory-stats-new');
       
-      // Воссоздаем структуру магазина (сокращено для примера, в реальном коде полная структура)
-      const shopHTML = `
-        <div style="margin-bottom: 15px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-            <span style="font-size: 1.2rem;">⚡</span>
-            <span style="font-weight: bold; color: var(--primary-gold);">Зелья энергии</span>
-          </div>
-          <div class="shop-grid">
-            <div class="shop-item" data-item-id="energy10" data-price="2">
-              <div class="shop-item-icon">🧪</div>
-              <div class="shop-item-name">Малое зелье</div>
-              <div class="shop-item-description">+10 энергии</div>
-              <button class="buy-button">Купить за 1⭐</button>
-            </div>
-            <div class="shop-item" data-item-id="energy25" data-price="4">
-              <div class="shop-item-icon">⚗️</div>
-              <div class="shop-item-name">Среднее зелье</div>
-              <div class="shop-item-description">+25 энергии</div>
-              <button class="buy-button">Купить за 4⭐</button>
-            </div>
-            <div class="shop-item" data-item-id="energy50" data-price="7">
-              <div class="shop-item-icon">🧴</div>
-              <div class="shop-item-name">Большое зелье</div>
-              <div class="shop-item-description">+50 энергии</div>
-              <button class="buy-button">Купить за 7⭐</button>
-            </div>
-          </div>
-        </div>
-        <!-- Остальные секции (кристаллы, монеты, лечение, наборы) -->
-        <div style="margin-bottom: 15px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-            <span style="font-size: 1.2rem;">🔮</span>
-            <span style="font-weight: bold; color: var(--primary-gold);">Заряды кристалла</span>
-          </div>
-          <div class="shop-grid">
-            <div class="shop-item" data-item-id="crystal_charge_5" data-price="3"><div class="shop-item-icon">🔮</div><div class="shop-item-name">Малый заряд</div><div class="shop-item-description">+5 зарядов</div><button class="buy-button">Купить за 1⭐</button></div>
-            <div class="shop-item" data-item-id="crystal_charge_10" data-price="5"><div class="shop-item-icon">🔮🔮</div><div class="shop-item-name">Средний заряд</div><div class="shop-item-description">+10 зарядов</div><button class="buy-button">Купить за 5⭐</button></div>
-            <div class="shop-item" data-item-id="crystal_charge_25" data-price="10"><div class="shop-item-icon">🔮🔮🔮</div><div class="shop-item-name">Большой заряд</div><div class="shop-item-description">+25 зарядов</div><button class="buy-button">Купить за 10⭐</button></div>
-            <div class="shop-item" data-item-id="crystal_charge_50" data-price="18"><div class="shop-item-icon">💎</div><div class="shop-item-name">Огромный заряд</div><div class="shop-item-description">+50 зарядов</div><button class="buy-button">Купить за 18⭐</button></div>
-          </div>
-        </div>
-        <div style="margin-bottom: 15px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-            <span style="font-size: 1.2rem;">💰</span>
-            <span style="font-weight: bold; color: var(--primary-gold);">Серебряные монеты</span>
-          </div>
-          <div class="shop-grid">
-            <div class="shop-item" data-item-id="coins500" data-price="10"><div class="shop-item-icon">💰</div><div class="shop-item-name">500 монет</div><button class="buy-button">Купить за 1⭐</button></div>
-            <div class="shop-item" data-item-id="coins1000" data-price="18"><div class="shop-item-icon">💰💰</div><div class="shop-item-name">1000 монет</div><button class="buy-button">Купить за 18⭐</button></div>
-            <div class="shop-item" data-item-id="coins2500" data-price="40"><div class="shop-item-icon">💰💰💰</div><div class="shop-item-name">2500 монет</div><button class="buy-button">Купить за 40⭐</button></div>
-            <div class="shop-item" data-item-id="coins5000" data-price="75"><div class="shop-item-icon">💎</div><div class="shop-item-name">5000 монет</div><button class="buy-button">Купить за 75⭐</button></div>
-            <div class="shop-item" data-item-id="coins10000" data-price="140"><div class="shop-item-icon">👑</div><div class="shop-item-name">10000 монет</div><button class="buy-button">Купить за 140⭐</button></div>
-          </div>
-        </div>
-      `;
-      
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = shopHTML;
-      while (tempDiv.firstChild) {
-        shopContent.appendChild(tempDiv.firstChild);
+      if (!characterData.inventory || characterData.inventory.length === 0) {
+        if (grid) grid.innerHTML = '';
+        if (emptyMsg) emptyMsg.style.display = 'block';
+        if (stats) stats.textContent = '0 предметов';
+        return;
       }
       
-      // Навешиваем обработчики
-      document.querySelectorAll('.shop-item').forEach(item => {
-        const buyButton = item.querySelector('.buy-button');
-        if (!buyButton) return;
-        const newButton = buyButton.cloneNode(true);
-        buyButton.parentNode.replaceChild(newButton, buyButton);
-        newButton.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const itemId = item.dataset.itemId;
-          const price = parseInt(item.dataset.price);
-          const itemName = item.querySelector('.shop-item-name').textContent;
-          tg.showPopup({
-            title: 'Подтверждение',
-            message: `Купить ${itemName} за ${price} ⭐?`,
-            buttons: [{ type: 'default', text: '✅ Купить', id: 'buy' }, { type: 'cancel', text: '❌ Отмена' }]
-          }, (buttonId) => { if (buttonId === 'buy') purchaseItem(itemId, price); });
-        });
+      if (emptyMsg) emptyMsg.style.display = 'none';
+      if (grid) grid.innerHTML = '';
+      
+      const sorted = [...characterData.inventory].sort((a, b) => {
+        if (a.is_equipped && !b.is_equipped) return -1;
+        if (!a.is_equipped && b.is_equipped) return 1;
+        return (a.name || '').localeCompare(b.name || '');
       });
-    }
-
-    async function loadSubscriptionStatus() {
-      try {
-        const chatId = getChatId();
-        if (!chatId) return;
-        const response = await fetch(`${API_BASE_URL}/api/user/${chatId}/subscription`);
-        const data = await response.json();
-        const activeCard = document.getElementById('active-subscription-card');
-        const activeName = document.getElementById('active-sub-name');
-        const activeExpires = document.getElementById('active-sub-expires');
-        if (data.success && data.subscription) {
-          activeSubscription = data.subscription;
-          const sub = SUBSCRIPTIONS.find(s => s.id === data.subscription.id) || { name: data.subscription.id };
-          activeName.textContent = sub.name;
-          const expiryDate = new Date(data.subscription.expires_at * 1000);
-          activeExpires.textContent = `Действует до: ${expiryDate.toLocaleDateString()}`;
-          activeCard.style.display = 'block';
-        } else {
-          activeSubscription = null;
-          activeCard.style.display = 'none';
-        }
-      } catch (error) {
-        console.error('Error loading subscription status:', error);
-      }
-    }
-    
-    function renderSubscriptions() {
-      const grid = document.getElementById('subscriptions-grid');
-      if (!grid) return;
-      grid.innerHTML = '';
-      SUBSCRIPTIONS.forEach(sub => {
+      
+      sorted.forEach(item => {
         const card = document.createElement('div');
-        card.className = 'shop-item';
-        card.style.marginBottom = '15px';
-        card.style.padding = '15px';
-        const featuresHtml = sub.features.map(f => `<li style="text-align: left; font-size: 0.8rem; margin-bottom: 5px;">${f}</li>`).join('');
+        card.className = `item-card ${item.is_equipped ? 'equipped' : ''}`;
+        
+        const icon = getItemIcon(item);
+        const typeName = getItemTypeName(item.type);
+        
         card.innerHTML = `
-          <div style="font-size: 2rem; margin-bottom: 5px;">${sub.name.split(' ')[0]}</div>
-          <div class="shop-item-name" style="font-size: 1.2rem; margin-bottom: 10px;">${sub.name}</div>
-          <div class="shop-item-price" style="margin-bottom: 15px;">⭐ ${sub.price} / месяц</div>
-          <ul style="padding-left: 20px; margin-bottom: 20px; min-height: 120px;">${featuresHtml}</ul>
-          <button class="buy-button subscribe-btn" data-sub-id="${sub.id}" data-sub-price="${sub.price}">Оформить</button>
+          <div class="item-icon-large">${icon}</div>
+          <div class="item-name">${item.name || 'Предмет'}</div>
+          <div class="item-desc">${item.description || 'Обычный предмет'}</div>
+          <div class="item-footer-card">
+            <span class="item-quantity-badge">x${item.quantity || 1}</span>
+            <span style="font-size: 0.65rem; opacity: 0.7;">${typeName}</span>
+          </div>
         `;
+        
+        card.addEventListener('click', () => showItemDetails(item));
         grid.appendChild(card);
       });
       
-      document.querySelectorAll('.subscribe-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-          const subId = btn.dataset.subId;
-          const subPrice = parseInt(btn.dataset.subPrice);
-          const subName = SUBSCRIPTIONS.find(s => s.id === subId).name;
-          let activeSubscription = null;
-          try {
-            const chatId = getChatId();
-            if (chatId) {
-              const response = await fetch(`${API_BASE_URL}/api/user/${chatId}/subscription`);
-              const data = await response.json();
-              if (data.success && data.subscription) activeSubscription = data.subscription;
-            }
-          } catch (error) { console.error('Error checking subscription:', error); }
-          
-          if (activeSubscription) {
-            if (activeSubscription.id === subId) {
-              tg.showPopup({ title: 'ℹ️ Информация', message: `У вас уже активен тариф "${subName}".`, buttons: [{ type: 'cancel', text: 'Закрыть' }] });
-              return;
-            }
-            const currentSub = SUBSCRIPTIONS.find(s => s.id === activeSubscription.id) || { name: activeSubscription.id };
-            const now = Date.now() / 1000;
-            const daysLeft = Math.ceil((activeSubscription.expires_at - now) / (24 * 3600));
-            tg.showPopup({
-              title: '⚠️ Апгрейд подписки',
-              message: `У вас осталось ${daysLeft} дн. по тарифу "${currentSub.name}".\n\nПри апгрейде оставшиеся дни сгорят. Продолжить?`,
-              buttons: [{ type: 'default', text: '✅ Да, апгрейд', id: 'upgrade' }, { type: 'cancel', text: '❌ Отмена' }]
-            }, (buttonId) => { if (buttonId === 'upgrade') purchaseSubscription(subId, subPrice); });
-          } else {
-            tg.showPopup({
-              title: '✨ Подписка',
-              message: `Оформить подписку "${subName}" за ${subPrice} ⭐ в месяц?`,
-              buttons: [{ type: 'default', text: '✅ Оформить', id: 'subscribe' }, { type: 'cancel', text: '❌ Отмена' }]
-            }, (buttonId) => { if (buttonId === 'subscribe') purchaseSubscription(subId, subPrice); });
-          }
-        });
+      if (stats) {
+        const totalItems = sorted.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        stats.textContent = `${sorted.length} предметов (${totalItems} шт.)`;
+      }
+    }
+  
+    function showItemDetails(item) {
+      let buttons = [];
+      
+      if (item.type === 'potion' || item.type === 'medical' || item.type === 'repair' || item.type === 'consumable') {
+        buttons.push({ type: 'default', text: '🧪 Использовать', id: 'use' });
+      }
+      buttons.push({ type: 'cancel', text: 'Закрыть' });
+      
+      let message = `${item.description || 'Описание отсутствует'}\n\nТип: ${getItemTypeName(item.type)}\nКоличество: ${item.quantity || 1}`;
+      
+      if (item.effects) {
+        if (item.effects.hp) message += `\n❤️ Восстановит HP: +${item.effects.hp}`;
+        if (item.effects.energy) message += `\n⚡ Восстановит энергии: +${item.effects.energy}`;
+        if (item.effects.armor) message += `\n🛡️ Восстановит брони: +${item.effects.armor}`;
+        if (item.effects.visual_energy) message += `\n🔮 Восстановит зарядов кристалла: +${item.effects.visual_energy}`;
+      }
+      
+      tg.showPopup({
+        title: item.name || 'Предмет',
+        message: message,
+        buttons: buttons
+      }, (buttonId) => {
+        if (buttonId === 'use') useItem(item.name);
       });
     }
-    
-    async function purchaseSubscription(subscriptionId, price) {
+  
+    async function useItem(itemName) {
       try {
         const chatId = getChatId();
         if (!chatId) {
-          tg.showPopup({ title: '❌ Ошибка', message: 'Не удалось определить пользователя', buttons: [{ type: 'cancel', text: 'Закрыть' }] });
+          tg.showPopup({ title: 'Ошибка', message: 'Не удалось определить пользователя', buttons: [{ type: 'cancel' }] });
           return;
         }
-        tg.MainButton.showProgress();
-        const response = await fetch(`${PAYMENT_API_URL}/api/create_subscription`, {
+        
+        const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/use_item`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: chatId, subscription_id: subscriptionId })
+          body: JSON.stringify({ item_name: itemName })
         });
-        tg.MainButton.hideProgress();
+        
         const data = await response.json();
-        if (!data.success) throw new Error(data.error || 'Ошибка создания подписки');
-        tg.openInvoice(data.invoice_link, (status) => {
-          if (status === 'paid') {
-            tg.showPopup({ title: '🎉 Успех!', message: 'Подписка оформлена!', buttons: [{ type: 'default', text: 'Отлично!' }] });
-            setTimeout(() => { loadSubscriptionStatus(); loadCharacterData(); }, 3000);
-          }
-        });
+        
+        if (data.success) {
+          tg.showPopup({ title: '✅ Успех', message: data.message, buttons: [{ type: 'cancel' }] });
+          setTimeout(() => loadCharacterData(), 1000);
+        } else {
+          tg.showPopup({ title: '❌ Ошибка', message: data.error || 'Не удалось использовать предмет', buttons: [{ type: 'cancel' }] });
+        }
       } catch (error) {
-        console.error('Subscription error:', error);
-        tg.MainButton.hideProgress();
-        tg.showPopup({ title: '❌ Ошибка', message: error.message || 'Не удалось создать подписку', buttons: [{ type: 'cancel', text: 'Закрыть' }] });
+        console.error('Error using item:', error);
+        tg.showPopup({ title: '❌ Ошибка', message: 'Ошибка при использовании предмета', buttons: [{ type: 'cancel' }] });
       }
     }
-
+  
+    // ==================== ЗАГРУЗКА ДАННЫХ ====================
     async function loadCharacterData() {
       try {
         showLoading(true);
         hideError();
+        
         const chatId = getChatId();
         if (!chatId) throw new Error('Не удалось определить пользователя');
+        
         const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/full`);
         const data = await response.json();
+        
         if (data.success) {
           characterData = data.data;
           updateUI();
           showLoading(false);
-          if (characterData.hp <= 0) setTimeout(() => checkDeathOnHPChange(), 1000);
+          
+          if (characterData.hp <= 0) {
+            setTimeout(() => checkDeathOnHPChange(), 1000);
+          }
         } else {
           throw new Error(data.error || 'Ошибка загрузки данных');
         }
@@ -1381,249 +1406,482 @@
         showError(error.message);
       }
     }
-
-    function updateUI() {
-      document.getElementById('character-name').textContent = characterData.name || 'Безымянный герой';
-      const previousHP = window.previousCharacterData?.hp || characterData.hp;
-      const previousArmor = window.previousCharacterData?.armor || characterData.armor;
-      if (previousHP > characterData.hp) showDamageNotification(previousHP - characterData.hp);
-      if (previousArmor > characterData.armor) showArmorDamageNotification(previousArmor - characterData.armor);
-      window.previousCharacterData = { hp: characterData.hp, armor: characterData.armor, max_hp: characterData.max_hp, max_armor: characterData.max_armor, coins: characterData.coins };
-      
-      const hpPercent = characterData.max_hp > 0 ? (characterData.hp / characterData.max_hp) * 100 : 0;
-      document.getElementById('hp-value').textContent = `${characterData.hp}/${characterData.max_hp}`;
-      document.getElementById('health-fill').style.width = `${hpPercent}%`;
-      document.getElementById('health-text').textContent = `${characterData.hp}/${characterData.max_hp}`;
-      
-      const energyCurrent = characterData.energy?.current || 0;
-      const energyMax = characterData.energy?.max || 0;
-      const energyPercent = energyMax > 0 ? (energyCurrent / energyMax) * 100 : 0;
-      document.getElementById('energy-value').textContent = `${energyCurrent}/${energyMax}`;
-      document.getElementById('energy-fill').style.width = `${energyPercent}%`;
-      document.getElementById('energy-text').textContent = `${energyCurrent}/${energyMax}`;
-
-      const crystalsCurrent = characterData.visual_energy?.current || 0;
-      const crystalsMax = characterData.visual_energy?.max || 50;
-      const crystalsPercent = crystalsMax > 0 ? (crystalsCurrent / crystalsMax) * 100 : 0;
-      document.getElementById('crystal-value').textContent = `${crystalsCurrent}/${crystalsMax}`;
-      document.getElementById('crystal-fill').style.width = `${crystalsPercent}%`;
-      document.getElementById('crystal-text').textContent = `${crystalsCurrent}/${crystalsMax}`;
-      
-      const armorPercent = characterData.max_armor > 0 ? (characterData.armor / characterData.max_armor) * 100 : 0;
-      document.getElementById('armor-value').textContent = characterData.armor || 0;
-      document.getElementById('armor-fill').style.width = `${armorPercent}%`;
-      document.getElementById('armor-text').textContent = characterData.armor || 0;
-      
-      const level = characterData.level || 1;
-      const xp = characterData.xp || 0;
-      const xpToNext = characterData.xp_to_next || 100;
-      const xpPercent = xpToNext > 0 ? (xp / xpToNext) * 100 : 0;
-      const levelTitle = characterData.level_title || 'Наемник';
-      document.getElementById('level-value').textContent = level;
-      document.getElementById('level-title').textContent = `(${levelTitle})`;
-      document.getElementById('xp-fill').style.width = `${xpPercent}%`;
-      document.getElementById('xp-text').textContent = `${xp}/${xpToNext} XP`;
-      
-      const coins = characterData.coins || 0;
-      document.getElementById('coins-value').textContent = coins;
-      const coinsElement = document.getElementById('coins-value');
-      if (coins < 100) coinsElement.style.color = '#ff6b6b';
-      else if (coins < 500) coinsElement.style.color = '#ffd700';
-      else coinsElement.style.color = '#daa520';
-      
-      document.getElementById('weapon-value').textContent = characterData.weapon || 'Нет';
-      
-      const statusElement = document.getElementById('status-value');
-      if (characterData.hp <= 0 || !characterData.is_alive || characterData.is_dead) {
-        statusElement.textContent = 'Мёртв';
-        statusElement.className = 'stat-value status-dead';
-      } else {
-        statusElement.textContent = 'Жив';
-        statusElement.className = 'stat-value status-alive';
-      }
-      
-      updateInventory();
-      if (characterData.hp <= 0 && !characterData.is_dead && !window.deathCheckScheduled) {
-        window.deathCheckScheduled = true;
-        setTimeout(() => { checkDeathOnHPChange(); window.deathCheckScheduled = false; }, 1000);
-      }
-    }
-
-    function updateInventory() {
-      const inventoryGrid = document.getElementById('inventory-grid');
-      const emptyMessage = document.getElementById('inventory-empty');
-      const inventoryStats = document.getElementById('inventory-stats');
-      if (!characterData.inventory || characterData.inventory.length === 0) {
-        inventoryGrid.innerHTML = '';
-        emptyMessage.style.display = 'block';
-        inventoryStats.textContent = '0 предметов';
-        return;
-      }
-      emptyMessage.style.display = 'none';
-      inventoryGrid.innerHTML = '';
-      const sortedInventory = [...characterData.inventory].sort((a, b) => {
-        if (a.is_equipped && !b.is_equipped) return -1;
-        if (!a.is_equipped && b.is_equipped) return 1;
-        return (a.name || '').localeCompare(b.name || '');
-      });
-      sortedInventory.forEach(item => {
-        const itemElement = document.createElement('div');
-        const rarity = item.is_equipped ? 'legendary' : (item.type === 'weapon' || item.type === 'armor' ? 'rare' : (item.type === 'potion' || item.type === 'medical' ? 'uncommon' : 'common'));
-        itemElement.className = `inventory-item-card item-rarity-${rarity} ${item.is_equipped ? 'inventory-item-equipped' : ''}`;
-        const icon = item.name?.includes('Большое') ? '🧴' : (item.name?.includes('Среднее') ? '⚗️' : (item.name?.includes('Маленькое') ? '🧪' : (item.type === 'weapon' ? '⚔️' : (item.type === 'armor' ? '🛡️' : (item.type === 'potion' ? '🧪' : (item.type === 'medical' ? '🩹' : (item.type === 'repair' ? '🔧' : '🎁')))))));
-        const typeName = item.type === 'weapon' ? 'Оружие' : (item.type === 'armor' ? 'Броня' : (item.type === 'potion' ? 'Зелье' : (item.type === 'medical' ? 'Медицина' : (item.type === 'repair' ? 'Ремонт' : 'Предмет'))));
-        itemElement.innerHTML = `
-          <div class="inventory-item-icon">${icon}</div>
-          <div class="inventory-item-name" title="${item.name}">${item.name}</div>
-          <div class="inventory-item-description">${item.description || 'Обычный предмет'}</div>
-          <div class="inventory-item-footer">
-            <span class="inventory-item-quantity">x${item.quantity || 1}</span>
-            <span class="inventory-item-type">${typeName}</span>
-          </div>
-        `;
-        itemElement.addEventListener('click', () => showItemDetails(item));
-        inventoryGrid.appendChild(itemElement);
-      });
-      const totalItems = sortedInventory.reduce((sum, item) => sum + (item.quantity || 1), 0);
-      inventoryStats.textContent = `${sortedInventory.length} предметов (${totalItems} шт.)`;
-    }
-
-    function showItemDetails(item) {
-      let buttons = [];
-      if (item.type === 'potion' || item.type === 'medical' || item.type === 'repair' || item.type === 'consumable') {
-        buttons.push({ type: 'default', text: '🧪 Использовать', id: 'use_item' });
-      }
-      buttons.push({ type: 'cancel', text: 'Закрыть' });
-      let message = `${item.description || 'Описание отсутствует'}\n\nТип: ${item.type}\nКоличество: ${item.quantity}`;
-      if (item.effects && item.effects.visual_energy) message += `\n\n🔮 Восстановит: ${item.effects.visual_energy} зарядов кристалла`;
-      tg.showPopup({ title: item.name, message: message, buttons: buttons }, (buttonId) => { if (buttonId === 'use_item') useItem(item.name); });
-    }
-
-    async function useItem(itemName) {
-      try {
-        const chatId = getChatId();
-        if (!chatId) { tg.showPopup({ title: 'Ошибка', message: 'Не удалось определить пользователя', buttons: [{ type: 'cancel', text: 'Закрыть' }] }); return; }
-        const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/use_item`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ item_name: itemName })
-        });
-        const data = await response.json();
-        if (data.success) {
-          tg.showPopup({ title: '✅ Успех', message: data.message, buttons: [{ type: 'cancel', text: 'Закрыть' }] });
-          setTimeout(() => loadCharacterData(), 1000);
-        } else {
-          tg.showPopup({ title: '❌ Ошибка', message: data.error || 'Не удалось использовать предмет', buttons: [{ type: 'cancel', text: 'Закрыть' }] });
-        }
-      } catch (error) {
-        console.error('Error using item:', error);
-        tg.showPopup({ title: '❌ Ошибка', message: 'Ошибка при использовании предмета', buttons: [{ type: 'cancel', text: 'Закрыть' }] });
-      }
-    }
-
+  
+    // ==================== ПРОВЕРКА СМЕРТИ ====================
     async function checkDeathOnHPChange() {
       const now = Date.now();
       if (now - lastDeathCheckTime < DEATH_CHECK_COOLDOWN) return;
       lastDeathCheckTime = now;
+      
       const chatId = getChatId();
       if (!chatId) return;
-      const hpElement = document.getElementById('hp-value');
-      if (!hpElement) return;
-      const currentHP = parseInt(hpElement.textContent.split('/')[0]);
+      
+      const hpEl = document.getElementById('hp-value-display');
+      if (!hpEl) return;
+      
+      const currentHP = parseInt(hpEl.textContent.split('/')[0]);
+      
       if (currentHP <= 0) {
         const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/check_death`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ hp: currentHP, armor: characterData.armor || 0 })
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ hp: currentHP, armor: characterData.armor || 0 })
         });
+        
         const data = await response.json();
-        if (data.success && data.death_detected) showDeathInWebApp(data.character_name);
+        
+        if (data.success && data.death_detected) {
+          showDeathInWebApp(data.character_name);
+        }
       }
     }
-
+  
     function showDeathInWebApp(characterName) {
-      if (updateInterval) { clearInterval(updateInterval); updateInterval = null; }
+      if (updateInterval) {
+        clearInterval(updateInterval);
+        updateInterval = null;
+      }
       stopCoinsMonitoring();
-      const deathMessage = document.createElement('div');
-      deathMessage.className = 'error-message';
-      deathMessage.innerHTML = `<h3>💀 ${characterName.toUpperCase()} ПАЛ В БОЮ!</h3><p>Проверьте Telegram для создания нового героя</p>`;
-      const container = document.querySelector('.container');
-      container.insertBefore(deathMessage, container.firstChild);
-      document.querySelectorAll('button, .inventory-item-card, .tab-button').forEach(el => { el.style.pointerEvents = 'none'; el.style.opacity = '0.5'; });
-      setTimeout(() => { tg.showAlert('Персонаж мертв. Проверьте Telegram.'); setTimeout(() => tg.close(), 3000); }, 10000);
+      
+      const deathMsg = document.createElement('div');
+      deathMsg.className = 'error-state';
+      deathMsg.style.cssText = 'background: rgba(220, 53, 69, 0.9) !important; border-color: #ff0000 !important; color: white !important;';
+      deathMsg.innerHTML = `
+        <h3 style="margin-bottom: 10px;">💀 ${characterName.toUpperCase()} ПАЛ В БОЮ!</h3>
+        <p>Проверьте Telegram для создания нового героя</p>
+      `;
+      
+      const container = document.querySelector('.app-container');
+      if (container) container.insertBefore(deathMsg, container.firstChild);
+      
+      document.querySelectorAll('button, .item-card, .nav-pill').forEach(el => {
+        el.style.pointerEvents = 'none';
+        el.style.opacity = '0.5';
+      });
+      
+      setTimeout(() => {
+        tg.showAlert('Персонаж мертв. Проверьте Telegram для создания нового персонажа.');
+        setTimeout(() => tg.close(), 3000);
+      }, 10000);
     }
-
-    function showDamageNotification(damage) {
-      addShakeEffect();
-      const damageMsg = document.createElement('div');
-      damageMsg.className = 'damage-notification';
-      damageMsg.textContent = `-${damage} ❤️`;
-      document.body.appendChild(damageMsg);
-      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-      setTimeout(() => damageMsg.remove(), 1500);
-    }
-
-    function showArmorDamageNotification(damage) {
-      const armorMsg = document.createElement('div');
-      armorMsg.className = 'armor-damage-notification';
-      armorMsg.textContent = `-${damage} 🛡️`;
-      document.body.appendChild(armorMsg);
-      setTimeout(() => armorMsg.remove(), 1500);
-    }
-
-    function addShakeEffect() {
-      const container = document.querySelector('.container');
-      container.classList.add('shake-on-damage');
-      setTimeout(() => container.classList.remove('shake-on-damage'), 400);
-    }
-
+  
+    // ==================== МОНИТОРИНГ МОНЕТ ====================
     async function checkCoinsBalance(forceUpdate = false) {
       try {
         const chatId = getChatId();
         if (!chatId) return;
+        
         const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/coins`);
         const data = await response.json();
+        
         if (data.success) {
-          const coinsElement = document.getElementById('coins-value');
-          const currentCoins = parseInt(coinsElement.textContent) || 0;
+          const walletEl = document.getElementById('wallet-value');
+          const currentCoins = parseInt(walletEl.textContent) || 0;
+          
           if (forceUpdate || currentCoins !== data.coins) {
-            coinsElement.textContent = data.coins;
+            walletEl.textContent = data.coins;
             if (characterData) characterData.coins = data.coins;
           }
         }
-      } catch (error) { console.error('Error checking coins balance:', error); }
+      } catch (error) {
+        console.error('Error checking coins:', error);
+      }
     }
-
-    function startAutoUpdate() { updateInterval = setInterval(loadCharacterData, 30000); }
-    function startCoinsMonitoring() { coinsCheckInterval = setInterval(() => checkCoinsBalance(false), 5000); }
-    function stopCoinsMonitoring() { if (coinsCheckInterval) clearInterval(coinsCheckInterval); }
-
-    function initializeTabs() {
-      document.querySelectorAll('.tab-button').forEach(button => {
-        button.addEventListener('click', function() {
-          const targetTab = this.getAttribute('data-tab');
-          document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-          this.classList.add('active');
-          document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
-          document.getElementById(`${targetTab}-content`).classList.add('active');
-          if (targetTab === 'shop') setTimeout(() => initShop(), 100);
-          if (targetTab === 'subscriptions') setTimeout(() => { renderSubscriptions(); loadSubscriptionStatus(); }, 50);
+  
+    function startCoinsMonitoring() {
+      coinsCheckInterval = setInterval(() => checkCoinsBalance(false), 5000);
+    }
+  
+    function stopCoinsMonitoring() {
+      if (coinsCheckInterval) {
+        clearInterval(coinsCheckInterval);
+        coinsCheckInterval = null;
+      }
+    }
+  
+    // ==================== МАГАЗИН ====================
+    function initShop() {
+      const container = document.getElementById('shop-dynamic-content');
+      if (!container) return;
+      if (container.children.length > 0) return;
+      
+      container.innerHTML = `
+        <div class="shop-category">
+          <div class="shop-category-title"><span>⚡</span> Зелья энергии</div>
+          <div class="shop-grid-new">
+            ${createShopItemHTML('energy10', '🧪', 'Малое зелье', '+10 энергии', 2)}
+            ${createShopItemHTML('energy25', '⚗️', 'Среднее зелье', '+25 энергии', 4)}
+            ${createShopItemHTML('energy50', '🧴', 'Большое зелье', '+50 энергии', 7)}
+          </div>
+        </div>
+        <div class="shop-category">
+          <div class="shop-category-title"><span>🔮</span> Заряды кристалла</div>
+          <div class="shop-grid-new">
+            ${createShopItemHTML('crystal_charge_5', '🔮', 'Малый заряд', '+5 зарядов', 3)}
+            ${createShopItemHTML('crystal_charge_10', '🔮🔮', 'Средний заряд', '+10 зарядов', 5)}
+            ${createShopItemHTML('crystal_charge_25', '🔮🔮🔮', 'Большой заряд', '+25 зарядов', 10)}
+            ${createShopItemHTML('crystal_charge_50', '💎', 'Огромный заряд', '+50 зарядов', 18)}
+          </div>
+        </div>
+        <div class="shop-category">
+          <div class="shop-category-title"><span>💰</span> Серебряные монеты</div>
+          <div class="shop-grid-new">
+            ${createShopItemHTML('coins500', '💰', '500 монет', '', 10)}
+            ${createShopItemHTML('coins1000', '💰💰', '1000 монет', '', 18)}
+            ${createShopItemHTML('coins2500', '💰💰💰', '2500 монет', '', 40)}
+            ${createShopItemHTML('coins5000', '💎', '5000 монет', '', 75)}
+            ${createShopItemHTML('coins10000', '👑', '10000 монет', '', 140)}
+          </div>
+        </div>
+        <div class="shop-category">
+          <div class="shop-category-title"><span>🩹</span> Лечение и ремонт</div>
+          <div class="shop-grid-new">
+            ${createShopItemHTML('bandage', '🩹', 'Бинт', '+5 HP', 4)}
+            ${createShopItemHTML('health_potion', '🧪', 'Зелье здоровья', '+10 HP', 6)}
+            ${createShopItemHTML('repair_kit', '🔧', 'Ремнабор', '+5 брони', 6)}
+          </div>
+        </div>
+        <div class="shop-category">
+          <div class="shop-category-title"><span>🎁</span> Премиум наборы</div>
+          <div class="shop-grid-new">
+            ${createShopItemHTML('traveler_set', '🎒', 'Набор путника', 'Бинт + Зелье + 100💰', 15)}
+            ${createShopItemHTML('adventurer_set', '⚔️', 'Набор авантюриста', 'Ремнабор + Зелье энергии + 250💰', 25)}
+            ${createShopItemHTML('hero_set', '🛡️', 'Набор героя', 'Б.зелье энергии + 1000💰 + Зелье', 45)}
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 20px;">
+          <p style="font-size: 0.8rem; opacity: 0.7;">⭐ Покупки в Telegram Stars</p>
+          <p style="font-size: 0.7rem; opacity: 0.5;">После оплаты предмет появится в инвентаре</p>
+        </div>
+      `;
+      
+      // Навешиваем обработчики на кнопки
+      document.querySelectorAll('[data-item-id]').forEach(el => {
+        const btn = el.querySelector('.buy-btn');
+        if (btn) {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const itemId = el.dataset.itemId;
+            const price = parseInt(el.dataset.price);
+            const name = el.querySelector('.item-name')?.textContent || 'предмет';
+            
+            tg.showPopup({
+              title: 'Подтверждение',
+              message: `Купить "${name}" за ${price} ⭐?`,
+              buttons: [
+                { type: 'default', text: '✅ Купить', id: 'buy' },
+                { type: 'cancel', text: '❌ Отмена' }
+              ]
+            }, (buttonId) => {
+              if (buttonId === 'buy') purchaseItem(itemId, price);
+            });
+          });
+        }
+      });
+    }
+  
+    function createShopItemHTML(id, icon, name, desc, price) {
+      return `
+        <div class="shop-item-card" data-item-id="${id}" data-price="${price}">
+          <div style="font-size: 2.5rem;">${icon}</div>
+          <div class="item-name">${name}</div>
+          <div class="item-desc">${desc}</div>
+          <div class="price-tag">⭐ ${price}</div>
+          <button class="buy-btn">Купить</button>
+        </div>
+      `;
+    }
+  
+    // ==================== ПОКУПКИ ====================
+    async function purchaseItem(itemId, price) {
+      try {
+        const chatId = getChatId();
+        if (!chatId) {
+          tg.showPopup({ title: '❌ Ошибка', message: 'Не удалось определить пользователя', buttons: [{ type: 'cancel' }] });
+          return;
+        }
+        
+        const response = await fetch(`${PAYMENT_API_URL}/api/purchase`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: chatId, item_id: itemId })
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+          throw new Error(data.error || 'Ошибка создания платежа');
+        }
+        
+        const paymentInfo = {
+          payload: data.payload,
+          itemId: itemId,
+          price: price,
+          timestamp: Date.now(),
+          expiresIn: data.expires_in || 600
+        };
+        localStorage.setItem('pending_payment', JSON.stringify(paymentInfo));
+        
+        tg.openLink(data.invoice_link);
+        
+      } catch (error) {
+        console.error('Payment error:', error);
+        tg.showPopup({ title: '❌ Ошибка', message: error.message || 'Не удалось создать платеж', buttons: [{ type: 'cancel' }] });
+      }
+    }
+  
+    async function checkPaymentStatus(payload) {
+      try {
+        const response = await fetch(`${PAYMENT_API_URL}/api/purchase/${payload}/status`);
+        const data = await response.json();
+        
+        if (data.success) {
+          if (data.status === 'completed') {
+            tg.showPopup({
+              title: '✅ Покупка завершена!',
+              message: `Предмет "${data.item_name}" добавлен в инвентарь`,
+              buttons: [{ type: 'default', text: 'OK' }]
+            });
+            localStorage.removeItem('pending_payment');
+            loadCharacterData();
+          } else if (data.status === 'expired') {
+            tg.showPopup({
+              title: '⏰ Время истекло',
+              message: 'Платеж не был завершен вовремя',
+              buttons: [{ type: 'default', text: 'OK' }]
+            });
+            localStorage.removeItem('pending_payment');
+          }
+        }
+      } catch (error) {
+        console.error('Error checking payment:', error);
+      }
+    }
+  
+    function checkPendingPayment() {
+      const pending = localStorage.getItem('pending_payment');
+      if (!pending) return;
+      
+      try {
+        const payment = JSON.parse(pending);
+        const age = (Date.now() - payment.timestamp) / 1000;
+        const maxAge = payment.expiresIn || 600;
+        
+        if (age < maxAge) {
+          checkPaymentStatus(payment.payload);
+        } else {
+          localStorage.removeItem('pending_payment');
+        }
+      } catch (e) {
+        localStorage.removeItem('pending_payment');
+      }
+    }
+  
+    // ==================== ПОДПИСКИ ====================
+    async function loadSubscriptionStatus() {
+      try {
+        const chatId = getChatId();
+        if (!chatId) return;
+        
+        const response = await fetch(`${API_BASE_URL}/api/user/${chatId}/subscription`);
+        const data = await response.json();
+        
+        const card = document.getElementById('active-subscription-card-new');
+        const nameEl = document.getElementById('active-sub-name-new');
+        const expiresEl = document.getElementById('active-sub-expires-new');
+        
+        if (data.success && data.subscription) {
+          activeSubscription = data.subscription;
+          const sub = SUBSCRIPTIONS.find(s => s.id === data.subscription.id) || { name: data.subscription.id };
+          if (nameEl) nameEl.textContent = sub.name;
+          if (expiresEl) {
+            const expiryDate = new Date(data.subscription.expires_at * 1000);
+            expiresEl.textContent = `Действует до: ${expiryDate.toLocaleDateString()}`;
+          }
+          if (card) card.style.display = 'block';
+        } else {
+          activeSubscription = null;
+          if (card) card.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading subscription:', error);
+      }
+    }
+  
+    function renderSubscriptions() {
+      const grid = document.getElementById('subscriptions-grid-new');
+      if (!grid) return;
+      
+      grid.innerHTML = '';
+      
+      SUBSCRIPTIONS.forEach(sub => {
+        const card = document.createElement('div');
+        card.className = 'shop-item-card';
+        card.style.gridColumn = 'span 2';
+        card.style.padding = '20px';
+        
+        const featuresHtml = sub.features.map(f => `<li style="text-align: left; font-size: 0.75rem; margin-bottom: 5px;">${f}</li>`).join('');
+        
+        card.innerHTML = `
+          <div style="font-size: 2.5rem; margin-bottom: 5px;">${sub.name.split(' ')[0]}</div>
+          <div class="item-name" style="font-size: 1.2rem;">${sub.name}</div>
+          <div class="price-tag" style="margin: 15px 0;">⭐ ${sub.price} / месяц</div>
+          <ul style="padding-left: 20px; margin: 15px 0; min-height: 140px;">
+            ${featuresHtml}
+          </ul>
+          <button class="buy-btn subscribe-btn" data-sub-id="${sub.id}" data-sub-price="${sub.price}">
+            Оформить подписку
+          </button>
+        `;
+        
+        grid.appendChild(card);
+      });
+      
+      // Обработчики подписок
+      document.querySelectorAll('.subscribe-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const subId = btn.dataset.subId;
+          const subPrice = parseInt(btn.dataset.subPrice);
+          const sub = SUBSCRIPTIONS.find(s => s.id === subId);
+          
+          // Проверяем активную подписку
+          let activeSub = null;
+          try {
+            const chatId = getChatId();
+            if (chatId) {
+              const res = await fetch(`${API_BASE_URL}/api/user/${chatId}/subscription`);
+              const data = await res.json();
+              if (data.success && data.subscription) activeSub = data.subscription;
+            }
+          } catch (e) {}
+          
+          if (activeSub) {
+            if (activeSub.id === subId) {
+              tg.showPopup({ title: 'ℹ️ Информация', message: `У вас уже активен тариф "${sub.name}"`, buttons: [{ type: 'cancel' }] });
+              return;
+            }
+            
+            const currentSub = SUBSCRIPTIONS.find(s => s.id === activeSub.id) || { name: activeSub.id };
+            const daysLeft = Math.ceil((activeSub.expires_at - Date.now()/1000) / (24*3600));
+            
+            tg.showPopup({
+              title: '⚠️ Апгрейд подписки',
+              message: `У вас осталось ${daysLeft} дн. по тарифу "${currentSub.name}". При апгрейде оставшиеся дни сгорят. Продолжить?`,
+              buttons: [
+                { type: 'default', text: '✅ Да', id: 'upgrade' },
+                { type: 'cancel', text: '❌ Нет' }
+              ]
+            }, (id) => { if (id === 'upgrade') purchaseSubscription(subId, subPrice); });
+          } else {
+            tg.showPopup({
+              title: '✨ Подписка',
+              message: `Оформить подписку "${sub.name}" за ${subPrice} ⭐ в месяц?`,
+              buttons: [
+                { type: 'default', text: '✅ Оформить', id: 'subscribe' },
+                { type: 'cancel', text: '❌ Отмена' }
+              ]
+            }, (id) => { if (id === 'subscribe') purchaseSubscription(subId, subPrice); });
+          }
         });
       });
     }
-
+  
+    async function purchaseSubscription(subscriptionId, price) {
+      try {
+        const chatId = getChatId();
+        if (!chatId) {
+          tg.showPopup({ title: '❌ Ошибка', message: 'Не удалось определить пользователя', buttons: [{ type: 'cancel' }] });
+          return;
+        }
+        
+        tg.MainButton.showProgress();
+        
+        const response = await fetch(`${PAYMENT_API_URL}/api/create_subscription`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: chatId, subscription_id: subscriptionId })
+        });
+        
+        tg.MainButton.hideProgress();
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+          throw new Error(data.error || 'Ошибка создания подписки');
+        }
+        
+        tg.openInvoice(data.invoice_link, (status) => {
+          if (status === 'paid') {
+            tg.showPopup({
+              title: '🎉 Успех!',
+              message: 'Подписка оформлена! Ежедневные награды будут приходить в инвентарь.',
+              buttons: [{ type: 'default', text: 'Отлично!' }]
+            });
+            setTimeout(() => {
+              loadSubscriptionStatus();
+              loadCharacterData();
+            }, 3000);
+          }
+        });
+        
+      } catch (error) {
+        console.error('Subscription error:', error);
+        tg.MainButton.hideProgress();
+        tg.showPopup({ title: '❌ Ошибка', message: error.message || 'Не удалось создать подписку', buttons: [{ type: 'cancel' }] });
+      }
+    }
+  
+    // ==================== НАВИГАЦИЯ ====================
+    function initializeTabs() {
+      document.querySelectorAll('.nav-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.dataset.tab;
+          
+          document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+          document.getElementById(`${tab}-content`).classList.add('active');
+          
+          if (tab === 'shop') setTimeout(initShop, 50);
+          if (tab === 'subscriptions') {
+            setTimeout(renderSubscriptions, 50);
+            setTimeout(loadSubscriptionStatus, 100);
+          }
+        });
+      });
+    }
+  
+    // ==================== ЗАПУСК ====================
     document.addEventListener('DOMContentLoaded', function() {
-      tg.expand(); tg.BackButton.hide(); tg.enableClosingConfirmation();
-      console.log('🚀 Game Master Web App initialized');
+      console.log('🚀 Game Master v2.0 - Epic Fantasy UI');
+      
       initializeTabs();
       loadCharacterData();
-      startAutoUpdate();
+      loadSubscriptionStatus();
+      
+      updateInterval = setInterval(loadCharacterData, 30000);
       startCoinsMonitoring();
-      setTimeout(() => { initShop(); console.log('🛒 Shop initialized'); }, 500);
-      setTimeout(() => { renderSubscriptions(); loadSubscriptionStatus(); }, 800);
+      
+      setTimeout(initShop, 200);
+      setTimeout(renderSubscriptions, 300);
+      
       checkPendingPayment();
-      setInterval(() => checkPendingPayment(), 10000);
-      document.addEventListener('visibilitychange', function() { if (!document.hidden) { loadCharacterData(); checkPendingPayment(); } });
-      document.getElementById('refresh-coins-btn').addEventListener('click', function() { checkCoinsBalance(true); });
+      setInterval(checkPendingPayment, 10000);
+      
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+          loadCharacterData();
+          checkPendingPayment();
+        }
+      });
     });
-
-    window.addEventListener('beforeunload', function() { stopCoinsMonitoring(); if (updateInterval) clearInterval(updateInterval); });
+  
+    window.addEventListener('beforeunload', function() {
+      stopCoinsMonitoring();
+      if (updateInterval) clearInterval(updateInterval);
+    });
   </script>
 </body>
 </html>
