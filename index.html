@@ -24,20 +24,28 @@
       --parchment-dark: #8b7355;
       --shadow: #0a0a0f;
       
+      /* НОВАЯ ЦВЕТОВАЯ ГАММА */
+      --nav-active-bg: linear-gradient(135deg, #2a1a3a 0%, #1a2a4a 100%);
+      --nav-active-border: #7b68ee;
+      --nav-active-text: #e0d5ff;
+      --nav-active-glow: rgba(123, 104, 238, 0.5);
+      --nav-inactive-text: #8899bb;
+      --nav-bg: rgba(15, 25, 40, 0.7);
+      
       --glass-bg: rgba(10, 20, 30, 0.7);
-      --glass-border: rgba(255, 215, 0, 0.2);
+      --glass-border: rgba(123, 104, 238, 0.25);
       --glass-highlight: rgba(255, 255, 255, 0.05);
       
       --card-radius: 24px;
       --card-padding: 18px;
     }
-
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
       font-family: 'Manrope', sans-serif;
       background: #0a0f18;
@@ -46,8 +54,8 @@
       overflow-x: hidden;
       position: relative;
     }
-
-    /* ===== ЭПИЧЕСКИЙ ФОН С ПАРАЛЛАКСОМ ===== */
+    
+    /* ===== ЭПИЧЕСКИЙ ФОН ===== */
     .background-layer {
       position: fixed;
       top: 0;
@@ -57,8 +65,7 @@
       z-index: 0;
       pointer-events: none;
     }
-
-    /* Глубокое космическое небо */
+    
     .bg-sky {
       position: absolute;
       top: 0;
@@ -67,8 +74,7 @@
       height: 100%;
       background: radial-gradient(ellipse at 30% 20%, #1a2a4a 0%, #0a1220 50%, #050a10 100%);
     }
-
-    /* Звёзды */
+    
     .bg-stars {
       position: absolute;
       top: 0;
@@ -86,13 +92,12 @@
         radial-gradient(1px 1px at 95% 15%, rgba(255, 255, 255, 0.6), transparent);
       animation: twinkle 4s infinite alternate;
     }
-
+    
     @keyframes twinkle {
       0% { opacity: 0.5; }
       100% { opacity: 1; }
     }
-
-    /* Туманности */
+    
     .bg-nebula {
       position: absolute;
       top: 0;
@@ -106,15 +111,14 @@
       filter: blur(40px);
       animation: nebulaFlow 30s infinite alternate ease-in-out;
     }
-
+    
     @keyframes nebulaFlow {
       0% { transform: translate(0, 0) scale(1); }
       33% { transform: translate(-2%, 1%) scale(1.05); }
       66% { transform: translate(1%, -2%) scale(1.02); }
       100% { transform: translate(2%, 2%) scale(1.08); }
     }
-
-    /* Горы на горизонте */
+    
     .bg-mountains {
       position: absolute;
       bottom: 0;
@@ -130,7 +134,7 @@
                          38% 30%, 45% 48%, 52% 25%, 60% 42%, 68% 20%, 75% 38%, 
                          82% 28%, 90% 45%, 95% 35%, 100% 50%, 100% 100%);
     }
-
+    
     .bg-mountains::before {
       content: '';
       position: absolute;
@@ -145,7 +149,7 @@
       clip-path: polygon(0% 100%, 0% 75%, 10% 60%, 20% 70%, 30% 55%, 40% 65%, 
                          50% 45%, 60% 60%, 70% 40%, 80% 55%, 90% 48%, 100% 65%, 100% 100%);
     }
-
+    
     /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
     .app-container {
       position: relative;
@@ -157,7 +161,7 @@
       display: flex;
       flex-direction: column;
     }
-
+    
     /* ===== ВЕРХНЯЯ ПАНЕЛЬ ===== */
     .top-bar {
       display: flex;
@@ -166,27 +170,27 @@
       margin-bottom: 16px;
       padding: 8px 0;
     }
-
+    
     .hero-identity {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-
+    
     .hero-avatar {
       width: 48px;
       height: 48px;
-      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+      background: linear-gradient(135deg, #7b68ee, #9370db);
       border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 28px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 215, 0, 0.3), 0 0 20px var(--gold-glow);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(123, 104, 238, 0.3), 0 0 20px rgba(123, 104, 238, 0.4);
       position: relative;
       overflow: hidden;
     }
-
+    
     .hero-avatar::before {
       content: '';
       position: absolute;
@@ -197,35 +201,35 @@
       background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
       animation: avatarShine 4s infinite;
     }
-
+    
     @keyframes avatarShine {
       0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
       25% { transform: translateX(100%) translateY(100%) rotate(45deg); }
       100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
     }
-
+    
     .hero-info h2 {
       font-family: 'Cinzel', serif;
       font-size: 1.1rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--parchment), var(--gold));
+      background: linear-gradient(135deg, var(--parchment), #e0d5ff);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       margin-bottom: 2px;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
-
+    
     .hero-info p {
       font-size: 0.7rem;
       opacity: 0.7;
       text-transform: uppercase;
       letter-spacing: 2px;
     }
-
-    /* Кошелёк в правом верхнем углу */
+    
+    /* Кошелёк */
     .wallet-display {
-      background: linear-gradient(135deg, rgba(184, 134, 11, 0.3), rgba(255, 215, 0, 0.1));
+      background: linear-gradient(135deg, rgba(123, 104, 238, 0.2), rgba(147, 112, 219, 0.1));
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       padding: 10px 16px;
@@ -233,12 +237,12 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      border: 1px solid rgba(255, 215, 0, 0.3);
+      border: 1px solid rgba(123, 104, 238, 0.3);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       position: relative;
       overflow: hidden;
     }
-
+    
     .wallet-display::before {
       content: '';
       position: absolute;
@@ -246,122 +250,151 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+      background: linear-gradient(90deg, transparent, rgba(123, 104, 238, 0.2), transparent);
       animation: walletShine 5s infinite;
     }
-
+    
     @keyframes walletShine {
       0%, 100% { left: -100%; }
       50% { left: 100%; }
     }
-
+    
     .wallet-icon {
       font-size: 1.3rem;
       filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
     }
-
+    
     #wallet-value {
       font-family: 'Cinzel', serif;
       font-size: 1.1rem;
       font-weight: 700;
-      color: var(--gold);
-      text-shadow: 0 0 15px var(--gold-glow);
+      color: #e0d5ff;
+      text-shadow: 0 0 15px rgba(123, 104, 238, 0.5);
       min-width: 60px;
       text-align: right;
     }
-
-    /* ===== НАВИГАЦИЯ - СТИЛЬНЫЕ ПИЛЮЛИ ===== */
+    
+    /* ===== НАВИГАЦИЯ ===== */
     .nav-pills {
       display: flex;
-      gap: 6px;
+      justify-content: space-around;
+      gap: 4px;
       margin-bottom: 20px;
-      background: rgba(10, 20, 30, 0.5);
+      background: var(--nav-bg);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      padding: 6px;
-      border-radius: 50px;
-      border: 1px solid rgba(255, 215, 0, 0.15);
+      padding: 8px 6px;
+      border-radius: 60px;
+      border: 1px solid rgba(123, 104, 238, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
-
+    
     .nav-pill {
       flex: 1;
-      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 4px;
       border: none;
       background: transparent;
-      color: var(--parchment-dark);
-      font-family: 'Cinzel', serif;
-      font-weight: 600;
-      font-size: 0.75rem;
+      color: var(--nav-inactive-text);
+      font-family: 'Manrope', sans-serif;
+      font-weight: 500;
+      font-size: 0.6rem;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 0.5px;
       border-radius: 40px;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
+      gap: 4px;
     }
-
+    
+    .nav-pill .nav-icon {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-pill .nav-label {
+      font-size: 0.55rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    
     .nav-pill.active {
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(184, 134, 11, 0.15));
-      color: var(--gold);
-      text-shadow: 0 0 15px var(--gold-glow);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 215, 0, 0.3);
+      background: var(--nav-active-bg);
+      color: var(--nav-active-text);
+      text-shadow: 0 0 10px var(--nav-active-glow);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 15px var(--nav-active-glow);
+      border: 1px solid var(--nav-active-border);
     }
-
-    .nav-pill::after {
+    
+    .nav-pill.active .nav-icon {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 8px var(--nav-active-glow));
+    }
+    
+    .nav-pill::before {
       content: '';
       position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 2px;
-      background: var(--gold);
-      box-shadow: 0 0 15px var(--gold);
-      transition: width 0.3s ease;
+      background: radial-gradient(circle at center, rgba(123, 104, 238, 0.2) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
     }
-
-    .nav-pill.active::after {
-      width: 40%;
+    
+    .nav-pill:hover::before {
+      opacity: 1;
     }
-
+    
+    .nav-pill:hover {
+      color: var(--nav-active-text);
+    }
+    
     /* ===== КОНТЕНТНЫЕ СЕКЦИИ ===== */
     .content-section {
       display: none;
       flex: 1;
       animation: fadeSlide 0.4s ease;
     }
-
+    
     .content-section.active {
       display: block;
     }
-
+    
     @keyframes fadeSlide {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
-    /* ===== КАРТОЧКИ ХАРАКТЕРИСТИК ===== */
+    
+    /* ===== КАРТОЧКИ ===== */
     .stats-container {
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
-
-    /* Основные бары (HP, Energy, Armor) */
+    
     .vital-card {
       background: linear-gradient(145deg, rgba(10, 25, 35, 0.8), rgba(5, 15, 25, 0.9));
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-radius: 28px;
       padding: 20px var(--card-padding);
-      border: 1px solid rgba(255, 215, 0, 0.15);
+      border: 1px solid rgba(123, 104, 238, 0.2);
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
       position: relative;
       overflow: hidden;
     }
-
+    
     .vital-card::before {
       content: '';
       position: absolute;
@@ -369,17 +402,17 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      background: linear-gradient(90deg, transparent, #7b68ee, transparent);
       opacity: 0.5;
     }
-
+    
     .vital-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
     }
-
+    
     .vital-label {
       display: flex;
       align-items: center;
@@ -391,20 +424,20 @@
       letter-spacing: 2px;
       color: var(--parchment);
     }
-
+    
     .vital-icon {
       font-size: 1.3rem;
     }
-
+    
     .vital-value {
       font-family: 'Cinzel', serif;
       font-size: 1.3rem;
       font-weight: 700;
-      color: var(--gold);
-      text-shadow: 0 0 15px var(--gold-glow);
+      color: #e0d5ff;
+      text-shadow: 0 0 15px rgba(123, 104, 238, 0.4);
     }
-
-    /* Кастомные прогресс-бары */
+    
+    /* Прогресс-бары */
     .progress-bar-container {
       position: relative;
       height: 28px;
@@ -414,7 +447,7 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
       box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
     }
-
+    
     .progress-fill {
       height: 100%;
       border-radius: 40px;
@@ -422,7 +455,7 @@
       position: relative;
       overflow: hidden;
     }
-
+    
     .progress-fill::after {
       content: '';
       position: absolute;
@@ -433,38 +466,38 @@
       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
       animation: barShine 2.5s infinite;
     }
-
+    
     @keyframes barShine {
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
     }
-
+    
     .hp-fill {
       background: linear-gradient(90deg, #8b0000, #dc143c, #ff4444);
       box-shadow: 0 0 20px rgba(220, 20, 60, 0.6);
     }
-
+    
     .energy-fill {
       background: linear-gradient(90deg, #1a3a5c, #3498db, #5dade2);
       box-shadow: 0 0 20px rgba(52, 152, 219, 0.6);
     }
-
+    
     .armor-fill {
       background: linear-gradient(90deg, #2c3e50, #7f8c8d, #bdc3c7);
       box-shadow: 0 0 20px rgba(189, 195, 199, 0.5);
     }
-
+    
     .crystal-fill {
       background: linear-gradient(90deg, #4a235a, #8e44ad, #d2b4de);
       box-shadow: 0 0 25px rgba(155, 89, 182, 0.8);
       animation: crystalPulse 2.5s infinite;
     }
-
+    
     @keyframes crystalPulse {
       0%, 100% { filter: brightness(1); }
       50% { filter: brightness(1.3); }
     }
-
+    
     .progress-text {
       position: absolute;
       top: 50%;
@@ -477,47 +510,47 @@
       z-index: 2;
       white-space: nowrap;
     }
-
-    /* Сетка для остальных статов */
+    
+    /* Сетка статов */
     .stats-grid-3 {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
-
+    
     .stat-tile {
       background: linear-gradient(145deg, rgba(10, 25, 35, 0.7), rgba(5, 15, 25, 0.8));
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       border-radius: 22px;
       padding: 16px 12px;
-      border: 1px solid rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(123, 104, 238, 0.15);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       text-align: center;
       transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
-
+    
     .stat-tile:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.1);
-      border-color: rgba(255, 215, 0, 0.3);
+      border-color: rgba(123, 104, 238, 0.4);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(123, 104, 238, 0.15);
     }
-
+    
     .stat-tile .icon {
       font-size: 1.8rem;
       margin-bottom: 6px;
       filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
     }
-
+    
     .stat-tile .value {
       font-family: 'Cinzel', serif;
       font-size: 1.4rem;
       font-weight: 700;
-      color: var(--gold);
-      text-shadow: 0 0 15px var(--gold-glow);
+      color: #e0d5ff;
+      text-shadow: 0 0 15px rgba(123, 104, 238, 0.4);
       line-height: 1.2;
     }
-
+    
     .stat-tile .label {
       font-size: 0.65rem;
       text-transform: uppercase;
@@ -525,66 +558,66 @@
       opacity: 0.7;
       margin-top: 4px;
     }
-
-    /* XP Bar специальный */
+    
+    /* XP Bar */
     .xp-container {
       margin-top: 8px;
     }
-
+    
     .xp-bar-small {
       height: 8px;
       background: rgba(0, 0, 0, 0.5);
       border-radius: 10px;
       overflow: hidden;
       margin: 8px 0 4px;
-      border: 1px solid rgba(255, 215, 0, 0.2);
+      border: 1px solid rgba(123, 104, 238, 0.2);
     }
-
+    
     .xp-fill-small {
       height: 100%;
-      background: linear-gradient(90deg, #b8860b, #ffd700, #ffaa00);
+      background: linear-gradient(90deg, #7b68ee, #9370db, #b8a2ff);
       border-radius: 10px;
-      box-shadow: 0 0 10px #ffd700;
+      box-shadow: 0 0 10px #7b68ee;
     }
-
-    /* Карточка оружия */
+    
+    /* Оружие */
     .weapon-showcase {
       background: linear-gradient(145deg, rgba(20, 40, 50, 0.8), rgba(10, 20, 30, 0.9));
       backdrop-filter: blur(20px);
       border-radius: 28px;
       padding: 18px var(--card-padding);
-      border: 1px solid rgba(255, 215, 0, 0.2);
+      border: 1px solid rgba(123, 104, 238, 0.25);
       display: flex;
       align-items: center;
       gap: 15px;
       margin-top: 5px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     }
-
+    
     .weapon-icon {
       font-size: 2.5rem;
-      filter: drop-shadow(0 0 15px var(--gold-glow));
+      filter: drop-shadow(0 0 15px rgba(123, 104, 238, 0.4));
     }
-
+    
     .weapon-details {
       flex: 1;
     }
-
+    
     .weapon-label {
       font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 2px;
       opacity: 0.6;
     }
-
-    #weapon-value {
+    
+    #weapon-value-new {
       font-family: 'Cinzel', serif;
       font-size: 1.1rem;
       font-weight: 700;
       color: var(--parchment);
     }
-
-    /* Статус (Жив/Мёртв) */
+    
+    /* Статус */
     .status-indicator {
       display: inline-block;
       padding: 6px 16px;
@@ -597,19 +630,19 @@
       background: rgba(0, 0, 0, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-
+    
     .status-alive {
       color: #2ecc71;
       text-shadow: 0 0 10px #2ecc71;
       border-color: #2ecc71;
     }
-
+    
     .status-dead {
       color: #ff4444;
       text-shadow: 0 0 10px #ff4444;
       border-color: #ff4444;
     }
-
+    
     /* ===== ИНВЕНТАРЬ ===== */
     .inventory-header-stats {
       display: flex;
@@ -620,21 +653,21 @@
       background: rgba(10, 25, 35, 0.5);
       backdrop-filter: blur(15px);
       border-radius: 40px;
-      border: 1px solid rgba(255, 215, 0, 0.15);
+      border: 1px solid rgba(123, 104, 238, 0.15);
     }
-
+    
     .inventory-grid-new {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
-
+    
     .item-card {
       background: linear-gradient(145deg, rgba(15, 30, 40, 0.9), rgba(8, 18, 28, 0.95));
       backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 16px 10px;
-      border: 1px solid rgba(255, 215, 0, 0.2);
+      border: 1px solid rgba(123, 104, 238, 0.2);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       transition: all 0.25s ease;
       cursor: pointer;
@@ -642,18 +675,18 @@
       overflow: hidden;
       text-align: center;
     }
-
+    
     .item-card:hover {
       transform: translateY(-3px);
-      border-color: var(--gold);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--gold-glow);
+      border-color: #7b68ee;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(123, 104, 238, 0.3);
     }
-
+    
     .item-card.equipped {
       border: 2px solid #2ecc71;
       box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
     }
-
+    
     .item-card.equipped::after {
       content: '⚔️';
       position: absolute;
@@ -666,49 +699,49 @@
       color: white;
       font-weight: bold;
     }
-
+    
     .item-icon-large {
       font-size: 2.8rem;
       margin-bottom: 8px;
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
     }
-
+    
     .item-name {
       font-family: 'Cinzel', serif;
       font-weight: 600;
       font-size: 0.85rem;
-      color: var(--gold);
+      color: #e0d5ff;
       margin-bottom: 4px;
     }
-
+    
     .item-desc {
       font-size: 0.65rem;
       opacity: 0.7;
       margin-bottom: 10px;
     }
-
+    
     .item-footer-card {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-top: 8px;
-      border-top: 1px solid rgba(255, 215, 0, 0.2);
+      border-top: 1px solid rgba(123, 104, 238, 0.2);
     }
-
+    
     .item-quantity-badge {
-      background: var(--gold-dim);
+      background: #7b68ee;
       padding: 3px 10px;
       border-radius: 30px;
       font-size: 0.7rem;
       font-weight: 600;
-      color: #0a0f18;
+      color: white;
     }
-
-    /* ===== МАГАЗИН И ПОДПИСКИ ===== */
+    
+    /* ===== МАГАЗИН ===== */
     .shop-category {
       margin-bottom: 24px;
     }
-
+    
     .shop-category-title {
       display: flex;
       align-items: center;
@@ -716,36 +749,36 @@
       margin-bottom: 14px;
       font-family: 'Cinzel', serif;
       font-weight: 600;
-      color: var(--gold);
+      color: #e0d5ff;
       text-transform: uppercase;
       letter-spacing: 2px;
       font-size: 0.9rem;
     }
-
+    
     .shop-grid-new {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
-
+    
     .shop-item-card {
       background: linear-gradient(145deg, rgba(15, 30, 40, 0.9), rgba(8, 18, 28, 0.95));
       backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 16px 10px;
-      border: 1px solid rgba(255, 215, 0, 0.2);
+      border: 1px solid rgba(123, 104, 238, 0.2);
       text-align: center;
       transition: all 0.25s ease;
     }
-
+    
     .shop-item-card:hover {
-      border-color: var(--gold);
-      box-shadow: 0 0 25px var(--gold-glow);
+      border-color: #7b68ee;
+      box-shadow: 0 0 25px rgba(123, 104, 238, 0.3);
     }
-
+    
     .price-tag {
-      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
-      color: #0a0f18;
+      background: linear-gradient(135deg, #7b68ee, #9370db);
+      color: white;
       padding: 6px 12px;
       border-radius: 40px;
       font-weight: 700;
@@ -754,11 +787,11 @@
       margin: 10px 0;
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
-
+    
     .buy-btn {
       background: transparent;
-      border: 1.5px solid var(--gold);
-      color: var(--gold);
+      border: 1.5px solid #7b68ee;
+      color: #e0d5ff;
       padding: 10px 12px;
       border-radius: 40px;
       font-weight: 600;
@@ -770,18 +803,18 @@
       width: 100%;
       font-family: 'Cinzel', serif;
     }
-
+    
     .buy-btn:hover {
-      background: var(--gold);
-      color: #0a0f18;
-      box-shadow: 0 0 20px var(--gold);
+      background: #7b68ee;
+      color: white;
+      box-shadow: 0 0 20px rgba(123, 104, 238, 0.6);
     }
-
-    /* Кнопка обновления */
+    
+    /* Кнопка действия */
     .action-btn {
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(184, 134, 11, 0.05));
-      border: 1px solid var(--gold);
-      color: var(--gold);
+      background: linear-gradient(135deg, rgba(123, 104, 238, 0.15), rgba(42, 26, 58, 0.1));
+      border: 1px solid #7b68ee;
+      color: #e0d5ff;
       padding: 14px 20px;
       border-radius: 50px;
       font-family: 'Cinzel', serif;
@@ -794,13 +827,13 @@
       width: 100%;
       margin-top: 15px;
     }
-
+    
     .action-btn:hover {
-      background: var(--gold);
-      color: #0a0f18;
-      box-shadow: 0 0 30px var(--gold);
+      background: #7b68ee;
+      color: white;
+      box-shadow: 0 0 30px rgba(123, 104, 238, 0.5);
     }
-
+    
     /* Энергетический таймер */
     .energy-timer-notice {
       background: rgba(52, 152, 219, 0.15);
@@ -814,7 +847,7 @@
       backdrop-filter: blur(10px);
       display: none;
     }
-
+    
     /* Сообщения */
     .loading-state {
       text-align: center;
@@ -822,11 +855,11 @@
       background: rgba(10, 20, 30, 0.7);
       backdrop-filter: blur(20px);
       border-radius: 30px;
-      border: 1px solid rgba(255, 215, 0, 0.2);
-      color: var(--gold);
+      border: 1px solid rgba(123, 104, 238, 0.2);
+      color: #e0d5ff;
       font-family: 'Cinzel', serif;
     }
-
+    
     .error-state {
       background: rgba(220, 20, 60, 0.2);
       border: 2px solid #dc143c;
@@ -836,7 +869,7 @@
       backdrop-filter: blur(20px);
       color: #ff6b6b;
     }
-
+    
     /* Анимации урона */
     .damage-popup {
       position: fixed;
@@ -856,35 +889,37 @@
       text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
       border: 2px solid rgba(255, 255, 255, 0.3);
     }
-
+    
     .armor-popup {
       background: linear-gradient(135deg, #3498db, #1a3a5c);
       box-shadow: 0 0 50px #3498db;
     }
-
+    
     @keyframes damagePop {
       0% { opacity: 0; transform: translate(-50%, -30%) scale(0.7); }
       15% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
       70% { opacity: 1; transform: translate(-50%, -60%) scale(1); }
       100% { opacity: 0; transform: translate(-50%, -80%) scale(0.9); }
     }
-
+    
     .shake-effect {
       animation: shakeAnim 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     }
-
+    
     @keyframes shakeAnim {
       10%, 90% { transform: translate3d(-1px, 0, 0); }
       20%, 80% { transform: translate3d(2px, 0, 0); }
       30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
       40%, 60% { transform: translate3d(4px, 0, 0); }
     }
-
+    
     /* Адаптивность */
     @media (max-width: 380px) {
       .app-container { padding: 10px 10px 15px; }
       .stats-grid-3 { gap: 8px; }
       .inventory-grid-new, .shop-grid-new { gap: 8px; }
+      .nav-pill .nav-label { font-size: 0.45rem; }
+      .nav-pill .nav-icon { font-size: 1rem; }
     }
   </style>
 </head>
@@ -918,10 +953,22 @@
 
     <!-- Навигация -->
     <div class="nav-pills">
-      <button class="nav-pill active" data-tab="stats">Характеристики</button>
-      <button class="nav-pill" data-tab="inventory">Инвентарь</button>
-      <button class="nav-pill" data-tab="shop">Лавка</button>
-      <button class="nav-pill" data-tab="subscriptions">Подписки</button>
+      <button class="nav-pill active" data-tab="stats">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Герой</span>
+      </button>
+      <button class="nav-pill" data-tab="inventory">
+        <span class="nav-icon">🎒</span>
+        <span class="nav-label">Инвентарь</span>
+      </button>
+      <button class="nav-pill" data-tab="shop">
+        <span class="nav-icon">🛒</span>
+        <span class="nav-label">Лавка</span>
+      </button>
+      <button class="nav-pill" data-tab="subscriptions">
+        <span class="nav-icon">✨</span>
+        <span class="nav-label">Подписки</span>
+      </button>
     </div>
 
     <!-- Секция Характеристик -->
