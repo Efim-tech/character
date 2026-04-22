@@ -2071,29 +2071,43 @@
       // ===== РЕВЕРСИВНОЕ ВОСПРОИЗВЕДЕНИЕ ФОНОВОГО ВИДЕО (ПИНГ-ПОНГ) =====
       const bgVideo = document.querySelector('#bg-video');
       if (bgVideo) {
-        let direction = 1; // 1 = вперёд, -1 = назад
+        let isForward = true;
+        let reverseInterval = null;
         
-        // Замедление видео (можно настроить под себя)
-        bgVideo.playbackRate = 0.75; // 0.5 = в 2 раза медленнее, 0.25 = в 4 раза
+        // Замедление видео
+        bgVideo.playbackRate = 0.75;
+        
+        // Функция остановки обратного хода
+        function stopReverse() {
+          if (reverseInterval) {
+            clearInterval(reverseInterval);
+            reverseInterval = null;
+          }
+        }
         
         bgVideo.addEventListener('timeupdate', function() {
-          // Если дошли до конца — меняем направление на обратное
-          if (direction === 1 && bgVideo.currentTime >= bgVideo.duration - 0.05) {
-            direction = -1;
-            bgVideo.playbackRate = -0.75; // Отрицательное значение = обратная перемотка
-          }
-          
-          // Если дошли до начала при обратной перемотке — меняем направление вперёд
-          if (direction === -1 && bgVideo.currentTime <= 0.05) {
-            direction = 1;
-            bgVideo.playbackRate = 0.5;
+          // Если дошли до конца при движении вперёд
+          if (isForward && bgVideo.currentTime >= bgVideo.duration - 0.1) {
+            bgVideo.pause();
+            isForward = false;
+            stopReverse();
+            
+            // Запускаем обратный ход
+            reverseInterval = setInterval(() => {
+              bgVideo.currentTime -= 0.033; // ~30 кадров в секунду
+              
+              // Когда дошли до начала
+              if (bgVideo.currentTime <= 0.1) {
+                stopReverse();
+                isForward = true;
+                bgVideo.play();
+              }
+            }, 33);
           }
         });
         
-        // Гарантированно запускаем видео
-        bgVideo.play().catch(error => {
-          console.log('Автовоспроизведение видео: ', error);
-        });
+        // Запускаем видео
+        bgVideo.play().catch(e => console.log('Автовоспроизведение:', e));
       }
       
       // Кнопка обновления монет (если есть на странице)
