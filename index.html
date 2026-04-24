@@ -1771,7 +1771,7 @@
         <div class="shop-category">
           <div class="shop-category-title"><span>💰</span> Серебряные монеты</div>
           <div class="shop-grid-new">
-            ${createShopItemHTML('coins500', 'shop/coins-500.png', '500 монет', '', 10)}
+            ${createShopItemHTML('coins500', 'shop/coins-500.gif', '500 монет', '', 10)}
             ${createShopItemHTML('coins1000', 'shop/coins-1000.png', '1000 монет', '', 18)}
             ${createShopItemHTML('coins2500', 'shop/coins-2500.png', '2500 монет', '', 40)}
             ${createShopItemHTML('coins5000', 'shop/coins-5000.png', '5000 монет', '', 75)}
@@ -1831,9 +1831,15 @@
     }
     
     function createShopItemHTML(id, imageSrc, name, desc, price) {
+      // Определяем тип файла по расширению
+      const isGif = imageSrc.toLowerCase().endsWith('.gif');
+      
+      // Для GIF используем img (анимация), для PNG тоже img
+      const imageTag = `<img src="${imageSrc}" alt="${name}" class="shop-item-image">`;
+      
       return `
         <div class="shop-item-card" data-item-id="${id}" data-price="${price}">
-          <img src="${imageSrc}" alt="${name}" class="shop-item-image">
+          ${imageTag}
           <div class="item-name">${name}</div>
           <div class="item-desc">${desc}</div>
           <div class="price-tag">⭐ ${price}</div>
