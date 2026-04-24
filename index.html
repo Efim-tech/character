@@ -1065,30 +1065,26 @@
     }
 
     /* Иконки в карточках (сердце, энергия, броня) */
-    .vital-icon-video {
+    .vital-icon-gif {
       width: 28px;
       height: 28px;
       object-fit: contain;
       filter: drop-shadow(0 0 6px rgba(123, 104, 238, 0.5));
-      /* Отключаем стандартные контролы видео */
-      pointer-events: none;
-      /* Чтобы видео вело себя как изображение */
-      display: inline-block;
+      image-rendering: -webkit-optimize-contrast;
       vertical-align: middle;
     }
     
     /* Иконки в плитках (кристалл) */
-    .tile-icon-video {
+    .tile-icon-gif {
       width: 36px;
       height: 36px;
       object-fit: contain;
       filter: drop-shadow(0 0 8px rgba(155, 89, 182, 0.6));
-      pointer-events: none;
-      display: inline-block;
+      image-rendering: -webkit-optimize-contrast;
       vertical-align: middle;
     }
     
-    /* Иконка монеты в кошельке (статичный PNG, без изменений) */
+    /* Иконка монеты в кошельке */
     .wallet-icon-img {
       width: 24px;
       height: 24px;
@@ -1096,7 +1092,7 @@
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
     }
     
-    /* Скрываем старые классы с эмодзи */
+    /* Скрываем старые классы */
     .vital-icon {
       display: none;
     }
@@ -1159,9 +1155,7 @@
         <div class="vital-card">
           <div class="vital-header">
             <span class="vital-label">
-              <video autoplay loop muted playsinline class="vital-icon-video">
-                <source src="icons/heart.gif" type="video/mp4">
-              </video>
+              <img src="icons/heart.gif" alt="HP" class="vital-icon-gif">
               Жизненная сила
             </span>
           </div>
@@ -1175,9 +1169,7 @@
         <div class="vital-card">
           <div class="vital-header">
             <span class="vital-label">
-              <video autoplay loop muted playsinline class="vital-icon-video">
-                <source src="icons/armor.gif" type="video/mp4">
-              </video>
+              <img src="icons/armor.gif" alt="Armor" class="vital-icon-gif">
               Броня
             </span>
           </div>
@@ -1191,9 +1183,7 @@
         <div class="vital-card">
           <div class="vital-header">
             <span class="vital-label">
-              <video autoplay loop muted playsinline class="vital-icon-video">
-                <source src="icons/energy.gif" type="video/mp4">
-              </video>
+              <img src="icons/energy.gif" alt="Energy" class="vital-icon-gif">
               Энергия
             </span>
           </div>
@@ -1224,9 +1214,7 @@
           <!-- Кристалл -->
           <div class="stat-tile">
             <div class="icon">
-              <video autoplay loop muted playsinline class="tile-icon-video">
-                <source src="icons/crystal.gif" type="video/mp4">
-              </video>
+              <img src="icons/crystal.gif" alt="Crystal" class="tile-icon-gif">
             </div>
             <div class="value" id="crystal-value-new">0/50</div>
             <div class="label">Кристалл</div>
