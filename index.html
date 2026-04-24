@@ -920,6 +920,23 @@
       0%, 100% { opacity: 0.5; }
       50% { opacity: 1; }
     }
+
+    /* ===== ИЗОБРАЖЕНИЯ ПРЕДМЕТОВ В ИНВЕНТАРЕ ===== */
+    .inventory-item-image {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+      image-rendering: -webkit-optimize-contrast;
+      margin: 0 auto;
+      display: block;
+    }
+    
+    .item-card:hover .inventory-item-image {
+      transform: scale(1.1);
+      filter: drop-shadow(0 6px 12px rgba(123, 104, 238, 0.5));
+      transition: all 0.3s ease;
+    }
     
     /* ===== МАГАЗИН ===== */
     .shop-category {
@@ -1398,6 +1415,63 @@
       { id: 'sub_crystal_master', name: '💎 Мастер', price: 1, features: ['+15 зарядов кристалла', '+2 больших зелья энергии', '+250 серебряных монет', '+2 зелья здоровья', '+2 ремнабора'] },
       { id: 'sub_crystal_archon', name: '✨ Архонт', price: 1, features: ['+25 зарядов кристалла', '+3 больших зелья энергии', '+500 серебряных монет', '+3 зелья здоровья', '+3 ремнабора'] }
     ];
+
+    // ==================== КАРТА ИЗОБРАЖЕНИЙ ПРЕДМЕТОВ ====================
+    const ITEM_IMAGES = {
+      // Зелья энергии
+      'Малое зелье энергии': 'shop/energy-small.png',
+      'Среднее зелье энергии': 'shop/energy-medium.png',
+      'Большое зелье энергии': 'shop/energy-large.png',
+      'Малое зелье': 'shop/energy-small.png',
+      'Среднее зелье': 'shop/energy-medium.png',
+      'Большое зелье': 'shop/energy-large.png',
+      
+      // Заряды кристалла
+      'Малый заряд кристалла': 'shop/crystal-small.png',
+      'Средний заряд кристалла': 'shop/crystal-medium.png',
+      'Большой заряд кристалла': 'shop/crystal-large.png',
+      'Огромный заряд кристалла': 'shop/crystal-huge.png',
+      'Малый заряд': 'shop/crystal-small.png',
+      'Средний заряд': 'shop/crystal-medium.png',
+      'Большой заряд': 'shop/crystal-large.png',
+      'Огромный заряд': 'shop/crystal-huge.png',
+      
+      // Монеты
+      '500 монет': 'shop/coins-500.png',
+      '1000 монет': 'shop/coins-1000.png',
+      '2500 монет': 'shop/coins-2500.png',
+      '5000 монет': 'shop/coins-5000.png',
+      '10000 монет': 'shop/coins-10000.png',
+      
+      // Лечение и ремонт
+      'Бинт': 'shop/bandage.png',
+      'Зелье здоровья': 'shop/health-potion.png',
+      'Ремонтный набор': 'shop/repair-kit.png',
+      'Ремнабор': 'shop/repair-kit.png',
+      
+      // Премиум наборы
+      'Набор путешественника': 'shop/traveler-set.png',
+      'Набор путника': 'shop/traveler-set.png',
+      'Набор авантюриста': 'shop/adventurer-set.png',
+      'Набор героя': 'shop/hero-set.png'
+    };
+    
+    // Категории для сортировки
+    const ITEM_CATEGORY_ORDER = {
+      'medical': 1,    // Лечение
+      'repair': 2,     // Ремонт
+      'potion': 3,     // Зелья
+      'currency': 4,   // Валюта
+      'weapon': 5,     // Оружие
+      'armor': 6,      // Броня
+      'scroll': 7,     // Свитки
+      'amulet': 8,     // Амулеты
+      'gem': 9,        // Самоцветы
+      'food': 10,      // Еда
+      'key': 11,       // Ключи
+      'ammo': 12,      // Боеприпасы
+      'consumable': 13 // Расходники
+    };
   
     // ==================== ИНИЦИАЛИЗАЦИЯ TELEGRAM ====================
     const tg = window.Telegram.WebApp;
@@ -1444,14 +1518,19 @@
     }
   
     function getItemIcon(item) {
-      if (item.name) {
-        if (item.name.includes('Большое')) return '🧴';
-        if (item.name.includes('Среднее')) return '⚗️';
-        if (item.name.includes('Маленькое')) return '🧪';
-        if (item.name.includes('Бинт')) return '🩹';
-        if (item.name.includes('Ремонтный')) return '🔧';
-        if (item.name.includes('Зелье здоровья')) return '🧪';
+      // Ищем изображение по точному совпадению имени
+      if (ITEM_IMAGES[item.name]) {
+        return `<img src="${ITEM_IMAGES[item.name]}" alt="${item.name}" class="inventory-item-image">`;
       }
+      
+      // Ищем по частичному совпадению
+      for (const [key, value] of Object.entries(ITEM_IMAGES)) {
+        if (item.name && item.name.includes(key)) {
+          return `<img src="${value}" alt="${item.name}" class="inventory-item-image">`;
+        }
+      }
+      
+      // Если ничего не нашли — показываем эмодзи по типу
       const icons = {
         'weapon': '⚔️', 'armor': '🛡️', 'potion': '🧪', 'medical': '🩹',
         'repair': '🔧', 'amulet': '📿', 'scroll': '📜', 'food': '🍖',
@@ -1626,8 +1705,16 @@
       if (grid) grid.innerHTML = '';
       
       const sorted = [...characterData.inventory].sort((a, b) => {
+        // 1. Экипированные всегда сверху
         if (a.is_equipped && !b.is_equipped) return -1;
         if (!a.is_equipped && b.is_equipped) return 1;
+        
+        // 2. Сортируем по категориям
+        const catA = ITEM_CATEGORY_ORDER[a.type] || 99;
+        const catB = ITEM_CATEGORY_ORDER[b.type] || 99;
+        if (catA !== catB) return catA - catB;
+        
+        // 3. Внутри категории — по имени
         return (a.name || '').localeCompare(b.name || '');
       });
       
