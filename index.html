@@ -1234,6 +1234,52 @@
       background: #8e44ad;
       color: #fff;
     }
+
+    /* ===== БОНУСЫ ПОДПИСКИ ===== */
+    .subscription-features {
+      padding-left: 0;
+      margin: 15px 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .subscription-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(123, 104, 238, 0.08);
+      border-radius: 12px;
+      border: 1px solid rgba(123, 104, 238, 0.15);
+      font-size: 0.75rem;
+      color: #e0d5ff;
+      transition: all 0.2s ease;
+    }
+    
+    .subscription-feature-item:hover {
+      background: rgba(123, 104, 238, 0.15);
+      border-color: rgba(123, 104, 238, 0.3);
+    }
+    
+    .feature-icon {
+      font-size: 1rem;
+      min-width: 24px;
+      text-align: center;
+    }
+    
+    .feature-text {
+      flex: 1;
+      font-weight: 500;
+    }
+    
+    /* Иконки для типов бонусов */
+    .feature-energy { color: #ffa500; }
+    .feature-coins { color: #ffd700; }
+    .feature-heal { color: #ff6b6b; }
+    .feature-repair { color: #5dade2; }
+    .feature-crystal { color: #d2b4de; }
     
     /* Анимации урона */
     .damage-popup {
@@ -1564,7 +1610,10 @@
         price: 1, 
         rank: 'adventurer',
         badge: null,
-        features: ['+1 большое зелье энергии', '+50 серебряных монет'] 
+        features: [
+          { text: '+1 большое зелье энергии', type: 'energy' },
+          { text: '+50 серебряных монет', type: 'coins' }
+        ] 
       },
       { 
         id: 'sub_hero', 
@@ -1572,7 +1621,11 @@
         price: 1, 
         rank: 'hero',
         badge: { text: 'Популярный', type: 'popular' },
-        features: ['+2 больших зелья энергии', '+100 серебряных монет', '+1 бинт'] 
+        features: [
+          { text: '+2 больших зелья энергии', type: 'energy' },
+          { text: '+100 серебряных монет', type: 'coins' },
+          { text: '+1 бинт', type: 'heal' }
+        ] 
       },
       { 
         id: 'sub_champion', 
@@ -1580,7 +1633,12 @@
         price: 1, 
         rank: 'champion',
         badge: { text: 'Выгодный', type: 'value' },
-        features: ['+3 больших зелья энергии', '+200 серебряных монет', '+1 бинт', '+1 ремонтный набор'] 
+        features: [
+          { text: '+3 больших зелья энергии', type: 'energy' },
+          { text: '+200 серебряных монет', type: 'coins' },
+          { text: '+1 бинт', type: 'heal' },
+          { text: '+1 ремонтный набор', type: 'repair' }
+        ] 
       },
       { 
         id: 'sub_legend', 
@@ -1588,7 +1646,12 @@
         price: 1, 
         rank: 'legend',
         badge: { text: 'Премиум', type: 'premium' },
-        features: ['+5 больших зелий энергии', '+300 серебряных монет', '+1 зелье здоровья', '+1 ремонтный набор'] 
+        features: [
+          { text: '+5 больших зелий энергии', type: 'energy' },
+          { text: '+300 серебряных монет', type: 'coins' },
+          { text: '+1 зелье здоровья', type: 'heal' },
+          { text: '+1 ремонтный набор', type: 'repair' }
+        ] 
       },
       { 
         id: 'sub_crystal_novice', 
@@ -1596,7 +1659,12 @@
         price: 1, 
         rank: 'crystal',
         badge: null,
-        features: ['+5 зарядов кристалла', '+1 большое зелье энергии', '+150 серебряных монет', '+2 бинта'] 
+        features: [
+          { text: '+5 зарядов кристалла', type: 'crystal' },
+          { text: '+1 большое зелье энергии', type: 'energy' },
+          { text: '+150 серебряных монет', type: 'coins' },
+          { text: '+2 бинта', type: 'heal' }
+        ] 
       },
       { 
         id: 'sub_crystal_master', 
@@ -1604,7 +1672,13 @@
         price: 1, 
         rank: 'crystal',
         badge: { text: 'Популярный', type: 'popular' },
-        features: ['+15 зарядов кристалла', '+2 больших зелья энергии', '+250 серебряных монет', '+2 зелья здоровья', '+2 ремнабора'] 
+        features: [
+          { text: '+15 зарядов кристалла', type: 'crystal' },
+          { text: '+2 больших зелья энергии', type: 'energy' },
+          { text: '+250 серебряных монет', type: 'coins' },
+          { text: '+2 зелья здоровья', type: 'heal' },
+          { text: '+2 ремнабора', type: 'repair' }
+        ] 
       },
       { 
         id: 'sub_crystal_archon', 
@@ -1612,7 +1686,13 @@
         price: 1, 
         rank: 'archon',
         badge: { text: 'Премиум', type: 'premium' },
-        features: ['+25 зарядов кристалла', '+3 больших зелья энергии', '+500 серебряных монет', '+3 зелья здоровья', '+3 ремнабора'] 
+        features: [
+          { text: '+25 зарядов кристалла', type: 'crystal' },
+          { text: '+3 больших зелья энергии', type: 'energy' },
+          { text: '+500 серебряных монет', type: 'coins' },
+          { text: '+3 зелья здоровья', type: 'heal' },
+          { text: '+3 ремнабора', type: 'repair' }
+        ] 
       }
     ];
 
@@ -2363,6 +2443,17 @@
         console.error('Error loading subscription:', error);
       }
     }
+
+    function getFeatureIcon(type) {
+      const icons = {
+        'energy': '⚡',
+        'coins': '💰',
+        'heal': '❤️',
+        'repair': '🔧',
+        'crystal': '🔮'
+      };
+      return icons[type] || '✦';
+    }
   
     function renderSubscriptions() {
       const grid = document.getElementById('subscriptions-grid-new');
@@ -2388,9 +2479,15 @@
           : '';
         
         // Особенности
-        const featuresHtml = sub.features.map(f => 
-          `<li style="text-align: left; font-size: 0.75rem; margin-bottom: 5px; color: #d0d0d0;">✦ ${f}</li>`
-        ).join('');
+        const featuresHtml = sub.features.map(f => {
+          const icon = getFeatureIcon(f.type);
+          return `
+            <li class="subscription-feature-item">
+              <span class="feature-icon feature-${f.type}">${icon}</span>
+              <span class="feature-text">${f.text}</span>
+            </li>
+          `;
+        }).join('');
         
         // Шкала прогресса (30 дней)
         const progressPercent = 100; // Для новых подписок — полная
@@ -2406,13 +2503,12 @@
           </ul>
           <div class="subscription-progress">
             <div class="subscription-progress-label">
-              <span>Срок действия</span>
-              <span>${daysLeft} дн.</span>
+              <span>📅 Срок действия</span>
+              <span><strong>${daysLeft}</strong> дн.</span>
             </div>
             <div class="subscription-progress-bar">
               <div class="subscription-progress-fill" style="width: ${progressPercent}%"></div>
             </div>
-            <div class="subscription-progress-text">Обновляется ежемесячно</div>
           </div>
           <button class="buy-btn subscribe-btn" data-sub-id="${sub.id}" data-sub-price="${sub.price}" style="margin-top: 15px;">
             Оформить подписку
