@@ -1083,6 +1083,157 @@
       backdrop-filter: blur(20px);
       color: #ff6b6b;
     }
+
+    /* ===== ИЗОБРАЖЕНИЯ РАНГОВ ПОДПИСОК ===== */
+    .subscription-rank-image {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 15px rgba(123, 104, 238, 0.5));
+      image-rendering: -webkit-optimize-contrast;
+      margin: 0 auto 10px;
+      display: block;
+      transition: all 0.3s ease;
+    }
+    
+    .shop-item-card:hover .subscription-rank-image {
+      transform: scale(1.1);
+      filter: drop-shadow(0 8px 20px rgba(255, 215, 0, 0.6));
+    }
+    
+    /* Карточка подписки занимает всю ширину */
+    #subscriptions-grid-new {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    /* Стили для активной подписки */
+    #active-subscription-card-new {
+      display: none;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(52, 152, 219, 0.8));
+      border-radius: 24px;
+      text-align: center;
+      border: 1px solid rgba(241, 196, 15, 0.3);
+      box-shadow: 0 0 25px rgba(241, 196, 15, 0.15);
+    }
+
+    /* ===== РАМКИ РАНГОВ ПОДПИСОК ===== */
+    .subscription-card {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Рамки для разных рангов */
+    .subscription-card.rank-adventurer {
+      border: 2px solid #8b7355;
+      box-shadow: 0 0 15px rgba(139, 115, 85, 0.3);
+    }
+    
+    .subscription-card.rank-hero {
+      border: 2px solid #3498db;
+      box-shadow: 0 0 20px rgba(52, 152, 219, 0.4);
+    }
+    
+    .subscription-card.rank-champion {
+      border: 2px solid #f1c40f;
+      box-shadow: 0 0 25px rgba(241, 196, 15, 0.5);
+      background: linear-gradient(145deg, rgba(20, 30, 40, 0.95), rgba(15, 20, 30, 0.9));
+    }
+    
+    .subscription-card.rank-legend {
+      border: 2px solid #e67e22;
+      box-shadow: 0 0 30px rgba(230, 126, 34, 0.6);
+      background: linear-gradient(145deg, rgba(25, 20, 35, 0.95), rgba(15, 10, 25, 0.9));
+    }
+    
+    .subscription-card.rank-crystal {
+      border: 2px solid #8e44ad;
+      box-shadow: 0 0 30px rgba(142, 68, 173, 0.6);
+      background: linear-gradient(145deg, rgba(30, 15, 40, 0.95), rgba(20, 10, 30, 0.9));
+    }
+    
+    .subscription-card.rank-archon {
+      border: 2px solid #ffd700;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.7), 0 0 80px rgba(255, 215, 0, 0.3);
+      background: linear-gradient(145deg, rgba(35, 25, 20, 0.95), rgba(25, 15, 10, 0.9));
+      animation: archonGlow 3s infinite;
+    }
+    
+    @keyframes archonGlow {
+      0%, 100% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.7), 0 0 80px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.9), 0 0 120px rgba(255, 215, 0, 0.5); }
+    }
+    
+    /* ===== ШКАЛА ПРОГРЕССА ПОДПИСКИ ===== */
+    .subscription-progress {
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+    }
+    
+    .subscription-progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+    
+    .subscription-progress-bar {
+      height: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .subscription-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #7b68ee, #9370db, #b8a2ff);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(123, 104, 238, 0.5);
+    }
+    
+    .subscription-progress-text {
+      font-size: 0.65rem;
+      text-align: center;
+      margin-top: 5px;
+      opacity: 0.7;
+    }
+    
+    /* Бейджи */
+    .subscription-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .badge-popular {
+      background: #f1c40f;
+      color: #000;
+    }
+    
+    .badge-value {
+      background: #2ecc71;
+      color: #fff;
+    }
+    
+    .badge-premium {
+      background: #8e44ad;
+      color: #fff;
+    }
     
     /* Анимации урона */
     .damage-popup {
@@ -1407,14 +1558,73 @@
     const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
     const PAYMENT_API_URL = 'https://gmbtest-efich.amvera.io';
     const SUBSCRIPTIONS = [
-      { id: 'sub_adventurer', name: '🧭 Авантюрист', price: 1, features: ['+1 большое зелье энергии', '+50 серебряных монет'] },
-      { id: 'sub_hero', name: '⚔️ Герой', price: 1, features: ['+2 больших зелья энергии', '+100 серебряных монет', '+1 бинт'] },
-      { id: 'sub_champion', name: '👑 Чемпион', price: 1, features: ['+3 больших зелья энергии', '+200 серебряных монет', '+1 бинт', '+1 ремонтный набор'] },
-      { id: 'sub_legend', name: '🌟 Легенда', price: 1, features: ['+5 больших зелий энергии', '+300 серебряных монет', '+1 зелье здоровья', '+1 ремонтный набор'] },
-      { id: 'sub_crystal_novice', name: '🔮 Послушник', price: 1, features: ['+5 зарядов кристалла', '+1 большое зелье энергии', '+150 серебряных монет', '+2 бинта'] },
-      { id: 'sub_crystal_master', name: '💎 Мастер', price: 1, features: ['+15 зарядов кристалла', '+2 больших зелья энергии', '+250 серебряных монет', '+2 зелья здоровья', '+2 ремнабора'] },
-      { id: 'sub_crystal_archon', name: '✨ Архонт', price: 1, features: ['+25 зарядов кристалла', '+3 больших зелья энергии', '+500 серебряных монет', '+3 зелья здоровья', '+3 ремнабора'] }
+      { 
+        id: 'sub_adventurer', 
+        name: '🧭 Авантюрист', 
+        price: 1, 
+        rank: 'adventurer',
+        badge: null,
+        features: ['+1 большое зелье энергии', '+50 серебряных монет'] 
+      },
+      { 
+        id: 'sub_hero', 
+        name: '⚔️ Герой', 
+        price: 1, 
+        rank: 'hero',
+        badge: { text: 'Популярный', type: 'popular' },
+        features: ['+2 больших зелья энергии', '+100 серебряных монет', '+1 бинт'] 
+      },
+      { 
+        id: 'sub_champion', 
+        name: '👑 Чемпион', 
+        price: 1, 
+        rank: 'champion',
+        badge: { text: 'Выгодный', type: 'value' },
+        features: ['+3 больших зелья энергии', '+200 серебряных монет', '+1 бинт', '+1 ремонтный набор'] 
+      },
+      { 
+        id: 'sub_legend', 
+        name: '🌟 Легенда', 
+        price: 1, 
+        rank: 'legend',
+        badge: { text: 'Премиум', type: 'premium' },
+        features: ['+5 больших зелий энергии', '+300 серебряных монет', '+1 зелье здоровья', '+1 ремонтный набор'] 
+      },
+      { 
+        id: 'sub_crystal_novice', 
+        name: '🔮 Послушник', 
+        price: 1, 
+        rank: 'crystal',
+        badge: null,
+        features: ['+5 зарядов кристалла', '+1 большое зелье энергии', '+150 серебряных монет', '+2 бинта'] 
+      },
+      { 
+        id: 'sub_crystal_master', 
+        name: '💎 Мастер', 
+        price: 1, 
+        rank: 'crystal',
+        badge: { text: 'Популярный', type: 'popular' },
+        features: ['+15 зарядов кристалла', '+2 больших зелья энергии', '+250 серебряных монет', '+2 зелья здоровья', '+2 ремнабора'] 
+      },
+      { 
+        id: 'sub_crystal_archon', 
+        name: '✨ Архонт', 
+        price: 1, 
+        rank: 'archon',
+        badge: { text: 'Премиум', type: 'premium' },
+        features: ['+25 зарядов кристалла', '+3 больших зелья энергии', '+500 серебряных монет', '+3 зелья здоровья', '+3 ремнабора'] 
+      }
     ];
+
+    const SUBSCRIPTION_IMAGES = {
+      'sub_adventurer': 'subscriptions/adventurer.png',
+      'sub_hero': 'subscriptions/hero.png',
+      'sub_champion': 'subscriptions/champion.png',
+      'sub_legend': 'subscriptions/legend.png',
+      'sub_crystal_novice': 'subscriptions/crystal-novice.png',
+      'sub_crystal_master': 'subscriptions/crystal-master.png',
+      'sub_crystal_archon': 'subscriptions/crystal-archon.png'
+    };
 
     // ==================== КАРТА ИЗОБРАЖЕНИЙ ПРЕДМЕТОВ ====================
     const ITEM_IMAGES = {
@@ -2162,20 +2372,49 @@
       
       SUBSCRIPTIONS.forEach(sub => {
         const card = document.createElement('div');
-        card.className = 'shop-item-card';
-        card.style.gridColumn = 'span 2';
+        card.className = `shop-item-card subscription-card rank-${sub.rank}`;
         card.style.padding = '20px';
+        card.style.position = 'relative';
         
-        const featuresHtml = sub.features.map(f => `<li style="text-align: left; font-size: 0.75rem; margin-bottom: 5px;">${f}</li>`).join('');
+        // Изображение ранга
+        const subImage = SUBSCRIPTION_IMAGES[sub.id] || '';
+        const imageBlock = subImage 
+          ? `<img src="${subImage}" alt="${sub.name}" class="subscription-rank-image">`
+          : `<div style="font-size: 2.5rem; margin-bottom: 5px;">${sub.name.split(' ')[0]}</div>`;
+        
+        // Бейдж
+        const badgeBlock = sub.badge 
+          ? `<span class="subscription-badge badge-${sub.badge.type}">${sub.badge.text}</span>`
+          : '';
+        
+        // Особенности
+        const featuresHtml = sub.features.map(f => 
+          `<li style="text-align: left; font-size: 0.75rem; margin-bottom: 5px; color: #d0d0d0;">✦ ${f}</li>`
+        ).join('');
+        
+        // Шкала прогресса (30 дней)
+        const progressPercent = 100; // Для новых подписок — полная
+        const daysLeft = 30;
         
         card.innerHTML = `
-          <div style="font-size: 2.5rem; margin-bottom: 5px;">${sub.name.split(' ')[0]}</div>
-          <div class="item-name" style="font-size: 1.2rem;">${sub.name}</div>
-          <div class="price-tag" style="margin: 15px 0;">⭐ ${sub.price} / месяц</div>
-          <ul style="padding-left: 20px; margin: 15px 0; min-height: 140px;">
+          ${badgeBlock}
+          ${imageBlock}
+          <div class="item-name" style="font-size: 1.3rem; margin-bottom: 10px;">${sub.name}</div>
+          <div class="price-tag" style="margin: 10px 0;">⭐ ${sub.price} / месяц</div>
+          <ul style="padding-left: 15px; margin: 15px 0; min-height: 120px; list-style: none;">
             ${featuresHtml}
           </ul>
-          <button class="buy-btn subscribe-btn" data-sub-id="${sub.id}" data-sub-price="${sub.price}">
+          <div class="subscription-progress">
+            <div class="subscription-progress-label">
+              <span>Срок действия</span>
+              <span>${daysLeft} дн.</span>
+            </div>
+            <div class="subscription-progress-bar">
+              <div class="subscription-progress-fill" style="width: ${progressPercent}%"></div>
+            </div>
+            <div class="subscription-progress-text">Обновляется ежемесячно</div>
+          </div>
+          <button class="buy-btn subscribe-btn" data-sub-id="${sub.id}" data-sub-price="${sub.price}" style="margin-top: 15px;">
             Оформить подписку
           </button>
         `;
@@ -2183,7 +2422,7 @@
         grid.appendChild(card);
       });
       
-      // Обработчики подписок
+      // Обработчики подписок (без изменений)
       document.querySelectorAll('.subscribe-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           e.stopPropagation();
@@ -2191,7 +2430,6 @@
           const subPrice = parseInt(btn.dataset.subPrice);
           const sub = SUBSCRIPTIONS.find(s => s.id === subId);
           
-          // Проверяем активную подписку
           let activeSub = null;
           try {
             const chatId = getChatId();
