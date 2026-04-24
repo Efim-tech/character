@@ -352,6 +352,7 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       position: relative;
       overflow: hidden;
+      flex-direction: row; /* Явно указываем: слева направо */
     }
     
     .wallet-display::before {
@@ -585,8 +586,8 @@
     }
     
     .energy-fill {
-      background: linear-gradient(90deg, #1a3a5c, #3498db, #5dade2);
-      box-shadow: 0 0 20px rgba(52, 152, 219, 0.6);
+      background: linear-gradient(90deg, #ff8c00, #ffa500, #ffd700);
+      box-shadow: 0 0 20px rgba(255, 165, 0, 0.6);
     }
     
     .armor-fill {
@@ -845,6 +846,74 @@
       font-weight: 600;
       color: white;
     }
+
+    /* ===== СКЕЛЕТОНЫ ЗАГРУЗКИ ИНВЕНТАРЯ ===== */
+    .inventory-loading-state {
+      display: block;
+    }
+    
+    .inventory-loading-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .item-card-skeleton {
+      background: linear-gradient(145deg, rgba(15, 30, 40, 0.7), rgba(8, 18, 28, 0.8));
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 20px 10px;
+      border: 1px solid rgba(123, 104, 238, 0.15);
+      text-align: center;
+      animation: skeletonPulse 1.5s infinite ease-in-out;
+      pointer-events: none;
+    }
+    
+    .skeleton-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(123, 104, 238, 0.15);
+      border-radius: 12px;
+      margin: 0 auto 12px;
+      animation: skeletonShine 2s infinite;
+    }
+    
+    .skeleton-name {
+      width: 70%;
+      height: 14px;
+      background: rgba(123, 104, 238, 0.12);
+      border-radius: 8px;
+      margin: 0 auto 8px;
+      animation: skeletonShine 2s infinite;
+    }
+    
+    .skeleton-desc {
+      width: 85%;
+      height: 10px;
+      background: rgba(123, 104, 238, 0.08);
+      border-radius: 6px;
+      margin: 0 auto 12px;
+      animation: skeletonShine 2s infinite 0.3s;
+    }
+    
+    .skeleton-footer {
+      width: 60%;
+      height: 10px;
+      background: rgba(123, 104, 238, 0.1);
+      border-radius: 6px;
+      margin: 0 auto;
+      animation: skeletonShine 2s infinite 0.6s;
+    }
+    
+    @keyframes skeletonPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    
+    @keyframes skeletonShine {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
     
     /* ===== МАГАЗИН ===== */
     .shop-category {
@@ -854,6 +923,7 @@
     .shop-category-title {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       margin-bottom: 14px;
       font-family: 'Cinzel', serif;
@@ -957,14 +1027,14 @@
     
     /* Энергетический таймер */
     .energy-timer-notice {
-      background: rgba(52, 152, 219, 0.15);
-      border: 1px solid #3498db;
+      background: rgba(255, 165, 0, 0.15);
+      border: 1px solid #ffa500;
       border-radius: 40px;
       padding: 8px 14px;
       margin-top: 12px;
       text-align: center;
       font-size: 0.75rem;
-      color: #5dade2;
+      color: #ffcc00;
       backdrop-filter: blur(10px);
       display: none;
     }
@@ -1134,8 +1204,8 @@
       </div>
       
       <div class="wallet-display">
+        <span id="wallet-value">...</span>
         <img src="icons/coin.png" alt="Coins" class="wallet-icon-img">
-        <span id="wallet-value">0</span>
       </div>
     </div>
 
@@ -1173,7 +1243,7 @@
           </div>
           <div class="progress-bar-container">
             <div class="progress-fill hp-fill" id="health-fill-new" style="width: 0%"></div>
-            <div class="progress-text" id="health-text-new">0/0</div>
+            <div class="progress-text" id="health-text-new">Загрузка...</div>
           </div>
         </div>
 
@@ -1187,7 +1257,7 @@
           </div>
           <div class="progress-bar-container">
             <div class="progress-fill armor-fill" id="armor-fill-new" style="width: 0%"></div>
-            <div class="progress-text" id="armor-text-new">0</div>
+            <div class="progress-text" id="armor-text-new">Загрузка...</div>
           </div>
         </div>
     
@@ -1201,7 +1271,7 @@
           </div>
           <div class="progress-bar-container">
             <div class="progress-fill energy-fill" id="energy-fill-new" style="width: 0%"></div>
-            <div class="progress-text" id="energy-text-new">0/0</div>
+            <div class="progress-text" id="energy-text-new">Загрузка...</div>
           </div>
           <div id="energy-timer-new" class="energy-timer-notice">
             ⏳ Восстановление через <span id="timer-value-new">60</span>с
@@ -1212,7 +1282,6 @@
         <div class="stats-grid-3">
           <!-- Уровень и XP -->
           <div class="stat-tile">
-            <div class="icon">⭐</div>
             <div class="value" id="level-value-new">1</div>
             <div class="label">Уровень</div>
             <div class="xp-container">
@@ -1228,13 +1297,12 @@
             <div class="icon">
               <img src="icons/crystal.gif" alt="Crystal" class="tile-icon-gif">
             </div>
-            <div class="value" id="crystal-value-new">0/50</div>
+            <div class="value" id="crystal-value-new">Загрузка...</div>
             <div class="label">Кристалл</div>
             <div class="progress-bar-container" style="height: 10px; margin-top: 8px;">
               <div class="progress-fill crystal-fill" id="crystal-fill-new" style="width: 0%"></div>
             </div>
           </div>
-        </div>
     
         <!-- Оружие -->
         <div class="weapon-showcase">
@@ -1260,13 +1328,34 @@
     <div id="inventory-content" class="content-section">
       <div class="inventory-header-stats">
         <span style="font-family: 'Cinzel', serif;">🎒 СНАРЯЖЕНИЕ</span>
-        <span id="inventory-stats-new">0 предметов</span>
+        <span id="inventory-stats-new">Загрузка...</span>
       </div>
       
       <div id="inventory-empty-new" class="loading-state" style="display: none;">
         <div style="font-size: 3rem; margin-bottom: 10px;">📦</div>
         <div>Инвентарь пуст</div>
-        <div style="font-size: 0.7rem; opacity: 0.6;">Сокровища ждут вас в приключениях</div>
+        <div style="font-size: 0.7rem; opacity: 0.6;">Можете приобрести товар в лавке!</div>
+      </div>
+      
+      <!-- Состояние загрузки инвентаря -->
+      <div id="inventory-loading" class="inventory-loading-state">
+        <div class="inventory-loading-grid">
+          <div class="item-card item-card-skeleton">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-name"></div>
+            <div class="skeleton-desc"></div>
+            <div class="skeleton-footer"></div>
+          </div>
+          <div class="item-card item-card-skeleton">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-name"></div>
+            <div class="skeleton-desc"></div>
+            <div class="skeleton-footer"></div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 15px; font-family: 'Cinzel', serif; color: #e0d5ff; font-size: 0.9rem;">
+          ⏳ Загрузка предметов...
+        </div>
       </div>
       
       <div class="inventory-grid-new" id="inventory-grid-new"></div>
@@ -1285,11 +1374,6 @@
         <div id="active-sub-expires-new"></div>
       </div>
       <div class="shop-grid-new" id="subscriptions-grid-new"></div>
-    </div>
-
-    <!-- Сообщения -->
-    <div id="loading-message-new" class="loading-state">
-      ⏳ Читаем свиток судьбы...
     </div>
     <div id="error-message-new" class="error-state" style="display: none;"></div>
   </div>
@@ -1519,6 +1603,10 @@
       const grid = document.getElementById('inventory-grid-new');
       const emptyMsg = document.getElementById('inventory-empty-new');
       const stats = document.getElementById('inventory-stats-new');
+      const loading = document.getElementById('inventory-loading');
+      
+      // Скрываем скелетоны загрузки
+      if (loading) loading.style.display = 'none';
       
       if (!characterData.inventory || characterData.inventory.length === 0) {
         if (grid) grid.innerHTML = '';
@@ -1771,7 +1859,7 @@
         <div class="shop-category">
           <div class="shop-category-title"><span>💰</span> Серебряные монеты</div>
           <div class="shop-grid-new">
-            ${createShopItemHTML('coins500', 'shop/coins-500.gif', '500 монет', '', 10)}
+            ${createShopItemHTML('coins500', 'shop/coins-500.png', '500 монет', '', 10)}
             ${createShopItemHTML('coins1000', 'shop/coins-1000.png', '1000 монет', '', 18)}
             ${createShopItemHTML('coins2500', 'shop/coins-2500.png', '2500 монет', '', 40)}
             ${createShopItemHTML('coins5000', 'shop/coins-5000.png', '5000 монет', '', 75)}
