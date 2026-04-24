@@ -880,9 +880,21 @@
       transition: all 0.25s ease;
     }
     
-    .shop-item-card:hover {
-      border-color: #7b68ee;
-      box-shadow: 0 0 25px rgba(123, 104, 238, 0.3);
+    /* ===== ИКОНКИ ТОВАРОВ В МАГАЗИНЕ ===== */
+    .shop-item-image {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+      image-rendering: -webkit-optimize-contrast;
+      margin: 0 auto 8px;
+      display: block;
+    }
+    
+    .shop-item-card:hover .shop-item-image {
+      transform: scale(1.1);
+      filter: drop-shadow(0 6px 12px rgba(123, 104, 238, 0.5));
+      transition: all 0.3s ease;
     }
     
     .price-tag {
@@ -1734,49 +1746,59 @@
       if (container.children.length > 0) return;
       
       container.innerHTML = `
+        <!-- Зелья энергии -->
         <div class="shop-category">
           <div class="shop-category-title"><span>⚡</span> Зелья энергии</div>
           <div class="shop-grid-new">
-            ${createShopItemHTML('energy10', '🧪', 'Малое зелье', '+10 энергии', 2)}
-            ${createShopItemHTML('energy25', '⚗️', 'Среднее зелье', '+25 энергии', 4)}
-            ${createShopItemHTML('energy50', '🧴', 'Большое зелье', '+50 энергии', 7)}
+            ${createShopItemHTML('energy10', 'shop/energy-small.png', 'Малое зелье', '+10 энергии', 2)}
+            ${createShopItemHTML('energy25', 'shop/energy-medium.png', 'Среднее зелье', '+25 энергии', 4)}
+            ${createShopItemHTML('energy50', 'shop/energy-large.png', 'Большое зелье', '+50 энергии', 7)}
           </div>
         </div>
+        
+        <!-- Заряды кристалла -->
         <div class="shop-category">
           <div class="shop-category-title"><span>🔮</span> Заряды кристалла</div>
           <div class="shop-grid-new">
-            ${createShopItemHTML('crystal_charge_5', '🔮', 'Малый заряд', '+5 зарядов', 3)}
-            ${createShopItemHTML('crystal_charge_10', '🔮🔮', 'Средний заряд', '+10 зарядов', 5)}
-            ${createShopItemHTML('crystal_charge_25', '🔮🔮🔮', 'Большой заряд', '+25 зарядов', 10)}
-            ${createShopItemHTML('crystal_charge_50', '💎', 'Огромный заряд', '+50 зарядов', 18)}
+            ${createShopItemHTML('crystal_charge_5', 'shop/crystal-small.png', 'Малый заряд', '+5 зарядов', 3)}
+            ${createShopItemHTML('crystal_charge_10', 'shop/crystal-medium.png', 'Средний заряд', '+10 зарядов', 5)}
+            ${createShopItemHTML('crystal_charge_25', 'shop/crystal-large.png', 'Большой заряд', '+25 зарядов', 10)}
+            ${createShopItemHTML('crystal_charge_50', 'shop/crystal-huge.png', 'Огромный заряд', '+50 зарядов', 18)}
           </div>
         </div>
+        
+        <!-- Серебряные монеты -->
         <div class="shop-category">
           <div class="shop-category-title"><span>💰</span> Серебряные монеты</div>
           <div class="shop-grid-new">
-            ${createShopItemHTML('coins500', '💰', '500 монет', '', 10)}
-            ${createShopItemHTML('coins1000', '💰💰', '1000 монет', '', 18)}
-            ${createShopItemHTML('coins2500', '💰💰💰', '2500 монет', '', 40)}
-            ${createShopItemHTML('coins5000', '💎', '5000 монет', '', 75)}
-            ${createShopItemHTML('coins10000', '👑', '10000 монет', '', 140)}
+            ${createShopItemHTML('coins500', 'shop/coins-500.png', '500 монет', '', 10)}
+            ${createShopItemHTML('coins1000', 'shop/coins-1000.png', '1000 монет', '', 18)}
+            ${createShopItemHTML('coins2500', 'shop/coins-2500.png', '2500 монет', '', 40)}
+            ${createShopItemHTML('coins5000', 'shop/coins-5000.png', '5000 монет', '', 75)}
+            ${createShopItemHTML('coins10000', 'shop/coins-10000.png', '10000 монет', '', 140)}
           </div>
         </div>
+        
+        <!-- Лечение и ремонт -->
         <div class="shop-category">
           <div class="shop-category-title"><span>🩹</span> Лечение и ремонт</div>
           <div class="shop-grid-new">
-            ${createShopItemHTML('bandage', '🩹', 'Бинт', '+5 HP', 4)}
-            ${createShopItemHTML('health_potion', '🧪', 'Зелье здоровья', '+10 HP', 6)}
-            ${createShopItemHTML('repair_kit', '🔧', 'Ремнабор', '+5 брони', 6)}
+            ${createShopItemHTML('bandage', 'shop/bandage.png', 'Бинт', '+5 HP', 4)}
+            ${createShopItemHTML('health_potion', 'shop/health-potion.png', 'Зелье здоровья', '+10 HP', 6)}
+            ${createShopItemHTML('repair_kit', 'shop/repair-kit.png', 'Ремнабор', '+5 брони', 6)}
           </div>
         </div>
+        
+        <!-- Премиум наборы -->
         <div class="shop-category">
           <div class="shop-category-title"><span>🎁</span> Премиум наборы</div>
           <div class="shop-grid-new">
-            ${createShopItemHTML('traveler_set', '🎒', 'Набор путника', 'Бинт + Зелье + 100💰', 15)}
-            ${createShopItemHTML('adventurer_set', '⚔️', 'Набор авантюриста', 'Ремнабор + Зелье энергии + 250💰', 25)}
-            ${createShopItemHTML('hero_set', '🛡️', 'Набор героя', 'Б.зелье энергии + 1000💰 + Зелье', 45)}
+            ${createShopItemHTML('traveler_set', 'shop/traveler-set.png', 'Набор путника', 'Бинт + Зелье + 100💰', 15)}
+            ${createShopItemHTML('adventurer_set', 'shop/adventurer-set.png', 'Набор авантюриста', 'Ремнабор + Зелье энергии + 250💰', 25)}
+            ${createShopItemHTML('hero_set', 'shop/hero-set.png', 'Набор героя', 'Б.зелье энергии + 1000💰 + Зелье', 45)}
           </div>
         </div>
+        
         <div style="text-align: center; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 20px;">
           <p style="font-size: 0.8rem; opacity: 0.7;">⭐ Покупки в Telegram Stars</p>
           <p style="font-size: 0.7rem; opacity: 0.5;">После оплаты предмет появится в инвентаре</p>
@@ -1807,11 +1829,11 @@
         }
       });
     }
-  
-    function createShopItemHTML(id, icon, name, desc, price) {
+    
+    function createShopItemHTML(id, imageSrc, name, desc, price) {
       return `
         <div class="shop-item-card" data-item-id="${id}" data-price="${price}">
-          <div style="font-size: 2.5rem;">${icon}</div>
+          <img src="${imageSrc}" alt="${name}" class="shop-item-image">
           <div class="item-name">${name}</div>
           <div class="item-desc">${desc}</div>
           <div class="price-tag">⭐ ${price}</div>
