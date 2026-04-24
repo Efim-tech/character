@@ -850,6 +850,12 @@
     /* ===== СКЕЛЕТОНЫ ЗАГРУЗКИ ИНВЕНТАРЯ ===== */
     .inventory-loading-state {
       display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    .inventory-loading-state.hidden {
+      display: none;
     }
     
     .inventory-loading-grid {
@@ -1607,7 +1613,7 @@
       const loading = document.getElementById('inventory-loading');
       
       // Скрываем скелетоны загрузки
-      if (loading) loading.style.display = 'none';
+      if (loading) loading.classList.add('hidden');
       
       if (!characterData.inventory || characterData.inventory.length === 0) {
         if (grid) grid.innerHTML = '';
@@ -1711,6 +1717,10 @@
       try {
         showLoading(true);
         hideError();
+
+        // Показываем скелетоны инвентаря при каждой загрузке
+        const loadingInv = document.getElementById('inventory-loading');
+        if (loadingInv) loadingInv.classList.remove('hidden');
         
         const chatId = getChatId();
         if (!chatId) throw new Error('Не удалось определить пользователя');
@@ -1745,10 +1755,14 @@
       const chatId = getChatId();
       if (!chatId) return;
       
-      const hpEl = document.getElementById('hp-value-display');
+      // Используем правильный ID: health-text-new вместо hp-value-display
+      const hpEl = document.getElementById('health-text-new');
       if (!hpEl) return;
       
-      const currentHP = parseInt(hpEl.textContent.split('/')[0]);
+      const hpText = hpEl.textContent || '';
+      const currentHP = parseInt(hpText.split('/')[0]);
+      
+      if (isNaN(currentHP)) return;
       
       if (currentHP <= 0) {
         const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/check_death`, {
