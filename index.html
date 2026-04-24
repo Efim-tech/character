@@ -1063,6 +1063,43 @@
       background: rgba(5, 2, 15, 0.5);
       pointer-events: none;
     }
+
+    /* Иконки в карточках (сердце, энергия, броня) */
+    .vital-icon-video {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 6px rgba(123, 104, 238, 0.5));
+      /* Отключаем стандартные контролы видео */
+      pointer-events: none;
+      /* Чтобы видео вело себя как изображение */
+      display: inline-block;
+      vertical-align: middle;
+    }
+    
+    /* Иконки в плитках (кристалл) */
+    .tile-icon-video {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(155, 89, 182, 0.6));
+      pointer-events: none;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    
+    /* Иконка монеты в кошельке (статичный PNG, без изменений) */
+    .wallet-icon-img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    }
+    
+    /* Скрываем старые классы с эмодзи */
+    .vital-icon {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -1089,7 +1126,7 @@
       </div>
       
       <div class="wallet-display">
-        <span class="wallet-icon">💰</span>
+        <img src="icons/coin.png" alt="Coins" class="wallet-icon-img">
         <span id="wallet-value">0</span>
       </div>
     </div>
@@ -1121,7 +1158,12 @@
         <!-- HP Card -->
         <div class="vital-card">
           <div class="vital-header">
-            <span class="vital-label"><span class="vital-icon">❤️</span> Жизненная сила</span>
+            <span class="vital-label">
+              <video autoplay loop muted playsinline class="vital-icon-video">
+                <source src="icons/heart.mp4" type="video/mp4">
+              </video>
+              Жизненная сила
+            </span>
           </div>
           <div class="progress-bar-container">
             <div class="progress-fill hp-fill" id="health-fill-new" style="width: 0%"></div>
@@ -1132,7 +1174,12 @@
         <!-- Armor Card -->
         <div class="vital-card">
           <div class="vital-header">
-            <span class="vital-label"><span class="vital-icon">🛡️</span> Броня</span>
+            <span class="vital-label">
+              <video autoplay loop muted playsinline class="vital-icon-video">
+                <source src="icons/armor.mp4" type="video/mp4">
+              </video>
+              Броня
+            </span>
           </div>
           <div class="progress-bar-container">
             <div class="progress-fill armor-fill" id="armor-fill-new" style="width: 0%"></div>
@@ -1143,7 +1190,12 @@
         <!-- Energy Card -->
         <div class="vital-card">
           <div class="vital-header">
-            <span class="vital-label"><span class="vital-icon">⚡</span> Энергия</span>
+            <span class="vital-label">
+              <video autoplay loop muted playsinline class="vital-icon-video">
+                <source src="icons/energy.mp4" type="video/mp4">
+              </video>
+              Энергия
+            </span>
           </div>
           <div class="progress-bar-container">
             <div class="progress-fill energy-fill" id="energy-fill-new" style="width: 0%"></div>
@@ -1153,7 +1205,7 @@
             ⏳ Восстановление через <span id="timer-value-new">60</span>с
           </div>
         </div>
-        
+    
         <!-- Сетка статов -->
         <div class="stats-grid-3">
           <!-- Уровень и XP -->
@@ -1168,10 +1220,14 @@
               <div style="font-size: 0.6rem;" id="xp-text-new">0/100 XP</div>
             </div>
           </div>
-
+    
           <!-- Кристалл -->
           <div class="stat-tile">
-            <div class="icon">🔮</div>
+            <div class="icon">
+              <video autoplay loop muted playsinline class="tile-icon-video">
+                <source src="icons/crystal.mp4" type="video/mp4">
+              </video>
+            </div>
             <div class="value" id="crystal-value-new">0/50</div>
             <div class="label">Кристалл</div>
             <div class="progress-bar-container" style="height: 10px; margin-top: 8px;">
@@ -1179,7 +1235,7 @@
             </div>
           </div>
         </div>
-
+    
         <!-- Оружие -->
         <div class="weapon-showcase">
           <div class="weapon-icon">⚔️</div>
@@ -1188,12 +1244,12 @@
             <div id="weapon-value-new">Нет</div>
           </div>
         </div>
-
+    
         <!-- Статус -->
         <div style="text-align: center;">
           <span id="status-value-new" class="status-indicator status-alive">ЖИВ</span>
         </div>
-
+    
         <button class="action-btn" onclick="loadCharacterData()">
           ✦ Обновить свиток ✦
         </button>
