@@ -1333,7 +1333,8 @@
       .nav-pill .nav-icon { font-size: 1rem; }
     }
 
-    .video-background {
+    /* ===== СТАТИЧНЫЙ ФОН ===== */
+    .image-background {
       position: fixed;
       top: 0;
       left: 0;
@@ -1344,25 +1345,31 @@
       pointer-events: none;
     }
     
-    .video-background video {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      min-width: 100%;
-      min-height: 100%;
-      width: auto;
-      height: auto;
-      transform: translate(-50%, -50%);
-      object-fit: cover;
-    }
-    
-    .video-overlay {
+    .bg-image {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(5, 2, 15, 0.5);
+      background-image: url('backgrounds/fantasy-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      /* Лёгкий параллакс-эффект при скролле */
+      will-change: transform;
+    }
+    
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* Затемнение для читаемости текста */
+      background: linear-gradient(135deg, 
+        rgba(10, 5, 20, 0.45) 0%, 
+        rgba(5, 2, 15, 0.55) 50%, 
+        rgba(0, 0, 0, 0.65) 100%);
       pointer-events: none;
     }
 
@@ -1402,12 +1409,10 @@
 </head>
 <body>
   
-  <!-- Эпический фон -->
-  <div class="video-background">
-    <video autoplay muted loop playsinline preload="auto" id="bg-video">
-      <source src="bg-video.mp4" type="video/mp4">
-    </video>
-    <div class="video-overlay"></div>
+  <!-- Статичный фон -->
+  <div class="image-background">
+    <div class="bg-image"></div>
+    <div class="image-overlay"></div>
   </div>
 
   <!-- Основное приложение -->
@@ -2664,46 +2669,13 @@
         }
       });
       
-      // ===== РЕВЕРСИВНОЕ ВОСПРОИЗВЕДЕНИЕ ФОНОВОГО ВИДЕО (ПИНГ-ПОНГ) =====
-      const bgVideo = document.querySelector('#bg-video');
-      if (bgVideo) {
-        let isForward = true;
-        let reverseInterval = null;
-        
-        // Замедление видео
-        bgVideo.playbackRate = 0.75;
-        
-        // Функция остановки обратного хода
-        function stopReverse() {
-          if (reverseInterval) {
-            clearInterval(reverseInterval);
-            reverseInterval = null;
-          }
-        }
-        
-        bgVideo.addEventListener('timeupdate', function() {
-          // Если дошли до конца при движении вперёд
-          if (isForward && bgVideo.currentTime >= bgVideo.duration - 0.1) {
-            bgVideo.pause();
-            isForward = false;
-            stopReverse();
-            
-            // Запускаем обратный ход
-            reverseInterval = setInterval(() => {
-              bgVideo.currentTime -= 0.033; // ~30 кадров в секунду
-              
-              // Когда дошли до начала
-              if (bgVideo.currentTime <= 0.1) {
-                stopReverse();
-                isForward = true;
-                bgVideo.play();
-              }
-            }, 33);
-          }
+      // ===== ПАРАЛЛАКС-ЭФФЕКТ ДЛЯ ФОНА =====
+      const bgImage = document.querySelector('.bg-image');
+      if (bgImage) {
+        window.addEventListener('scroll', function() {
+          const scrollY = window.scrollY || window.pageYOffset;
+          bgImage.style.transform = `translateY(${scrollY * 0.15}px)`;
         });
-        
-        // Запускаем видео
-        bgVideo.play().catch(e => console.log('Автовоспроизведение:', e));
       }
       
       // Кнопка обновления монет (если есть на странице)
