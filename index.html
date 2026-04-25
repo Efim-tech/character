@@ -2668,16 +2668,6 @@
           checkPendingPayment();
         }
       });
-      
-      // ===== ПАРАЛЛАКС-ЭФФЕКТ ДЛЯ ФОНА =====
-      const bgImage = document.querySelector('.bg-image');
-      if (bgImage) {
-        window.addEventListener('scroll', function() {
-          const scrollY = window.scrollY || window.pageYOffset;
-          bgImage.style.transform = `translateY(${scrollY * 0.15}px)`;
-        });
-      }
-      
       // Кнопка обновления монет (если есть на странице)
       const refreshCoinsBtn = document.getElementById('refresh-coins-btn');
       if (refreshCoinsBtn) {
