@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ============================================
-       СОВРЕМЕННЫЙ ФЭНТЕЗИ-ДИЗАЙН С НУЛЯ
+       СОВРЕМЕННЫЙ ФЭНТЕЗИ-ДИЗАЙН v3.0
        ============================================ */
     :root {
       --gold: #ffd700;
@@ -24,7 +24,6 @@
       --parchment-dark: #8b7355;
       --shadow: #0a0a0f;
       
-      /* НОВАЯ ЦВЕТОВАЯ ГАММА */
       --nav-active-bg: linear-gradient(135deg, #2a1a3a 0%, #1a2a4a 100%);
       --nav-active-border: #7b68ee;
       --nav-active-text: #e0d5ff;
@@ -55,210 +54,42 @@
       position: relative;
     }
     
-    /* ===== ЭПИЧЕСКИЙ ФОН ===== */
-    .background-layer {
+    /* ===== СТАТИЧНЫЙ ФОН ===== */
+    .image-background {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: 0;
-      pointer-events: none;
-    }
-    
-    /* Глубокое магическое небо с градиентом */
-    .bg-sky {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(ellipse at 20% 30%, #1a0a2e 0%, #0d0520 30%, #050210 60%, #000000 100%);
-    }
-    
-    /* Анимированные созвездия */
-    .bg-stars {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        /* Крупные звёзды */
-        radial-gradient(3px 3px at 15% 20%, rgba(255, 255, 255, 0.9), transparent),
-        radial-gradient(2px 2px at 35% 15%, rgba(255, 255, 255, 0.8), transparent),
-        radial-gradient(4px 4px at 55% 25%, rgba(255, 255, 255, 0.9), transparent),
-        radial-gradient(2px 2px at 75% 10%, rgba(255, 255, 255, 0.7), transparent),
-        radial-gradient(3px 3px at 85% 35%, rgba(255, 255, 255, 0.8), transparent),
-        radial-gradient(2px 2px at 10% 45%, rgba(255, 255, 255, 0.6), transparent),
-        radial-gradient(4px 4px at 45% 55%, rgba(255, 255, 255, 0.9), transparent),
-        radial-gradient(2px 2px at 95% 55%, rgba(255, 255, 255, 0.7), transparent),
-        /* Мелкие звёзды */
-        radial-gradient(1px 1px at 5% 80%, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(1px 1px at 25% 70%, rgba(255, 255, 255, 0.4), transparent),
-        radial-gradient(1px 1px at 40% 90%, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(1px 1px at 60% 80%, rgba(255, 255, 255, 0.4), transparent),
-        radial-gradient(1px 1px at 70% 95%, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(1px 1px at 90% 85%, rgba(255, 255, 255, 0.4), transparent);
-      animation: twinkle 4s infinite alternate;
-    }
-    
-    @keyframes twinkle {
-      0% { opacity: 0.6; }
-      100% { opacity: 1; }
-    }
-    
-    /* Магические туманности */
-    .bg-nebula {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.25) 0%, transparent 40%),
-        radial-gradient(circle at 80% 20%, rgba(0, 150, 200, 0.2) 0%, transparent 45%),
-        radial-gradient(circle at 50% 60%, rgba(255, 100, 50, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 90% 80%, rgba(123, 104, 238, 0.2) 0%, transparent 40%),
-        radial-gradient(circle at 10% 90%, rgba(0, 200, 150, 0.15) 0%, transparent 45%);
-      filter: blur(50px);
-      animation: nebulaFlow 25s infinite alternate ease-in-out;
-    }
-    
-    @keyframes nebulaFlow {
-      0% { transform: translate(0, 0) scale(1); opacity: 0.8; }
-      33% { transform: translate(-3%, 2%) scale(1.08); opacity: 1; }
-      66% { transform: translate(2%, -3%) scale(1.05); opacity: 0.9; }
-      100% { transform: translate(3%, 3%) scale(1.1); opacity: 1; }
-    }
-    
-    /* Парящие руны */
-    .bg-runes {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="10" y="20" font-size="20" fill="rgba(123,104,238,0.08)" font-family="serif">ᚠ</text><text x="80" y="40" font-size="16" fill="rgba(138,43,226,0.06)" font-family="serif">ᚢ</text><text x="30" y="70" font-size="24" fill="rgba(0,150,200,0.05)" font-family="serif">ᚦ</text><text x="70" y="85" font-size="18" fill="rgba(123,104,238,0.07)" font-family="serif">ᚨ</text></svg>');
-      background-size: 300px 300px;
-      opacity: 0.5;
-      animation: runeFloat 40s infinite linear;
-    }
-    
-    @keyframes runeFloat {
-      0% { background-position: 0 0; }
-      100% { background-position: 300px 300px; }
-    }
-    
-    /* Древние горы на горизонте */
-    .bg-mountains {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 35%;
-      background: linear-gradient(0deg, 
-        #0a0515 0%,
-        #150a25 15%,
-        #1a0a2e 30%,
-        #1a0a2e 45%,
-        transparent 100%);
-      clip-path: polygon(
-        0% 100%, 
-        0% 55%, 
-        5% 48%, 
-        12% 58%, 
-        18% 42%, 
-        25% 52%, 
-        32% 35%, 
-        40% 48%, 
-        48% 28%, 
-        55% 45%, 
-        62% 22%, 
-        70% 38%, 
-        78% 30%, 
-        85% 48%, 
-        92% 35%, 
-        100% 50%, 
-        100% 100%
-      );
-    }
-    
-    .bg-mountains::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(0deg, 
-        #050210 0%,
-        #0d0520 25%,
-        transparent 100%);
-      clip-path: polygon(
-        0% 100%, 
-        0% 70%, 
-        8% 58%, 
-        18% 68%, 
-        28% 52%, 
-        38% 62%, 
-        48% 42%, 
-        58% 55%, 
-        68% 38%, 
-        78% 50%, 
-        88% 45%, 
-        100% 60%, 
-        100% 100%
-      );
-    }
-    
-    /* Лунный свет */
-    .bg-moonlight {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
-      pointer-events: none;
-    }
-    
-    /* Летающие светлячки/частицы */
-    .bg-particles {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
       overflow: hidden;
+      pointer-events: none;
     }
     
-    .particle {
+    .bg-image {
       position: absolute;
-      width: 2px;
-      height: 2px;
-      background: rgba(123, 104, 238, 0.6);
-      border-radius: 50%;
-      box-shadow: 0 0 10px rgba(123, 104, 238, 0.8);
-      animation: particleFloat 15s infinite ease-in-out;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('backgrounds/fantasy-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      will-change: transform;
     }
     
-    .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; width: 3px; height: 3px; }
-    .particle:nth-child(2) { left: 30%; top: 50%; animation-delay: 2s; }
-    .particle:nth-child(3) { left: 50%; top: 30%; animation-delay: 4s; width: 3px; height: 3px; }
-    .particle:nth-child(4) { left: 70%; top: 60%; animation-delay: 1s; }
-    .particle:nth-child(5) { left: 90%; top: 40%; animation-delay: 3s; width: 4px; height: 4px; }
-    .particle:nth-child(6) { left: 20%; top: 80%; animation-delay: 5s; }
-    .particle:nth-child(7) { left: 60%; top: 85%; animation-delay: 2.5s; width: 3px; height: 3px; }
-    .particle:nth-child(8) { left: 85%; top: 75%; animation-delay: 6s; }
-    
-    @keyframes particleFloat {
-      0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
-      25% { transform: translateY(-30px) translateX(15px); opacity: 0.8; }
-      50% { transform: translateY(-15px) translateX(-15px); opacity: 0.4; }
-      75% { transform: translateY(-40px) translateX(10px); opacity: 0.6; }
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, 
+        rgba(10, 5, 20, 0.45) 0%, 
+        rgba(5, 2, 15, 0.55) 50%, 
+        rgba(0, 0, 0, 0.65) 100%);
+      pointer-events: none;
     }
     
     /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
@@ -352,7 +183,7 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       position: relative;
       overflow: hidden;
-      flex-direction: row; /* Явно указываем: слева направо */
+      flex-direction: row;
     }
     
     .wallet-display::before {
@@ -369,11 +200,6 @@
     @keyframes walletShine {
       0%, 100% { left: -100%; }
       50% { left: 100%; }
-    }
-    
-    .wallet-icon {
-      font-size: 1.3rem;
-      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
     }
     
     #wallet-value {
@@ -488,7 +314,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
     
-    /* ===== КАРТОЧКИ ===== */
+    /* ===== КАРТОЧКИ СТАТИСТИК ===== */
     .stats-container {
       display: flex;
       flex-direction: column;
@@ -538,7 +364,7 @@
     }
     
     .vital-icon {
-      font-size: 1.3rem;
+      display: none;
     }
     
     .vital-value {
@@ -548,7 +374,7 @@
     /* Прогресс-бары */
     .progress-bar-container {
       position: relative;
-      height: 32px; /* было 28px */
+      height: 32px;
       background: rgba(0, 0, 0, 0.5);
       border-radius: 40px;
       overflow: hidden;
@@ -973,7 +799,6 @@
       transition: all 0.25s ease;
     }
     
-    /* ===== ИКОНКИ ТОВАРОВ В МАГАЗИНЕ ===== */
     .shop-item-image {
       width: 64px;
       height: 64px;
@@ -1084,7 +909,7 @@
       color: #ff6b6b;
     }
 
-    /* ===== ИЗОБРАЖЕНИЯ РАНГОВ ПОДПИСОК ===== */
+    /* ===== ПОДПИСКИ ===== */
     .subscription-rank-image {
       width: 80px;
       height: 80px;
@@ -1101,14 +926,12 @@
       filter: drop-shadow(0 8px 20px rgba(255, 215, 0, 0.6));
     }
     
-    /* Карточка подписки занимает всю ширину */
     #subscriptions-grid-new {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
     
-    /* Стили для активной подписки */
     #active-subscription-card-new {
       display: none;
       margin-bottom: 20px;
@@ -1120,13 +943,11 @@
       box-shadow: 0 0 25px rgba(241, 196, 15, 0.15);
     }
 
-    /* ===== РАМКИ РАНГОВ ПОДПИСОК ===== */
     .subscription-card {
       position: relative;
       overflow: hidden;
     }
     
-    /* Рамки для разных рангов */
     .subscription-card.rank-adventurer {
       border: 2px solid #8b7355;
       box-shadow: 0 0 15px rgba(139, 115, 85, 0.3);
@@ -1167,7 +988,6 @@
       50% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.9), 0 0 120px rgba(255, 215, 0, 0.5); }
     }
     
-    /* ===== ШКАЛА ПРОГРЕССА ПОДПИСКИ ===== */
     .subscription-progress {
       margin-top: 15px;
       padding: 10px;
@@ -1200,14 +1020,6 @@
       box-shadow: 0 0 10px rgba(123, 104, 238, 0.5);
     }
     
-    .subscription-progress-text {
-      font-size: 0.65rem;
-      text-align: center;
-      margin-top: 5px;
-      opacity: 0.7;
-    }
-    
-    /* Бейджи */
     .subscription-badge {
       position: absolute;
       top: 12px;
@@ -1235,7 +1047,6 @@
       color: #fff;
     }
 
-    /* ===== БОНУСЫ ПОДПИСКИ ===== */
     .subscription-features {
       padding-left: 0;
       margin: 15px 0;
@@ -1274,7 +1085,6 @@
       font-weight: 500;
     }
     
-    /* Иконки для типов бонусов */
     .feature-energy { color: #ffa500; }
     .feature-coins { color: #ffd700; }
     .feature-heal { color: #ff6b6b; }
@@ -1324,56 +1134,7 @@
       40%, 60% { transform: translate3d(4px, 0, 0); }
     }
     
-    /* Адаптивность */
-    @media (max-width: 380px) {
-      .app-container { padding: 10px 10px 15px; }
-      .stats-grid-3 { gap: 8px; }
-      .inventory-grid-new, .shop-grid-new { gap: 8px; }
-      .nav-pill .nav-label { font-size: 0.45rem; }
-      .nav-pill .nav-icon { font-size: 1rem; }
-    }
-
-    /* ===== СТАТИЧНЫЙ ФОН ===== */
-    .image-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    
-    .bg-image {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('backgrounds/fantasy-bg.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      /* Лёгкий параллакс-эффект при скролле */
-      will-change: transform;
-    }
-    
-    .image-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      /* Затемнение для читаемости текста */
-      background: linear-gradient(135deg, 
-        rgba(10, 5, 20, 0.45) 0%, 
-        rgba(5, 2, 15, 0.55) 50%, 
-        rgba(0, 0, 0, 0.65) 100%);
-      pointer-events: none;
-    }
-
-    /* Иконки в карточках (сердце, энергия, броня) */
+    /* Иконки */
     .vital-icon-gif {
       width: 28px;
       height: 28px;
@@ -1383,7 +1144,6 @@
       vertical-align: middle;
     }
     
-    /* Иконки в плитках (кристалл) */
     .tile-icon-gif {
       width: 36px;
       height: 36px;
@@ -1393,7 +1153,6 @@
       vertical-align: middle;
     }
     
-    /* Иконка монеты в кошельке */
     .wallet-icon-img {
       width: 24px;
       height: 24px;
@@ -1401,9 +1160,13 @@
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
     }
     
-    /* Скрываем старые классы */
-    .vital-icon {
-      display: none;
+    /* Адаптивность */
+    @media (max-width: 380px) {
+      .app-container { padding: 10px 10px 15px; }
+      .stats-grid-3 { gap: 8px; }
+      .inventory-grid-new, .shop-grid-new { gap: 8px; }
+      .nav-pill .nav-label { font-size: 0.45rem; }
+      .nav-pill .nav-icon { font-size: 1rem; }
     }
   </style>
 </head>
