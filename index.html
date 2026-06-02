@@ -1354,6 +1354,22 @@
   </div>
 
   <script>
+    function checkAndRefreshAfterDice() {
+        const needRefresh = localStorage.getItem('need_refresh_character');
+        if (needRefresh === 'true') {
+            localStorage.removeItem('need_refresh_character');
+            
+            // Показываем уведомление
+            console.log('🔄 Обновление данных после броска кубика...');
+            
+            // Принудительно обновляем с отключением кэша
+            setTimeout(() => {
+                loadCharacterData(true);
+            }, 500);
+            return true;
+        }
+        return false;
+    }
     // ==================== КОНСТАНТЫ И НАСТРОЙКИ ====================
     const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
     const PAYMENT_API_URL = 'https://gmbtest-efich.amvera.io';
@@ -1844,37 +1860,56 @@
     }
   
     // ==================== ЗАГРУЗКА ДАННЫХ ====================
-    async function loadCharacterData() {
-      try {
-        showLoading(true);
-        hideError();
-
-        // Показываем скелетоны инвентаря при каждой загрузке
-        const loadingInv = document.getElementById('inventory-loading');
-        if (loadingInv) loadingInv.classList.remove('hidden');
-        
-        const chatId = getChatId();
-        if (!chatId) throw new Error('Не удалось определить пользователя');
-        
-        const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/full`);
-        const data = await response.json();
-        
-        if (data.success) {
-          characterData = data.data;
-          updateUI();
-          showLoading(false);
-          
-          if (characterData.hp <= 0) {
-            setTimeout(() => checkDeathOnHPChange(), 1000);
-          }
-        } else {
-          throw new Error(data.error || 'Ошибка загрузки данных');
+    async function loadCharacterData(force = false) {
+        try {
+            // Проверяем флаг обновления (если force не указан)
+            if (!force) {
+                checkAndRefreshAfterDice();
+            }
+            
+            const chatId = getChatId();
+            if (!chatId) throw new Error('Не удалось определить пользователя');
+            
+            // Добавляем timestamp при force=true
+            let url = `${API_BASE_URL}/api/character/${chatId}/full`;
+            if (force) url += `?_=${Date.now()}`;
+            
+            const response = await fetch(url, {
+                cache: force ? 'no-store' : 'default',
+                headers: force ? { 'Cache-Control': 'no-cache' } : {}
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Проверяем изменения HP/брони
+                const oldHP = characterData?.hp;
+                const oldArmor = characterData?.armor;
+                
+                characterData = data.data;
+                updateUI();
+                
+                // Показываем анимацию урона если нужно
+                if (force && oldHP !== undefined && characterData.hp < oldHP) {
+                    showDamageNotification(oldHP - characterData.hp);
+                }
+                if (force && oldArmor !== undefined && characterData.armor < oldArmor) {
+                    showArmorDamageNotification(oldArmor - characterData.armor);
+                }
+                
+                showLoading(false);
+                
+                if (characterData.hp <= 0) {
+                    setTimeout(() => checkDeathOnHPChange(), 1000);
+                }
+            } else {
+                throw new Error(data.error || 'Ошибка загрузки данных');
+            }
+        } catch (error) {
+            console.error('❌ Error loading character data:', error);
+            showLoading(false);
+            showError(error.message);
         }
-      } catch (error) {
-        console.error('❌ Error loading character data:', error);
-        showLoading(false);
-        showError(error.message);
-      }
     }
   
     // ==================== ПРОВЕРКА СМЕРТИ ====================
