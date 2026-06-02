@@ -1354,6 +1354,26 @@
   </div>
 
   <script>
+    function checkAndClearRefreshFlag() {
+        const needRefresh = localStorage.getItem('need_refresh_character');
+        if (needRefresh === 'true') {
+            localStorage.removeItem('need_refresh_character');
+            
+            // Показываем уведомление о результате броска
+            const lastResult = localStorage.getItem('last_dice_result');
+            if (lastResult) {
+                try {
+                    const result = JSON.parse(lastResult);
+                    console.log(`🎲 Предыдущий бросок: ${result.dice_type} = ${result.value}`);
+                    localStorage.removeItem('last_dice_result');
+                } catch(e) {}
+            }
+            
+            // Принудительно обновляем данные с отключением кэша
+            return true;
+        }
+        return false;
+    }
     // ==================== КОНСТАНТЫ И НАСТРОЙКИ ====================
     const API_BASE_URL = 'https://gmbtg-efich.amvera.io';
     const PAYMENT_API_URL = 'https://gmbtest-efich.amvera.io';
@@ -1844,38 +1864,100 @@
     }
   
     // ==================== ЗАГРУЗКА ДАННЫХ ====================
-    async function loadCharacterData() {
-      try {
-        showLoading(true);
-        hideError();
-
-        // Показываем скелетоны инвентаря при каждой загрузке
-        const loadingInv = document.getElementById('inventory-loading');
-        if (loadingInv) loadingInv.classList.remove('hidden');
-        
-        const chatId = getChatId();
-        if (!chatId) throw new Error('Не удалось определить пользователя');
-        
-        const response = await fetch(`${API_BASE_URL}/api/character/${chatId}/full`);
-        const data = await response.json();
-        
-        if (data.success) {
-          characterData = data.data;
-          updateUI();
-          showLoading(false);
-          
-          if (characterData.hp <= 0) {
-            setTimeout(() => checkDeathOnHPChange(), 1000);
-          }
-        } else {
-          throw new Error(data.error || 'Ошибка загрузки данных');
+    async function loadCharacterData(force = false) {
+        try {
+            // Проверяем флаг обновления
+            const needRefresh = checkAndClearRefreshFlag();
+            const shouldForce = force || needRefresh;
+            
+            const chatId = getChatId();
+            if (!chatId) throw new Error('Не удалось определить пользователя');
+            
+            // Добавляем timestamp при принудительном обновлении
+            let url = `${API_BASE_URL}/api/character/${chatId}/full`;
+            if (shouldForce) {
+                url += `?_=${Date.now()}`;
+                console.log('🔄 Принудительное обновление данных после броска кубика');
+            }
+            
+            const response = await fetch(url, {
+                cache: shouldForce ? 'no-store' : 'default',
+                headers: shouldForce ? { 'Cache-Control': 'no-cache' } : {}
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                const oldHP = characterData?.hp;
+                const oldArmor = characterData?.armor;
+                
+                characterData = data.data;
+                updateUI();
+                
+                // Анимация урона если данные изменились
+                if (shouldForce && oldHP !== undefined && characterData.hp < oldHP) {
+                    showDamageNotification(oldHP - characterData.hp);
+                }
+                if (shouldForce && oldArmor !== undefined && characterData.armor < oldArmor) {
+                    showArmorDamageNotification(oldArmor - characterData.armor);
+                }
+                
+                showLoading(false);
+                
+                if (characterData.hp <= 0) {
+                    setTimeout(() => checkDeathOnHPChange(), 1000);
+                }
+            } else {
+                throw new Error(data.error || 'Ошибка загрузки данных');
+            }
+        } catch (error) {
+            console.error('❌ Error loading character data:', error);
+            showLoading(false);
+            showError(error.message);
         }
-      } catch (error) {
-        console.error('❌ Error loading character data:', error);
-        showLoading(false);
-        showError(error.message);
-      }
     }
+
+    function initializeTabs() {
+        document.querySelectorAll('.nav-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                
+                document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`${tab}-content`).classList.add('active');
+                
+                // 🔥 ВАЖНО: При переключении на вкладку "Герой" принудительно обновляем данные
+                if (tab === 'stats') {
+                    console.log('🔄 Switching to stats tab, checking for updates...');
+                    loadCharacterData(true); // force refresh
+                }
+                
+                if (tab === 'shop') setTimeout(initShop, 50);
+                if (tab === 'subscriptions') {
+                    setTimeout(renderSubscriptions, 50);
+                    setTimeout(loadSubscriptionStatus, 100);
+                }
+            });
+        });
+    }
+    
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            // Страница стала видимой — проверяем, нужно ли обновить данные
+            const activeTab = document.querySelector('.nav-pill.active')?.dataset.tab;
+            if (activeTab === 'stats') {
+                console.log('👁️ Page became visible, refreshing character data...');
+                loadCharacterData(true);
+            } else {
+                // Проверяем флаг в любом случае
+                checkAndClearRefreshFlag();
+            }
+            checkPendingPayment();
+        }
+    });
+
   
     // ==================== ПРОВЕРКА СМЕРТИ ====================
     async function checkDeathOnHPChange() {
