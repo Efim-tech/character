@@ -565,6 +565,74 @@
       text-shadow: 0 0 10px #ff4444;
       border-color: #ff4444;
     }
+
+    /* ===== БЛОК АВАТАРА (появляется только если есть изображение) ===== */
+    .avatar-frame {
+        display: none;  /* Скрыт по умолчанию */
+        text-align: center;
+        margin-bottom: 16px;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    .avatar-frame.visible {
+        display: block;
+    }
+    
+    .avatar-image-container {
+        position: relative;
+        display: inline-block;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(62, 43, 28, 0.6), rgba(107, 76, 59, 0.4));
+        padding: 4px;
+        border: 2px solid var(--tavern-amber);
+        box-shadow: 0 0 25px var(--tavern-amber-glow);
+        transition: all 0.3s ease;
+    }
+    
+    .avatar-image-container:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 35px var(--tavern-amber-glow);
+        border-color: var(--gold);
+    }
+    
+    .character-avatar {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 16px;
+        display: block;
+        background: rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .character-avatar:hover {
+        opacity: 0.95;
+    }
+    
+    /* Статус жизни на аватаре */
+    .life-indicator {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #2ecc71;
+        border: 2px solid var(--tavern-wood);
+        box-shadow: 0 0 10px #2ecc71;
+        transition: all 0.3s ease;
+    }
+    
+    .life-indicator.dead {
+        background: #dc143c;
+        box-shadow: 0 0 10px #dc143c;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
     
     /* ===== ИНВЕНТАРЬ ===== */
     .inventory-header-stats {
@@ -1206,6 +1274,14 @@
     <!-- Секция Характеристик -->
     <div id="stats-content" class="content-section active">
       <div class="stats-container">
+
+        <!-- 🔥 БЛОК АВАТАРА (появляется только если есть изображение) -->
+        <div id="avatar-frame" class="avatar-frame">
+            <div class="avatar-image-container">
+                <img id="character-avatar-img" class="character-avatar" src="" alt="Avatar">
+                <div id="life-indicator" class="life-indicator"></div>
+            </div>
+        </div>
         
         <!-- HP Card -->
         <div class="vital-card">
@@ -1637,6 +1713,91 @@
     }
   
     // ==================== ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ====================
+    // Загрузка аватара персонажа
+    async function loadCharacterAvatar() {
+        try {
+            const chatId = getChatId();
+            if (!chatId) return;
+            
+            const avatarFrame = document.getElementById('avatar-frame');
+            const avatarImg = document.getElementById('character-avatar-img');
+            const lifeIndicator = document.getElementById('life-indicator');
+            
+            if (!avatarFrame || !avatarImg) return;
+            
+            // Добавляем timestamp для обхода кэша
+            const timestamp = Date.now();
+            const avatarUrl = `${API_BASE_URL}/character/${chatId}/avatar?_=${timestamp}`;
+            
+            // Пробуем загрузить изображение
+            return new Promise((resolve) => {
+                const testImg = new Image();
+                testImg.onload = () => {
+                    // Изображение загрузилось — показываем рамку
+                    avatarImg.src = avatarUrl;
+                    avatarFrame.classList.add('visible');
+                    
+                    // Обновляем индикатор жизни
+                    if (characterData && characterData.hp <= 0) {
+                        lifeIndicator.classList.add('dead');
+                    } else {
+                        lifeIndicator.classList.remove('dead');
+                    }
+                    
+                    console.log('🖼️ Avatar loaded for chat', chatId);
+                    resolve(true);
+                };
+                testImg.onerror = () => {
+                    // Изображения нет — скрываем рамку
+                    avatarFrame.classList.remove('visible');
+                    avatarImg.src = '';
+                    console.log('🖼️ No avatar for chat', chatId);
+                    resolve(false);
+                };
+                testImg.src = avatarUrl;
+            });
+            
+        } catch (error) {
+            console.error('Error loading avatar:', error);
+            const avatarFrame = document.getElementById('avatar-frame');
+            if (avatarFrame) avatarFrame.classList.remove('visible');
+        }
+    }
+    
+    // Обновление индикатора жизни на аватаре
+    function updateAvatarLifeIndicator() {
+        const lifeIndicator = document.getElementById('life-indicator');
+        if (!lifeIndicator) return;
+        
+        if (characterData && characterData.hp <= 0) {
+            lifeIndicator.classList.add('dead');
+        } else {
+            lifeIndicator.classList.remove('dead');
+        }
+    }
+    
+    // Обработчик клика по аватару (увеличение)
+    function setupAvatarClick() {
+        const avatarImg = document.getElementById('character-avatar-img');
+        const avatarFrame = document.getElementById('avatar-frame');
+        
+        if (avatarImg && avatarFrame && avatarFrame.classList.contains('visible')) {
+            avatarImg.addEventListener('click', () => {
+                if (avatarImg.src && !avatarImg.src.includes('svg')) {
+                    // Показываем увеличенное изображение через popup
+                    tg.showPopup({
+                        title: characterData?.name || 'Персонаж',
+                        message: 'Ваш портрет',
+                        buttons: [{ type: 'default', text: 'Закрыть' }]
+                    });
+                    
+                    // Можно также отправить изображение в чат
+                    // tg.sendData(JSON.stringify({ action: 'share_avatar', url: avatarImg.src }));
+                }
+            });
+        }
+    }
+    
     function updateUI() {
       if (!characterData) return;
       
@@ -1734,6 +1895,9 @@
       
       // Обновляем инвентарь
       updateInventory();
+
+      // Обновляем индикатор жизни на аватаре
+      updateAvatarLifeIndicator();
       
       // Проверка на смерть
       if (cd.hp <= 0 && !cd.is_dead && !window.deathCheckScheduled) {
@@ -1863,7 +2027,7 @@
     // ==================== ЗАГРУЗКА ДАННЫХ ====================
     async function loadCharacterData(force = false) {
         try {
-            // Проверяем флаг обновления (если force не указан)
+            // Проверяем флаг обновления
             if (!force) {
                 checkAndRefreshAfterDice();
             }
@@ -1889,6 +2053,12 @@
                 
                 characterData = data.data;
                 updateUI();
+                
+                // 🔥 ЗАГРУЖАЕМ АВАТАР ПОСЛЕ ОБНОВЛЕНИЯ ДАННЫХ
+                await loadCharacterAvatar();
+                
+                // Настраиваем клик по аватару (если появился)
+                setupAvatarClick();
                 
                 // Показываем анимацию урона если нужно
                 if (force && oldHP !== undefined && characterData.hp < oldHP) {
@@ -1947,32 +2117,38 @@
     }
   
     function showDeathInWebApp(characterName) {
-      if (updateInterval) {
-        clearInterval(updateInterval);
-        updateInterval = null;
-      }
-      stopCoinsMonitoring();
-      
-      const deathMsg = document.createElement('div');
-      deathMsg.className = 'error-state';
-      deathMsg.style.cssText = 'background: rgba(220, 53, 69, 0.9) !important; border-color: #ff0000 !important; color: white !important;';
-      deathMsg.innerHTML = `
-        <h3 style="margin-bottom: 10px;">💀 ${characterName.toUpperCase()} ПАЛ В БОЮ!</h3>
-        <p>Проверьте Telegram для создания нового героя</p>
-      `;
-      
-      const container = document.querySelector('.app-container');
-      if (container) container.insertBefore(deathMsg, container.firstChild);
-      
-      document.querySelectorAll('button, .item-card, .nav-pill').forEach(el => {
-        el.style.pointerEvents = 'none';
-        el.style.opacity = '0.5';
-      });
-      
-      setTimeout(() => {
-        tg.showAlert('Персонаж мертв. Проверьте Telegram для создания нового персонажа.');
-        setTimeout(() => tg.close(), 3000);
-      }, 10000);
+        if (updateInterval) {
+            clearInterval(updateInterval);
+            updateInterval = null;
+        }
+        stopCoinsMonitoring();
+        
+        // 🔥 Обновляем индикатор жизни на аватаре
+        const lifeIndicator = document.getElementById('life-indicator');
+        if (lifeIndicator) {
+            lifeIndicator.classList.add('dead');
+        }
+        
+        const deathMsg = document.createElement('div');
+        deathMsg.className = 'error-state';
+        deathMsg.style.cssText = 'background: rgba(220, 53, 69, 0.9) !important; border-color: #ff0000 !important; color: white !important;';
+        deathMsg.innerHTML = `
+            <h3 style="margin-bottom: 10px;">💀 ${characterName.toUpperCase()} ПАЛ В БОЮ!</h3>
+            <p>Проверьте Telegram для создания нового героя</p>
+        `;
+        
+        const container = document.querySelector('.app-container');
+        if (container) container.insertBefore(deathMsg, container.firstChild);
+        
+        document.querySelectorAll('button, .item-card, .nav-pill').forEach(el => {
+            el.style.pointerEvents = 'none';
+            el.style.opacity = '0.5';
+        });
+        
+        setTimeout(() => {
+            tg.showAlert('Персонаж мертв. Проверьте Telegram для создания нового персонажа.');
+            setTimeout(() => tg.close(), 3000);
+        }, 10000);
     }
   
     // ==================== МОНИТОРИНГ МОНЕТ ====================
