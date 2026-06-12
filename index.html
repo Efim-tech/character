@@ -570,7 +570,7 @@
     .avatar-frame {
         display: none;  /* Скрыт по умолчанию */
         text-align: center;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
         animation: fadeIn 0.5s ease;
     }
     
@@ -583,7 +583,7 @@
         display: inline-block;
         border-radius: 20px;
         background: linear-gradient(135deg, rgba(62, 43, 28, 0.6), rgba(107, 76, 59, 0.4));
-        padding: 4px;
+        padding: 6px;
         border: 2px solid var(--tavern-amber);
         box-shadow: 0 0 25px var(--tavern-amber-glow);
         transition: all 0.3s ease;
@@ -596,14 +596,22 @@
     }
     
     .character-avatar {
-        width: 210px;
-        height: 210px;
+        width: 180px;      /* Ширина 180px */
+        height: 240px;     /* Высота 240px (соотношение 3:4) */
         object-fit: cover;
         border-radius: 16px;
         display: block;
         background: rgba(0, 0, 0, 0.3);
         cursor: pointer;
         transition: all 0.3s ease;
+    }
+    
+    /* Для мобильных устройств можно уменьшить */
+    @media (max-width: 380px) {
+        .character-avatar {
+            width: 150px;
+            height: 200px;
+        }
     }
     
     .character-avatar:hover {
