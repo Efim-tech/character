@@ -596,8 +596,8 @@
     }
     
     .character-avatar {
-        width: 140px;
-        height: 140px;
+        width: 210px;
+        height: 210px;
         object-fit: cover;
         border-radius: 16px;
         display: block;
@@ -608,25 +608,6 @@
     
     .character-avatar:hover {
         opacity: 0.95;
-    }
-    
-    /* Статус жизни на аватаре */
-    .life-indicator {
-        position: absolute;
-        bottom: 12px;
-        right: 12px;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: #2ecc71;
-        border: 2px solid var(--tavern-wood);
-        box-shadow: 0 0 10px #2ecc71;
-        transition: all 0.3s ease;
-    }
-    
-    .life-indicator.dead {
-        background: #dc143c;
-        box-shadow: 0 0 10px #dc143c;
     }
     
     @keyframes fadeIn {
@@ -1279,7 +1260,6 @@
         <div id="avatar-frame" class="avatar-frame">
             <div class="avatar-image-container">
                 <img id="character-avatar-img" class="character-avatar" src="" alt="Avatar">
-                <div id="life-indicator" class="life-indicator"></div>
             </div>
         </div>
         
@@ -1759,18 +1739,6 @@
         }
     }
     
-    // Обновление индикатора жизни на аватаре
-    function updateAvatarLifeIndicator() {
-        const lifeIndicator = document.getElementById('life-indicator');
-        if (!lifeIndicator) return;
-        
-        if (characterData && characterData.hp <= 0) {
-            lifeIndicator.classList.add('dead');
-        } else {
-            lifeIndicator.classList.remove('dead');
-        }
-    }
-    
     // Обработчик клика по аватару (увеличение)
     function setupAvatarClick() {
         const avatarImg = document.getElementById('character-avatar-img');
@@ -2146,12 +2114,6 @@
             updateInterval = null;
         }
         stopCoinsMonitoring();
-        
-        // 🔥 Обновляем индикатор жизни на аватаре
-        const lifeIndicator = document.getElementById('life-indicator');
-        if (lifeIndicator) {
-            lifeIndicator.classList.add('dead');
-        }
         
         const deathMsg = document.createElement('div');
         deathMsg.className = 'error-state';
