@@ -1713,7 +1713,7 @@
     }
   
     // ==================== ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ====================
-    // Загрузка аватара персонажа
+    // Временно упростим функцию для диагностики
     async function loadCharacterAvatar() {
         try {
             const chatId = getChatId();
@@ -1721,46 +1721,28 @@
             
             const avatarFrame = document.getElementById('avatar-frame');
             const avatarImg = document.getElementById('character-avatar-img');
-            const lifeIndicator = document.getElementById('life-indicator');
             
             if (!avatarFrame || !avatarImg) return;
             
-            // Добавляем timestamp для обхода кэша
-            const timestamp = Date.now();
-            const avatarUrl = `${API_BASE_URL}/character/${chatId}/avatar?_=${timestamp}`;
+            // Всегда показываем рамку для теста
+            avatarFrame.classList.add('visible');
             
-            // Пробуем загрузить изображение
-            return new Promise((resolve) => {
-                const testImg = new Image();
-                testImg.onload = () => {
-                    // Изображение загрузилось — показываем рамку
-                    avatarImg.src = avatarUrl;
-                    avatarFrame.classList.add('visible');
-                    
-                    // Обновляем индикатор жизни
-                    if (characterData && characterData.hp <= 0) {
-                        lifeIndicator.classList.add('dead');
-                    } else {
-                        lifeIndicator.classList.remove('dead');
-                    }
-                    
-                    console.log('🖼️ Avatar loaded for chat', chatId);
-                    resolve(true);
-                };
-                testImg.onerror = () => {
-                    // Изображения нет — скрываем рамку
-                    avatarFrame.classList.remove('visible');
-                    avatarImg.src = '';
-                    console.log('🖼️ No avatar for chat', chatId);
-                    resolve(false);
-                };
-                testImg.src = avatarUrl;
-            });
+            const timestamp = Date.now();
+            avatarImg.src = `${API_BASE_URL}/character/${chatId}/avatar?_=${timestamp}`;
+            
+            // Обработчик ошибки загрузки
+            avatarImg.onerror = () => {
+                console.log('🖼️ Avatar failed to load');
+                avatarFrame.classList.remove('visible');
+                avatarImg.src = '';
+            };
+            
+            avatarImg.onload = () => {
+                console.log('🖼️ Avatar loaded successfully');
+            };
             
         } catch (error) {
             console.error('Error loading avatar:', error);
-            const avatarFrame = document.getElementById('avatar-frame');
-            if (avatarFrame) avatarFrame.classList.remove('visible');
         }
     }
     
