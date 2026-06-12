@@ -1724,25 +1724,38 @@
             
             if (!avatarFrame || !avatarImg) return;
             
-            // Всегда показываем рамку для теста
-            avatarFrame.classList.add('visible');
-            
             const timestamp = Date.now();
-            avatarImg.src = `${API_BASE_URL}/character/${chatId}/avatar?_=${timestamp}`;
+            const avatarUrl = `${API_BASE_URL}/character/${chatId}/avatar?_=${timestamp}`;
             
-            // Обработчик ошибки загрузки
-            avatarImg.onerror = () => {
-                console.log('🖼️ Avatar failed to load');
-                avatarFrame.classList.remove('visible');
-                avatarImg.src = '';
-            };
+            console.log('🖼️ Attempting to load avatar from:', avatarUrl);
             
-            avatarImg.onload = () => {
-                console.log('🖼️ Avatar loaded successfully');
-            };
+            // Используем fetch для диагностики
+            fetch(avatarUrl)
+                .then(response => {
+                    console.log('🖼️ Avatar response status:', response.status);
+                    console.log('🖼️ Avatar response headers:', response.headers);
+                    
+                    if (response.ok) {
+                        avatarImg.src = avatarUrl;
+                        avatarFrame.classList.add('visible');
+                        
+                        avatarImg.onload = () => {
+                            console.log('🖼️ Avatar loaded successfully');
+                        };
+                    } else {
+                        console.log('🖼️ Avatar not found (status:', response.status, ')');
+                        avatarFrame.classList.remove('visible');
+                    }
+                })
+                .catch(error => {
+                    console.error('🖼️ Error loading avatar:', error);
+                    avatarFrame.classList.remove('visible');
+                });
             
         } catch (error) {
-            console.error('Error loading avatar:', error);
+            console.error('Error in loadCharacterAvatar:', error);
+            const avatarFrame = document.getElementById('avatar-frame');
+            if (avatarFrame) avatarFrame.classList.remove('visible');
         }
     }
     
