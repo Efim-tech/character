@@ -1792,6 +1792,36 @@
             });
         }
     }
+
+    // Функция принудительной перезагрузки аватара
+    async function refreshCharacterAvatar() {
+        const chatId = getChatId();
+        if (!chatId) return;
+        
+        const avatarImg = document.getElementById('character-avatar-img');
+        const avatarFrame = document.getElementById('avatar-frame');
+        
+        if (!avatarImg) return;
+        
+        // Очищаем текущее изображение
+        avatarImg.src = '';
+        avatarFrame.classList.remove('visible');
+        
+        // Загружаем новое с уникальным timestamp
+        const timestamp = Date.now();
+        const avatarUrl = `${API_BASE_URL}/api/character/${chatId}/avatar?_=${timestamp}`;
+        
+        fetch(avatarUrl)
+            .then(response => {
+                if (response.ok) {
+                    avatarImg.src = avatarUrl;
+                    avatarFrame.classList.add('visible');
+                }
+            })
+            .catch(() => {
+                avatarFrame.classList.remove('visible');
+            });
+    }
     
     function updateUI() {
       if (!characterData) return;
@@ -2049,8 +2079,7 @@
                 characterData = data.data;
                 updateUI();
                 
-                // 🔥 ЗАГРУЖАЕМ АВАТАР ПОСЛЕ ОБНОВЛЕНИЯ ДАННЫХ
-                await loadCharacterAvatar();
+                await refreshCharacterAvatar();
                 
                 // Настраиваем клик по аватару (если появился)
                 setupAvatarClick();
