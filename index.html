@@ -2180,6 +2180,17 @@
       if (container.children.length > 0) return;
       
       container.innerHTML = `
+
+        <!-- Премиум наборы -->
+        <div class="shop-category">
+          <div class="shop-category-title"><span>🎁</span> Премиум наборы</div>
+          <div class="shop-grid-new">
+            ${createShopItemHTML('traveler_set', 'shop/traveler-set.png', 'Набор путника', 'Аптечка + Малое зелье энергии + 100💰', 15)}
+            ${createShopItemHTML('adventurer_set', 'shop/adventurer-set.png', 'Набор авантюриста', 'Ремнабор + Среднее зелье энергии + 250💰', 25)}
+            ${createShopItemHTML('hero_set', 'shop/hero-set.png', 'Набор героя', 'Большое зелье энергии + 1000💰 + Зелье', 45)}
+          </div>
+        </div>
+        
         <!-- Зелья энергии -->
         <div class="shop-category">
           <div class="shop-category-title"><span>⚡</span> Зелья энергии</div>
@@ -2220,16 +2231,6 @@
             ${createShopItemHTML('bandage', 'shop/bandage.png', 'Аптечка', '+5 HP', 4)}
             ${createShopItemHTML('health_potion', 'shop/health-potion.png', 'Зелье здоровья', '+10 HP', 6)}
             ${createShopItemHTML('repair_kit', 'shop/repair-kit.png', 'Ремнабор', '+5 брони', 6)}
-          </div>
-        </div>
-        
-        <!-- Премиум наборы -->
-        <div class="shop-category">
-          <div class="shop-category-title"><span>🎁</span> Премиум наборы</div>
-          <div class="shop-grid-new">
-            ${createShopItemHTML('traveler_set', 'shop/traveler-set.png', 'Набор путника', 'Бинт + Зелье + 100💰', 15)}
-            ${createShopItemHTML('adventurer_set', 'shop/adventurer-set.png', 'Набор авантюриста', 'Ремнабор + Зелье энергии + 250💰', 25)}
-            ${createShopItemHTML('hero_set', 'shop/hero-set.png', 'Набор героя', 'Б.зелье энергии + 1000💰 + Зелье', 45)}
           </div>
         </div>
         
