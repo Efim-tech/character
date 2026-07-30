@@ -2112,15 +2112,22 @@
                 if (characterData.hp <= 0) {
                     setTimeout(() => checkDeathOnHPChange(), 1000);
                 }
+                
+                // 🔥 СКРЫВАЕМ ОШИБКУ, ЕСЛИ ОНА БЫЛА ПОКАЗАНА
+                hideError();
+                
             } else {
-                throw new Error(data.error || 'Ошибка загрузки данных');
+                // 🔥 ВМЕСТО КРАСНОГО СООБЩЕНИЯ — ТИХО ЛОГГИРУЕМ
+                console.warn('⚠️ Error loading character data:', data.error || 'Unknown error');
+                // Показываем заглушку, но без красного сообщения
+                showLoading(false);
             }
         } catch (error) {
             console.error('❌ Error loading character data:', error);
             showLoading(false);
-            showError(error.message);
+            // 🔥 УБИРАЕМ КРАСНОЕ СООБЩЕНИЕ — просто логируем в консоль
+            // showError(error.message);  // ← КОММЕНТИМ ИЛИ УДАЛЯЕМ
         }
-    }
   
     // ==================== ПРОВЕРКА СМЕРТИ ====================
     async function checkDeathOnHPChange() {
