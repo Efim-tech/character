@@ -2073,7 +2073,11 @@
             }
             
             const chatId = getChatId();
-            if (!chatId) throw new Error('Не удалось определить пользователя');
+            if (!chatId) {
+                console.warn('⚠️ Chat ID not found');
+                showLoading(false);
+                return;  // ← ВАЖНО: выходим, а не показываем ошибку
+            }
             
             // Добавляем timestamp при force=true
             let url = `${API_BASE_URL}/api/character/${chatId}/full`;
@@ -2113,21 +2117,21 @@
                     setTimeout(() => checkDeathOnHPChange(), 1000);
                 }
                 
-                // 🔥 СКРЫВАЕМ ОШИБКУ, ЕСЛИ ОНА БЫЛА ПОКАЗАНА
+                // СКРЫВАЕМ ОШИБКУ, ЕСЛИ ОНА БЫЛА ПОКАЗАНА
                 hideError();
                 
             } else {
-                // 🔥 ВМЕСТО КРАСНОГО СООБЩЕНИЯ — ТИХО ЛОГГИРУЕМ
+                // ВМЕСТО КРАСНОГО СООБЩЕНИЯ — ТИХО ЛОГГИРУЕМ
                 console.warn('⚠️ Error loading character data:', data.error || 'Unknown error');
-                // Показываем заглушку, но без красного сообщения
                 showLoading(false);
             }
         } catch (error) {
             console.error('❌ Error loading character data:', error);
             showLoading(false);
-            // 🔥 УБИРАЕМ КРАСНОЕ СООБЩЕНИЕ — просто логируем в консоль
-            // showError(error.message);  // ← КОММЕНТИМ ИЛИ УДАЛЯЕМ
+            // УБИРАЕМ КРАСНОЕ СООБЩЕНИЕ — просто логируем в консоль
+            // showError(error.message);  // ← ЗАКОММЕНТИРОВАНО
         }
+    }
   
     // ==================== ПРОВЕРКА СМЕРТИ ====================
     async function checkDeathOnHPChange() {
