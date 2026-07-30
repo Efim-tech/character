@@ -858,6 +858,44 @@
       filter: drop-shadow(0 6px 12px rgba(123, 104, 238, 0.5));
       transition: all 0.3s ease;
     }
+
+    /* Цена со скидкой */
+    .price-tag-sale {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    
+    .price-old {
+      font-size: 0.7rem;
+      color: #999;
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    
+    .price-new {
+      background: linear-gradient(135deg, #f1c40f, #e67e22);
+      color: #1a1510;
+      padding: 6px 12px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Бейдж скидки */
+    .badge-sale {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      color: white;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
     
     .price-tag {
       background: linear-gradient(135deg, #7b68ee, #9370db);
@@ -1441,9 +1479,10 @@
       { 
         id: 'sub_adventurer', 
         name: '🧭 Авантюрист', 
-        price: 99,  
+        price: 99,              // ← актуальная цена
+        original_price: 130,    // ← зачеркнутая цена
         rank: 'adventurer',
-        badge: null,
+        badge: { text: '🔥 СКИДКА', type: 'sale' },  // ← новый бейдж
         features: [
           { text: '+1 малое зелье энергии', type: 'energy' },
           { text: '+50 серебряных монет', type: 'coins' }
@@ -1452,9 +1491,10 @@
       { 
         id: 'sub_hero', 
         name: '⚔️ Герой', 
-        price: 449,   
+        price: 449,
+        original_price: 600,
         rank: 'hero',
-        badge: { text: 'Популярный', type: 'popular' },
+        badge: { text: '🔥 СКИДКА', type: 'sale' },
         features: [
           { text: '+1 большое зелье энергии', type: 'energy' },
           { text: '+100 серебряных монет', type: 'coins' },
@@ -1464,9 +1504,10 @@
       { 
         id: 'sub_champion', 
         name: '👑 Чемпион', 
-        price: 849, 
+        price: 849,
+        original_price: 1200,
         rank: 'champion',
-        badge: { text: 'Выгодный', type: 'value' },
+        badge: { text: '🔥 СКИДКА', type: 'sale' },
         features: [
           { text: '+2 больших зелья энергии', type: 'energy' },
           { text: '+200 серебряных монет', type: 'coins' },
@@ -1477,9 +1518,10 @@
       { 
         id: 'sub_legend', 
         name: '🌟 Легенда', 
-        price: 1449, 
+        price: 1449,
+        original_price: 1800,
         rank: 'legend',
-        badge: { text: 'Премиум', type: 'premium' },
+        badge: { text: '🔥 СКИДКА', type: 'sale' },
         features: [
           { text: '+3 больших зелья энергии', type: 'energy' },
           { text: '+300 серебряных монет', type: 'coins' },
@@ -1490,9 +1532,10 @@
       { 
         id: 'sub_crystal_novice', 
         name: '🔮 Послушник', 
-        price: 849,  
+        price: 849,
+        original_price: 1170,
         rank: 'crystal',
-        badge: null,
+        badge: { text: '🔥 СКИДКА', type: 'sale' },
         features: [
           { text: '+5 зарядов кристалла', type: 'crystal' },
           { text: '+1 большое зелье энергии', type: 'energy' },
@@ -1503,9 +1546,10 @@
       { 
         id: 'sub_crystal_master', 
         name: '💎 Мастер', 
-        price: 2149,  
+        price: 2149,
+        original_price: 2900,
         rank: 'crystal',
-        badge: { text: 'Популярный', type: 'popular' },
+        badge: { text: '🔥 СКИДКА', type: 'sale' },
         features: [
           { text: '+15 зарядов кристалла', type: 'crystal' },
           { text: '+2 больших зелья энергии', type: 'energy' },
@@ -1517,9 +1561,10 @@
       { 
         id: 'sub_crystal_archon', 
         name: '✨ Архонт', 
-        price: 3249, 
+        price: 3249,
+        original_price: 4630,
         rank: 'archon',
-        badge: { text: 'Премиум', type: 'premium' },
+        badge: { text: '🔥 СКИДКА', type: 'sale' },
         features: [
           { text: '+25 зарядов кристалла', type: 'crystal' },
           { text: '+3 больших зелья энергии', type: 'energy' },
@@ -1529,7 +1574,7 @@
         ] 
       }
     ];
-
+    
     const SUBSCRIPTION_IMAGES = {
       'sub_adventurer': 'subscriptions/adventurer.png',
       'sub_hero': 'subscriptions/hero.png',
@@ -2428,10 +2473,30 @@
           ? `<img src="${subImage}" alt="${sub.name}" class="subscription-rank-image">`
           : `<div style="font-size: 2.5rem; margin-bottom: 5px;">${sub.name.split(' ')[0]}</div>`;
         
-        // Бейдж
-        const badgeBlock = sub.badge 
-          ? `<span class="subscription-badge badge-${sub.badge.type}">${sub.badge.text}</span>`
-          : '';
+        // 🔥 Бейдж скидки или обычный бейдж
+        let badgeBlock = '';
+        if (sub.badge) {
+          if (sub.badge.type === 'sale') {
+            badgeBlock = `<span class="subscription-badge badge-sale">${sub.badge.text}</span>`;
+          } else {
+            badgeBlock = `<span class="subscription-badge badge-${sub.badge.type}">${sub.badge.text}</span>`;
+          }
+        }
+        
+        // 🔥 ЦЕНА: актуальная + зачеркнутая (если есть original_price)
+        let priceBlock = '';
+        if (sub.original_price && sub.original_price > sub.price) {
+          priceBlock = `
+            <div class="price-tag-sale">
+              <span class="price-old">${sub.original_price} ⭐</span>
+              <span class="price-new">⭐ ${sub.price}</span>
+            </div>
+          `;
+        } else {
+          priceBlock = `
+            <div class="price-tag" style="margin: 10px 0;">⭐ ${sub.price} / месяц</div>
+          `;
+        }
         
         // Особенности
         const featuresHtml = sub.features.map(f => {
@@ -2444,15 +2509,15 @@
           `;
         }).join('');
         
-        // Шкала прогресса (30 дней)
-        const progressPercent = 100; // Для новых подписок — полная
+        // Шкала прогресса
+        const progressPercent = 100;
         const daysLeft = 30;
         
         card.innerHTML = `
           ${badgeBlock}
           ${imageBlock}
           <div class="item-name" style="font-size: 1.3rem; margin-bottom: 10px;">${sub.name}</div>
-          <div class="price-tag" style="margin: 10px 0;">⭐ ${sub.price} / месяц</div>
+          ${priceBlock}
           <ul style="padding-left: 15px; margin: 15px 0; min-height: 120px; list-style: none;">
             ${featuresHtml}
           </ul>
